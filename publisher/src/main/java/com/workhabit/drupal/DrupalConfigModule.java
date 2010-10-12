@@ -1,7 +1,5 @@
 package com.workhabit.drupal;
 
-import com.workhabit.drupal.site.DrupalSiteContext;
-import com.workhabit.drupal.site.impl.DrupalSiteContextImpl;
 import roboguice.config.AbstractAndroidModule;
 
 /**
