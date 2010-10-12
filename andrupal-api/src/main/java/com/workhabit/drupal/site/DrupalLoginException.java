@@ -20,7 +20,7 @@ public class DrupalLoginException extends Throwable {
             this.message = "Unable to unmarshal JSON Object: " + e.getMessage();
         }
     }
-    
+
     public JSONObject getObjectResult() {
         return objectResult;
     }

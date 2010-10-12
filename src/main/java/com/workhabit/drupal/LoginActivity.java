@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import com.workhabit.drupal.entity.DrupalUser;
-import com.workhabit.drupal.site.AbstractAnDrupalActivity;
 import com.workhabit.drupal.site.DrupalFetchException;
 import com.workhabit.drupal.site.DrupalLoginException;
 import com.workhabit.drupal.site.DrupalSiteContext;

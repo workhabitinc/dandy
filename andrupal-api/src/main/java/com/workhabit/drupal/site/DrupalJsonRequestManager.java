@@ -1,8 +1,5 @@
 package com.workhabit.drupal.site;
 
-import android.content.res.Resources;
-import com.google.inject.Inject;
-import com.workhabit.drupal.R;
 import org.apache.http.NameValuePair;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -25,8 +22,8 @@ import java.util.Map;
  */
 public class DrupalJsonRequestManager extends JsonRequestManager {
     private DrupalAuthenticationToken token;
+    private String drupalDomain;
 
-    @Inject
     public DrupalJsonRequestManager(DrupalAuthenticationToken token) {
         this.token = token;
 
@@ -64,12 +61,16 @@ public class DrupalJsonRequestManager extends JsonRequestManager {
 
         String nonce = hexString.toString();
         //();
-        String hash = token.generateHmacHash(timestamp, Resources.getSystem().getString(R.string.drupal_domain), nonce, method);
+        String hash = token.generateHmacHash(timestamp, drupalDomain, nonce, method);
 
         // add params for hash
         data.put("hash", hash);
         data.put("timestamp", Long.toString(timestamp));
         data.put("nonce", nonce);
         return post(path, method, data);
+    }
+
+    public void setDrupalDomain(String drupalDomain) {
+        this.drupalDomain = drupalDomain;
     }
 }

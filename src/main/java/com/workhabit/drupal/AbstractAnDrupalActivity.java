@@ -1,4 +1,4 @@
-package com.workhabit.drupal.site;
+package com.workhabit.drupal;
 
 import android.content.Intent;
 import android.view.Menu;

@@ -1,7 +1,6 @@
 package com.workhabit.drupal.site;
 
 import android.util.Log;
-import com.google.inject.Inject;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -21,7 +20,6 @@ public class DrupalAuthenticationToken {
     private final Charset asciiCs = Charset.forName("US-ASCII");
     private Mac apiKeyMac;
 
-    @Inject
     public DrupalAuthenticationToken(String privateKey) {
         this.privateKey = privateKey;
 

@@ -39,6 +39,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" scope="RUNTIME" name="Testing" level="project" />
+    <orderEntry type="module" module-name="andrupal-api" />
   </component>
 </module>
 
