@@ -49,7 +49,7 @@ public class NodeListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Intent intent = new Intent(this.getApplicationContext(), NodeActivity.class);
+        Intent intent = new Intent(this.getApplicationContext(), DrupaNodeActivity.class);
         intent.putExtra("nid", nodeAdapter.getNodes().get(position).getNid());
         this.startActivity(intent);
     }

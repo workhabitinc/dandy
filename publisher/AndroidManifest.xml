@@ -3,19 +3,19 @@
           package="com.workhabit.drupal" android:versionCode="1">
     <application android:icon="@drawable/icon" android:label="andrupal"
             android:name="com.workhabit.drupal.AnDrupalApplication">
-        <!--<activity android:name=".LoginActivity" android:label="@string/app_name">
+        <!--<activity android:name=".DrupalLoginActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>-->
-        <activity android:name=".LoginActivity" android:label="@string/app_name">
+        <activity android:name=".DrupalLoginActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".NodeActivity"/>
+        <activity android:name=".DrupaNodeActivity"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

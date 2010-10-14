@@ -10,9 +10,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
-import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -21,12 +19,13 @@ import java.util.Map;
  * Date: Sep 24, 2010, 5:43:02 PM
  */
 public class DrupalJsonRequestManager extends JsonRequestManager {
-    private DrupalAuthenticationToken token;
-    private String drupalDomain;
+    private RequestSigningInterceptor requestSigningInterceptor;
 
-    public DrupalJsonRequestManager(DrupalAuthenticationToken token) {
-        this.token = token;
+    public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {
+        this.requestSigningInterceptor = requestSigningInterceptor;
+    }
 
+    public DrupalJsonRequestManager() {
         HttpParams params = new BasicHttpParams();
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
@@ -50,27 +49,9 @@ public class DrupalJsonRequestManager extends JsonRequestManager {
     }
 
     public String postSigned(String path, String method, Map<String, Object> data) throws Exception {
-        Long timestamp = Calendar.getInstance().getTimeInMillis();
-        MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-        digest.update(Double.toString(System.currentTimeMillis() + Math.random()).getBytes());
-        StringBuffer hexString = new StringBuffer();
-        byte messageDigest[] = digest.digest();
-        for (byte aMessageDigest : messageDigest) {
-            hexString.append(Integer.toHexString(0xFF & aMessageDigest));
+        if (requestSigningInterceptor != null) {
+            requestSigningInterceptor.sign(path, method, data);
         }
-
-        String nonce = hexString.toString();
-        //();
-        String hash = token.generateHmacHash(timestamp, drupalDomain, nonce, method);
-
-        // add params for hash
-        data.put("hash", hash);
-        data.put("timestamp", Long.toString(timestamp));
-        data.put("nonce", nonce);
         return post(path, method, data);
-    }
-
-    public void setDrupalDomain(String drupalDomain) {
-        this.drupalDomain = drupalDomain;
     }
 }

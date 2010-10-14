@@ -24,7 +24,6 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     private DrupalUser user;
     private boolean isConnected;
 
-    String siteUrl;
     private String drupalSiteUrl;
 
     /**
@@ -37,7 +36,12 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         this.drupalSiteUrl = drupalSiteUrl;
 
         DrupalAuthenticationToken token = new DrupalAuthenticationToken(privateKey);
-        manager = new DrupalJsonRequestManager(token);
+        KeyRequestSigningInterceptorImpl requestSigningInterceptor = new KeyRequestSigningInterceptorImpl();
+        String drupalDomain = drupalSiteUrl.replaceAll("^http://(.*?)/.*$", "\\1");
+        requestSigningInterceptor.setDrupalDomain(drupalDomain);
+        requestSigningInterceptor.setToken(token);
+        manager.setRequestSigningInterceptor(requestSigningInterceptor);
+        manager = new DrupalJsonRequestManager();
     }
 
     /**
@@ -64,7 +68,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", viewName);
         try {
-            String result = manager.postSigned(siteUrl + "/services/json", "views.get", data);
+            String result = manager.postSigned(drupalSiteUrl + "/services/json", "views.get", data);
             return processGetNodeViewResult(result);
         } catch (Exception e) {
             Log.e("error", e.getMessage(), e);
@@ -86,7 +90,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     }
 
     private DrupalNode createNodeObjectFromJsonView(JSONObject nodeObject) throws JSONException {
-        DrupalNode drupalNode = new DrupalNode(siteUrl);
+        DrupalNode drupalNode = new DrupalNode(drupalSiteUrl);
         drupalNode.setTitle(nodeObject.getString("node_title"));
         drupalNode.setNid(nodeObject.getInt("nid"));
         drupalNode.setCreated(new Date(nodeObject.getLong("node_created") * 1000));
@@ -95,7 +99,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
 
     protected void assertNoErrors(JSONObject objectResult) throws JSONException, DrupalFetchException {
         if (objectResult.has("#error") && objectResult.getBoolean("#error")) {
-            throw new DrupalFetchException(objectResult, siteUrl);
+            throw new DrupalFetchException(objectResult, drupalSiteUrl);
         }
     }
 
@@ -105,7 +109,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         data.put("nid", nid);
         data.put("sessid", session);
         try {
-            String result = manager.postSigned(siteUrl + "/services/json", "node.get", data);
+            String result = manager.postSigned(drupalSiteUrl + "/services/json", "node.get", data);
             return processGetNodeResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -116,7 +120,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         JSONObject objectResult = new JSONObject(result);
         assertNoErrors(objectResult);
         JSONObject dataObject = objectResult.getJSONObject("#data");
-        return new DrupalNode(dataObject, siteUrl);
+        return new DrupalNode(dataObject, drupalSiteUrl);
     }
 
     public DrupalComment getComment(int nid, int cid) throws DrupalFetchException {
@@ -139,7 +143,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         data.put("username", username);
         data.put("password", password);
         try {
-            String result = manager.postSigned(siteUrl + "/services/json", "user.login", data);
+            String result = manager.postSigned(drupalSiteUrl + "/services/json", "user.login", data);
             return processLoginResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -153,7 +157,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
 
         JSONObject dataObject = objectResult.getJSONObject("#data");
         setSession(dataObject.getString("sessid"));
-        user = new DrupalUser(dataObject.getJSONObject("user"), siteUrl);
+        user = new DrupalUser(dataObject.getJSONObject("user"), drupalSiteUrl);
         return user;
     }
 

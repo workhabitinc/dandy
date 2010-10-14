@@ -16,7 +16,7 @@ import roboguice.inject.InjectResource;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 12:01:59 PM
  */
-public class LoginActivity extends AbstractAnDrupalActivity {
+public class DrupalLoginActivity extends AbstractAnDrupalActivity {
     @SuppressWarnings({"UnusedDeclaration"})
     @InjectResource(R.string.drupal_site_url)
     private String drupalSiteUrl;
@@ -45,14 +45,7 @@ public class LoginActivity extends AbstractAnDrupalActivity {
         try {
             DrupalUser drupalUser = drupalSiteContext.login("admin", "nothing");
             if (drupalUser != null) {
-                TextView view = new TextView(this);
-                StringBuffer sb = new StringBuffer();
-                sb.append("Logged in as: ");
-                sb.append(drupalUser.getName()).append("\n");
-                sb.append("Email: ").append(drupalUser.getMail()).append("\n\n");
-
-                view.setText(sb.toString());
-                setContentView(view);
+                createBanner(drupalUser);
             }
             progressDialog.dismiss();
         } catch (DrupalLoginException e) {
@@ -62,6 +55,17 @@ public class LoginActivity extends AbstractAnDrupalActivity {
             progressDialog.dismiss();
             DrupalDialogHandler.showMessageDialog(this, e.getMessage());
         }
+    }
+
+    private void createBanner(DrupalUser drupalUser) {
+        TextView view = new TextView(this);
+        StringBuffer sb = new StringBuffer();
+        sb.append("Logged in as: ");
+        sb.append(drupalUser.getName()).append("\n");
+        sb.append("Email: ").append(drupalUser.getMail()).append("\n\n");
+
+        view.setText(sb.toString());
+        setContentView(view);
     }
 
     public void loginButtonOnClickHandler(View target) {

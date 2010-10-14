@@ -15,7 +15,7 @@ import roboguice.inject.InjectView;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 25, 2010, 7:39:37 PM
  */
-public class NodeActivity extends Activity {
+public class DrupaNodeActivity extends Activity {
     @InjectView(R.id.nodeTitle)
     TextView titleView;
     @InjectView(R.id.nodeBody)
