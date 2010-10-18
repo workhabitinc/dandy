@@ -20,20 +20,6 @@ public class DrupalNode {
     private Map<String, DrupalField> fields;
     private String siteUrl;
 
-    public DrupalNode(JSONObject jsonObject, String siteUrl) {
-        try {
-            title = jsonObject.getString("title");
-            body = jsonObject.getString("body").replaceAll("\r\n", "\n");
-            created = new Date(jsonObject.getLong("created") * 1000);
-        } catch (JSONException e) {
-            Log.e("json", e.getMessage(), e);
-        }
-    }
-
-    public DrupalNode(String siteUrl) {
-        this.siteUrl = siteUrl;
-    }
-
     public String getTitle() {
         return title;
     }

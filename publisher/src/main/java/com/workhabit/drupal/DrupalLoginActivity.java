@@ -2,8 +2,10 @@ package com.workhabit.drupal;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.workhabit.drupal.entity.DrupalUser;
 import com.workhabit.drupal.site.DrupalFetchException;
@@ -38,14 +40,25 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity {
 
     public void handleRefresh() {
         ProgressDialog.Builder pb = new ProgressDialog.Builder(this);
-        pb.setMessage("Loading...");
+        pb.setMessage("Logging In...");
         AlertDialog progressDialog = pb.create();
         progressDialog.setOwnerActivity(this);
         progressDialog.show();
         try {
-            DrupalUser drupalUser = drupalSiteContext.login("admin", "nothing");
+            String username = ((EditText)findViewById(R.id.login_username)).getText().toString();
+            String password = ((EditText)findViewById(R.id.login_password)).getText().toString();
+            DrupalUser drupalUser = drupalSiteContext.login(username, password);
             if (drupalUser != null) {
                 createBanner(drupalUser);
+                Intent intent = new Intent(this.getApplicationContext(), DrupalTaxonomyListActivity.class);
+                this.startActivity(intent);
+            } else {
+                // login failed
+                //
+                progressDialog.dismiss();
+                pb.setMessage("Invalid login");
+                progressDialog = pb.create();
+                progressDialog.show();
             }
             progressDialog.dismiss();
         } catch (DrupalLoginException e) {

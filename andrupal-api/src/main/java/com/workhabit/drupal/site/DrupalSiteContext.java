@@ -2,6 +2,7 @@ package com.workhabit.drupal.site;
 
 import com.workhabit.drupal.entity.DrupalComment;
 import com.workhabit.drupal.entity.DrupalNode;
+import com.workhabit.drupal.entity.DrupalTaxonomyTerm;
 import com.workhabit.drupal.entity.DrupalUser;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface DrupalSiteContext {
     void saveComment(DrupalComment comment) throws DrupalFetchException;
 
     DrupalUser login(String username, String password) throws DrupalLoginException, DrupalFetchException;
+
+    List<DrupalTaxonomyTerm> getTermView(String s) throws DrupalFetchException;
 }

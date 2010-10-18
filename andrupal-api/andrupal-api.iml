@@ -8,6 +8,18 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Android 2.1-update1 Platform" level="application" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../publisher/libs/guice-2.0-no_aop.jar!/" />
+          <root url="jar://$MODULE_DIR$/../publisher/libs/roboguice-1.1-20100408.222944-3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../publisher/libs/signpost-commonshttp4-1.2.1.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../publisher/libs/flexjson-2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DrupaNodeActivity"/>
+        <activity android:name=".DrupalTaxonomyListActivity" android:label="Categories"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
