@@ -1,4 +1,4 @@
-package com.workhabit.drupal;
+package com.workhabit.drupal.publisher;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.workhabit.drupal.R;
 import com.workhabit.drupal.entity.DrupalUser;
 import com.workhabit.drupal.site.DrupalFetchException;
 import com.workhabit.drupal.site.DrupalLoginException;
@@ -57,7 +58,8 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity {
                 // login failed
                 //
                 progressDialog.dismiss();
-                pb.setMessage("Invalid login");
+                pb.setTitle(R.string.invalid_login_title);
+                pb.setMessage(R.string.invalid_login_message);
                 progressDialog = pb.create();
                 progressDialog.show();
             }

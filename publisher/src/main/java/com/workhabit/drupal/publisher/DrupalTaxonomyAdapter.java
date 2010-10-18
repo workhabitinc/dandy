@@ -1,4 +1,4 @@
-package com.workhabit.drupal;
+package com.workhabit.drupal.publisher;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.google.inject.Inject;
+import com.workhabit.drupal.R;
 import com.workhabit.drupal.entity.DrupalNode;
 import com.workhabit.drupal.entity.DrupalTaxonomyTerm;
 

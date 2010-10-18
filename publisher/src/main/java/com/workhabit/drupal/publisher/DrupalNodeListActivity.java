@@ -1,4 +1,4 @@
-package com.workhabit.drupal;
+package com.workhabit.drupal.publisher;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import com.google.inject.Inject;
+import com.workhabit.drupal.R;
 import com.workhabit.drupal.entity.DrupalNode;
 import com.workhabit.drupal.site.DrupalFetchException;
 import com.workhabit.drupal.site.impl.DrupalSiteContextImpl;
@@ -17,8 +18,8 @@ import java.util.ArrayList;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 25, 2010, 5:01:14 PM
  */
-public class NodeListActivity extends ListActivity {
-    private DrupalNodeAdapter nodeAdapter;
+public class DrupalNodeListActivity extends ListActivity {
+    private DrupalNodeArrayAdapter nodeAdapter;
     @InjectResource(R.string.drupal_site_url)
     String drupalSiteUrl;
     @Inject
@@ -36,7 +37,7 @@ public class NodeListActivity extends ListActivity {
 
             // we use a custom node adapter
             if (nodeAdapter == null) {
-                nodeAdapter = new DrupalNodeAdapter(this, R.layout.row, nodes);
+                nodeAdapter = new DrupalNodeArrayAdapter(this, R.layout.row, nodes);
             }
             setListAdapter(nodeAdapter);
             nodeAdapter.notifyDataSetChanged();
@@ -49,7 +50,7 @@ public class NodeListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Intent intent = new Intent(this.getApplicationContext(), DrupaNodeActivity.class);
+        Intent intent = new Intent(this.getApplicationContext(), DrupalNodeActivity.class);
         intent.putExtra("nid", nodeAdapter.getNodes().get(position).getNid());
         this.startActivity(intent);
     }

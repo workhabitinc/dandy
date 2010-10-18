@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.workhabit.drupal" android:versionCode="1">
+          package="com.workhabit.drupal.publisher" android:versionCode="1">
     <application android:icon="@drawable/icon" android:label="andrupal"
             android:name="com.workhabit.drupal.AnDrupalApplication">
         <!--<activity android:name=".DrupalLoginActivity" android:label="@string/app_name">
@@ -15,8 +15,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".DrupaNodeActivity"/>
-        <activity android:name=".DrupalTaxonomyListActivity" android:label="Categories"/>
+        <activity android:name=".DrupalNodeListActivity" android:label="@string/recent"/>
+        <activity android:name=".DrupalNodeActivity"/>
+        <activity android:name=".DrupalTaxonomyListActivity" android:label="@string/categories"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

@@ -1,10 +1,11 @@
-package com.workhabit.drupal;
+package com.workhabit.drupal.publisher;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
 import com.google.inject.Inject;
+import com.workhabit.drupal.R;
 import com.workhabit.drupal.entity.DrupalNode;
 import com.workhabit.drupal.site.DrupalFetchException;
 import com.workhabit.drupal.site.impl.DrupalSiteContextImpl;
@@ -15,7 +16,7 @@ import roboguice.inject.InjectView;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 25, 2010, 7:39:37 PM
  */
-public class DrupaNodeActivity extends Activity {
+public class DrupalNodeActivity extends Activity {
     @InjectView(R.id.nodeTitle)
     TextView titleView;
     @InjectView(R.id.nodeBody)

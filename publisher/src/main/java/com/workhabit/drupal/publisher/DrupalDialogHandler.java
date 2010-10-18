@@ -1,4 +1,4 @@
-package com.workhabit.drupal;
+package com.workhabit.drupal.publisher;
 
 import android.app.Activity;
 import android.app.AlertDialog;

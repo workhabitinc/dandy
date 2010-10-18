@@ -1,4 +1,4 @@
-package com.workhabit.drupal;
+package com.workhabit.drupal.publisher;
 
 import com.google.inject.Module;
 import roboguice.application.RoboApplication;

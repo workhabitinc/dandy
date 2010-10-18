@@ -1,10 +1,9 @@
-package com.workhabit.drupal;
+package com.workhabit.drupal.publisher;
 
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.workhabit.drupal.NodeListActivity;
 import com.workhabit.drupal.R;
 import roboguice.activity.RoboActivity;
 
@@ -36,7 +35,7 @@ public abstract class AbstractAnDrupalActivity extends RoboActivity {
                 this.handleRefresh();
                 break;
             case R.id.recent:
-                this.startActivity(new Intent(this.getApplicationContext(), NodeListActivity.class));
+                this.startActivity(new Intent(this.getApplicationContext(), DrupalNodeListActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

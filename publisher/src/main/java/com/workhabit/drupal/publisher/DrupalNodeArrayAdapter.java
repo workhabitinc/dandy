@@ -1,4 +1,4 @@
-package com.workhabit.drupal;
+package com.workhabit.drupal.publisher;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.google.inject.Inject;
+import com.workhabit.drupal.R;
 import com.workhabit.drupal.entity.DrupalNode;
 
 import java.text.SimpleDateFormat;
@@ -16,13 +17,13 @@ import java.util.ArrayList;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 27, 2010, 6:04:08 PM
  */
-public class DrupalNodeAdapter extends ArrayAdapter<DrupalNode> {
+public class DrupalNodeArrayAdapter extends ArrayAdapter<DrupalNode> {
     private ArrayList<DrupalNode> nodes;
 
     @Inject
     protected LayoutInflater layoutInflater;
 
-    public DrupalNodeAdapter(Context context, int textViewResourceId, ArrayList<DrupalNode> objects) {
+    public DrupalNodeArrayAdapter(Context context, int textViewResourceId, ArrayList<DrupalNode> objects) {
         super(context, textViewResourceId, objects);
         this.nodes = objects;
 

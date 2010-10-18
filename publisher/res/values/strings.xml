@@ -4,6 +4,7 @@
     <string name="app_name"><b>Publisher</b> for Android</string>
     <string name="refresh">Refresh</string>
     <string name="recent">Recent</string>
+    <string name="categories">Categories</string>
     <string name="main_no_items">No news items to display.</string>
     <string name="drupal_site_url">http://ad.hourglassone.com</string>
     <string name="drupal_domain">workhabit.com</string>
@@ -11,4 +12,6 @@
     <string name="username">username</string>
     <string name="password">password</string>
     <string name="foo">test</string>
+    <string name="invalid_login_title">Invalid Login</string>
+    <string name="invalid_login_message">The username and/or password you specified is invalid.  Please try again.</string>
 </resources>
