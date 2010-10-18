@@ -144,9 +144,9 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
     }
 
-    public List<DrupalTaxonomyTerm> getTermView(String view_name) throws DrupalFetchException {
+    public List<DrupalTaxonomyTerm> getTermView(String viewName) throws DrupalFetchException {
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("view_name", view_name);
+        data.put("view_name", viewName);
         try {
             String result = manager.postSigned(drupalSiteUrl + "/services/json", "views.get", data);
             return processGetTermViewResult(result);
