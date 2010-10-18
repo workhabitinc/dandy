@@ -1,8 +1,8 @@
-package com.workhabit.drupal.site.impl;
+package com.workhabit.drupal.api.site.impl;
 
 import android.util.Log;
-import com.workhabit.drupal.entity.*;
-import com.workhabit.drupal.site.*;
+import com.workhabit.drupal.api.entity.*;
+import com.workhabit.drupal.api.site.*;
 import flexjson.JSONDeserializer;
 import org.json.JSONArray;
 import org.json.JSONException;

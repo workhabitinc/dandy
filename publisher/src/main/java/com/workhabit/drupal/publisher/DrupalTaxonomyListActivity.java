@@ -4,9 +4,9 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import com.google.inject.Inject;
 import com.workhabit.drupal.R;
-import com.workhabit.drupal.entity.DrupalTaxonomyTerm;
-import com.workhabit.drupal.site.DrupalFetchException;
-import com.workhabit.drupal.site.DrupalSiteContext;
+import com.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import com.workhabit.drupal.api.site.DrupalFetchException;
+import com.workhabit.drupal.api.site.DrupalSiteContext;
 
 import java.util.ArrayList;
 

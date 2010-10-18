@@ -1,8 +1,4 @@
-package com.workhabit.drupal.entity;
-
-import android.util.Log;
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.workhabit.drupal.api.entity;
 
 import java.util.Date;
 import java.util.Map;

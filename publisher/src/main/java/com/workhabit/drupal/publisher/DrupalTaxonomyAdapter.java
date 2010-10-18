@@ -8,10 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.google.inject.Inject;
 import com.workhabit.drupal.R;
-import com.workhabit.drupal.entity.DrupalNode;
-import com.workhabit.drupal.entity.DrupalTaxonomyTerm;
+import com.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**

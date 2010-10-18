@@ -1,4 +1,4 @@
-package com.workhabit.drupal.entity;
+package com.workhabit.drupal.api.entity;
 
 import java.util.List;
 import java.util.Map;

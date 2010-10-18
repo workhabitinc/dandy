@@ -6,9 +6,9 @@ import android.text.Html;
 import android.widget.TextView;
 import com.google.inject.Inject;
 import com.workhabit.drupal.R;
-import com.workhabit.drupal.entity.DrupalNode;
-import com.workhabit.drupal.site.DrupalFetchException;
-import com.workhabit.drupal.site.impl.DrupalSiteContextImpl;
+import com.workhabit.drupal.api.entity.DrupalNode;
+import com.workhabit.drupal.api.site.DrupalFetchException;
+import com.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 

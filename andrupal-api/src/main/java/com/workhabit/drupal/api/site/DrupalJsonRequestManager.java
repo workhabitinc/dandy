@@ -1,4 +1,4 @@
-package com.workhabit.drupal.site;
+package com.workhabit.drupal.api.site;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.conn.scheme.PlainSocketFactory;

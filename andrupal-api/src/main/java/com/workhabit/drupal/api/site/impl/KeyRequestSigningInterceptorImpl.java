@@ -1,7 +1,7 @@
-package com.workhabit.drupal.site.impl;
+package com.workhabit.drupal.api.site.impl;
 
 import android.util.Log;
-import com.workhabit.drupal.site.RequestSigningInterceptor;
+import com.workhabit.drupal.api.site.RequestSigningInterceptor;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

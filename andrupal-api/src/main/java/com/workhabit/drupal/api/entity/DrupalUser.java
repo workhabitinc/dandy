@@ -1,6 +1,6 @@
-package com.workhabit.drupal.entity;
+package com.workhabit.drupal.api.entity;
 
-import com.workhabit.drupal.site.DrupalLoginException;
+import com.workhabit.drupal.api.site.DrupalLoginException;
 import org.json.JSONException;
 import org.json.JSONObject;
 

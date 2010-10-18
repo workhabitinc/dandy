@@ -1,4 +1,4 @@
-package com.workhabit.drupal.site;
+package com.workhabit.drupal.api.site;
 
 import java.util.Map;
 

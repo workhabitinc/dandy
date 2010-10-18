@@ -8,11 +8,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.workhabit.drupal.R;
-import com.workhabit.drupal.entity.DrupalUser;
-import com.workhabit.drupal.site.DrupalFetchException;
-import com.workhabit.drupal.site.DrupalLoginException;
-import com.workhabit.drupal.site.DrupalSiteContext;
-import com.workhabit.drupal.site.impl.DrupalSiteContextImpl;
+import com.workhabit.drupal.api.entity.DrupalUser;
+import com.workhabit.drupal.api.site.DrupalFetchException;
+import com.workhabit.drupal.api.site.DrupalLoginException;
+import com.workhabit.drupal.api.site.DrupalSiteContext;
+import com.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
 import roboguice.inject.InjectResource;
 
 /**

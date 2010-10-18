@@ -1,9 +1,9 @@
-package com.workhabit.drupal.site;
+package com.workhabit.drupal.api.site;
 
-import com.workhabit.drupal.entity.DrupalComment;
-import com.workhabit.drupal.entity.DrupalNode;
-import com.workhabit.drupal.entity.DrupalTaxonomyTerm;
-import com.workhabit.drupal.entity.DrupalUser;
+import com.workhabit.drupal.api.entity.DrupalComment;
+import com.workhabit.drupal.api.entity.DrupalNode;
+import com.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import com.workhabit.drupal.api.entity.DrupalUser;
 
 import java.util.List;
 
