@@ -52,6 +52,7 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity {
                 createBanner(drupalUser);
                 Intent intent = new Intent(this.getApplicationContext(), DrupalTaxonomyListActivity.class);
                 this.startActivity(intent);
+                progressDialog.dismiss();
             } else {
                 // login failed
                 //
@@ -60,7 +61,6 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity {
                 progressDialog = pb.create();
                 progressDialog.show();
             }
-            progressDialog.dismiss();
         } catch (DrupalLoginException e) {
             progressDialog.dismiss();
             DrupalDialogHandler.showMessageDialog(this, e.getMessage());
