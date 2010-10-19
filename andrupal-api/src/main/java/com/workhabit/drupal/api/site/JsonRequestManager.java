@@ -8,10 +8,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicHeader;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +19,7 @@ import java.util.Map;
 public abstract class JsonRequestManager {
     HttpClient client;
 
-    public String post(String path, String method, Map<String, Object> data) throws Exception {
+    public String post(String path, String method, Map<String, Object> data) throws IOException {
         HttpPost httpPost = new HttpPost(path);
 
         List<NameValuePair> parameters = processParameters(method, data);

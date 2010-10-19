@@ -10,6 +10,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +50,7 @@ public class DrupalJsonRequestManager extends JsonRequestManager {
         return parameters;
     }
 
-    public String postSigned(String path, String method, Map<String, Object> data) throws Exception {
+    public String postSigned(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException, IOException {
         if (requestSigningInterceptor != null) {
             requestSigningInterceptor.sign(path, method, data);
         }

@@ -36,6 +36,21 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../publisher/libs/guice-2.0-no_aop.jar!/" />
+          <root url="jar://$MODULE_DIR$/../publisher/libs/roboguice-1.1-20100408.222944-3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../publisher/libs/signpost-commonshttp4-1.2.1.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../publisher/libs/flexjson-android-2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../publisher/libs/gson-1.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../flexjson-2.0/src/main/java" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
 

@@ -4,6 +4,7 @@ import com.workhabit.drupal.api.entity.DrupalComment;
 import com.workhabit.drupal.api.entity.DrupalNode;
 import com.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import com.workhabit.drupal.api.entity.DrupalUser;
+import org.json.JSONException;
 
 import java.util.List;
 

@@ -30,7 +30,7 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
         this.drupalDomain = drupalDomain;
     }
 
-    public void sign(String path, String method, Map<String, Object> data) throws Exception {
+    public void sign(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException {
         if (apiKeyMac == null) {
             SecretKeySpec keySpec = new javax.crypto.spec.SecretKeySpec(asciiCs.encode(this.privateKey).array(), "HmacSHA256");
             try {
@@ -61,7 +61,7 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
         data.put("nonce", nonce);
     }
 
-    private String generateHmacHash(Long timestamp, String serviceDomain, String nonce, String operation) throws Exception {
+    private String generateHmacHash(Long timestamp, String serviceDomain, String nonce, String operation) {
         String hashString = String.format("%s;%s;%s;%s", Long.toString(timestamp), serviceDomain, nonce, operation);
         byte[] hash = apiKeyMac.doFinal(asciiCs.encode(hashString).array());
 

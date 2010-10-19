@@ -1,5 +1,6 @@
 package com.workhabit.drupal.publisher;
 
+import android.app.Service;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,8 @@ public class DrupalNodeArrayAdapter extends ArrayAdapter<DrupalNode> {
 
     public DrupalNodeArrayAdapter(Context context, int textViewResourceId, ArrayList<DrupalNode> objects) {
         super(context, textViewResourceId, objects);
+        layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
         this.nodes = objects;
-
     }
 
     public ArrayList<DrupalNode> getNodes() {

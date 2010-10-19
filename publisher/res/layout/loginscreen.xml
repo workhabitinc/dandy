@@ -16,24 +16,27 @@
                   android:orientation="vertical"
             >
         <EditText
-                android:layout_weight="1"
+                android:hint="@string/username"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/login_username"
-                android:text="@string/username"/>
+                android:imeOptions="actionNext"/>
         <EditText
+                android:hint="@string/password"
                 android:layout_weight="1"
+                android:password="true"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/login_password"
-                android:text="@string/password"/>
-        <Button android:id="@+id/login_button"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Login"
-                android:textColor="#ffffff"
-                android:layout_weight="1">
-
-        </Button>
+                android:imeOptions="actionGo"
+                />
     </LinearLayout>
+
+    <Button android:id="@+id/login_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textColor="#ffffff"
+            android:layout_weight="1">
+    </Button>
 </LinearLayout>

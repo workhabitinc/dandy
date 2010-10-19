@@ -1,5 +1,6 @@
 package com.workhabit.drupal.publisher;
 
+import android.app.Service;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ public class DrupalTaxonomyAdapter extends ArrayAdapter<DrupalTaxonomyTerm> {
 
     public DrupalTaxonomyAdapter(Context context, int textViewResourceId, ArrayList<DrupalTaxonomyTerm> objects) {
         super(context, textViewResourceId, objects);
+        layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
         this.terms = objects;
 
     }
