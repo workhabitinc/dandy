@@ -23,7 +23,6 @@
                 android:text="@string/username"/>
         <EditText
                 android:layout_weight="1"
-                android:password="true"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/login_password"
@@ -33,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="Login"
                 android:textColor="#ffffff"
-                android:layout_weight="1" android:onClick="loginButtonOnClickHandler">
+                android:layout_weight="1">
 
         </Button>
     </LinearLayout>

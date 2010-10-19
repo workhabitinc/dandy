@@ -25,7 +25,9 @@
           <root url="file://$MODULE_DIR$/libs" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../flexjson-2.0/src/main/java" />
+        </SOURCES>
         <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
       </library>
     </orderEntry>

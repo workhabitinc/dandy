@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.google.inject.Inject;
-import com.workhabit.drupal.R;
 import com.workhabit.drupal.api.entity.DrupalNode;
 
 import java.text.SimpleDateFormat;

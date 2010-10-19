@@ -27,4 +27,6 @@ public interface DrupalSiteContext {
     DrupalUser login(String username, String password) throws DrupalLoginException, DrupalFetchException;
 
     List<DrupalTaxonomyTerm> getTermView(String s) throws DrupalFetchException;
+
+    List<DrupalTaxonomyTerm> getCategoryList() throws DrupalFetchException;
 }

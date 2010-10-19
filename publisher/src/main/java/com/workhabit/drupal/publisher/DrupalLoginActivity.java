@@ -7,24 +7,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.workhabit.drupal.R;
 import com.workhabit.drupal.api.entity.DrupalUser;
 import com.workhabit.drupal.api.site.DrupalFetchException;
 import com.workhabit.drupal.api.site.DrupalLoginException;
 import com.workhabit.drupal.api.site.DrupalSiteContext;
 import com.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
-import roboguice.inject.InjectResource;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 12:01:59 PM
  */
-public class DrupalLoginActivity extends AbstractAnDrupalActivity {
-    @SuppressWarnings({"UnusedDeclaration"})
-    @InjectResource(R.string.drupal_site_url)
+public class DrupalLoginActivity extends AbstractAnDrupalActivity implements View.OnClickListener {
     private String drupalSiteUrl;
-    @SuppressWarnings({"UnusedDeclaration"})
-    @InjectResource(R.string.drupal_private_key)
     private String privateKey;
 
     private DrupalSiteContext drupalSiteContext;
@@ -34,9 +28,12 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        drupalSiteUrl = getResources().getString(R.string.drupal_site_url);
+        privateKey = getResources().getString(R.string.drupal_private_key);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loginscreen);
-        drupalSiteContext = new DrupalSiteContextImpl(drupalSiteUrl, privateKey);
+        findViewById(R.id.login_button).setOnClickListener(this);
+        drupalSiteContext = AnDrupalApplication.getDrupalSiteContext();
     }
 
     public void handleRefresh() {
@@ -46,14 +43,14 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity {
         progressDialog.setOwnerActivity(this);
         progressDialog.show();
         try {
-            String username = ((EditText)findViewById(R.id.login_username)).getText().toString();
-            String password = ((EditText)findViewById(R.id.login_password)).getText().toString();
+            String username = ((EditText) findViewById(R.id.login_username)).getText().toString();
+            String password = ((EditText) findViewById(R.id.login_password)).getText().toString();
             DrupalUser drupalUser = drupalSiteContext.login(username, password);
             if (drupalUser != null) {
                 createBanner(drupalUser);
-                Intent intent = new Intent(this.getApplicationContext(), DrupalTaxonomyListActivity.class);
-                this.startActivity(intent);
+                Intent intent = new Intent(this, DrupalTaxonomyListActivity.class);
                 progressDialog.dismiss();
+                this.startActivity(intent);
             } else {
                 // login failed
                 //
@@ -83,7 +80,7 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity {
         setContentView(view);
     }
 
-    public void loginButtonOnClickHandler(View target) {
+    public void onClick(View view) {
         handleRefresh();
     }
 }

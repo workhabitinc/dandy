@@ -155,10 +155,23 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
     }
 
+    public List<DrupalTaxonomyTerm> getCategoryList() throws DrupalFetchException {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("vid", 1);
+        try {
+            String result = manager.postSigned(drupalSiteUrl + "/services/json", "taxonomy.dictionary", data);
+            return processGetTermViewResult(result);
+        } catch (Exception e) {
+            throw new DrupalFetchException(e);
+        }
+
+    }
+
     private List<DrupalTaxonomyTerm> processGetTermViewResult(String result) throws JSONException, DrupalFetchException {
         JSONObject objectResult = new JSONObject(result);
         assertNoErrors(objectResult);
         List<DrupalTaxonomyTerm> terms = new ArrayList<DrupalTaxonomyTerm>();
+        Log.i("result", result);
         JSONArray termArray = objectResult.getJSONArray("#data");
         for (int i = 0; i < termArray.length(); i++) {
             JSONObject termObject = termArray.getJSONObject(i);

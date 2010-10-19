@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.workhabit.drupal.R;
 import roboguice.activity.RoboActivity;
 
 /**
