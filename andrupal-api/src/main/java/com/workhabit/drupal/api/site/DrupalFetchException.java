@@ -7,15 +7,13 @@ import org.json.JSONObject;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 25, 2010, 5:15:46 PM
  */
-public class DrupalFetchException extends Throwable {
+public class DrupalFetchException extends Exception {
     private JSONObject objectResult;
-    private String siteUrl;
     private String message;
 
-    public DrupalFetchException(JSONObject objectResult, String siteUrl) {
+    public DrupalFetchException(JSONObject objectResult) {
 
         this.objectResult = objectResult;
-        this.siteUrl = siteUrl;
         try {
             this.message = this.objectResult.getString("#data");
         } catch (JSONException e) {
@@ -23,6 +21,7 @@ public class DrupalFetchException extends Throwable {
         }
     }
     public DrupalFetchException(Exception e) {
+        initCause(e);
         this.message = String.format("%s: %s", e.getClass().getName(), e.getMessage());
     }
 
@@ -30,9 +29,6 @@ public class DrupalFetchException extends Throwable {
         return objectResult;
     }
 
-    public String getSiteUrl() {
-        return siteUrl;
-    }
 
     public String getMessage() {
         return message;

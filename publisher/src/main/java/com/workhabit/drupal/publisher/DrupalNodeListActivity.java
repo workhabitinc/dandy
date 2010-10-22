@@ -10,6 +10,8 @@ import com.workhabit.drupal.api.site.DrupalFetchException;
 import com.workhabit.drupal.api.site.DrupalSiteContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -28,7 +30,10 @@ public class DrupalNodeListActivity extends ListActivity {
         try {
             // fetch list of recent drupal nodes
             //
-            ArrayList<DrupalNode> nodes = (ArrayList<DrupalNode>) drupalSiteContext.getNodeView("andrupal_recent");
+            Bundle extras = getIntent().getExtras();
+            String viewArguments = extras.getString("viewArguments");
+            String viewName = extras.getString("viewName");
+            ArrayList<DrupalNode> nodes = (ArrayList<DrupalNode>) drupalSiteContext.getNodeView(viewName, viewArguments);
 
             // we use a custom node adapter
             if (nodeAdapter == null) {
@@ -43,12 +48,22 @@ public class DrupalNodeListActivity extends ListActivity {
         setContentView(R.layout.nodelist);
     }
 
+    private Map<String, Object> mapViewArguments(Bundle extras) {
+        Map<String, Object> viewArguments = new HashMap<String, Object>();
+        for (String key : extras.keySet()) {
+            if (key.startsWith("viewArguments_")) {
+                Object value = extras.get(key);
+                String newKey = key.replaceAll("^viewArguments_", "");
+                viewArguments.put(newKey, value);
+            }
+        }
+        return viewArguments;
+    }
+
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent intent = new Intent(this.getApplicationContext(), DrupalNodeActivity.class);
         intent.putExtra("nid", nodeAdapter.getNodes().get(position).getNid());
         this.startActivity(intent);
     }
-
-
 }

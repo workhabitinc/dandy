@@ -14,7 +14,6 @@ public class DrupalNode {
     private Date created;
     private Date updated;
     private Map<String, DrupalField> fields;
-    private String siteUrl;
 
     public String getTitle() {
         return title;
@@ -62,9 +61,5 @@ public class DrupalNode {
 
     public void setNid(int nid) {
         this.nid = nid;
-    }
-
-    public String getSiteUrl() {
-        return siteUrl;
     }
 }

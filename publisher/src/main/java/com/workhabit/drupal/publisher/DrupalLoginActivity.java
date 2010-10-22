@@ -27,8 +27,6 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity implements Vie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         progressDialogBuilder = new ProgressDialog.Builder(this);
-        String drupalSiteUrl = getResources().getString(R.string.drupal_site_url);
-        String privateKey = getResources().getString(R.string.drupal_private_key);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loginscreen);
         findViewById(R.id.login_button).setOnClickListener(this);

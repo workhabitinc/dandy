@@ -3,7 +3,7 @@
           package="com.workhabit.drupal.publisher" android:versionCode="1">
 
     <application android:icon="@drawable/icon" android:label="andrupal"
-            android:name="com.workhabit.drupal.publisher.AnDrupalApplication">
+                 android:name="com.workhabit.drupal.publisher.AnDrupalApplication">
         <!--<activity android:name=".DrupalLoginActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
