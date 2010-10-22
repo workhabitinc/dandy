@@ -33,8 +33,7 @@ public class DrupalJSONObjectSerializer<T> {
     private JSONObject extractDataObject(String json) throws JSONException, DrupalFetchException {
         JSONObject objectResult = new JSONObject(json);
         assertNoErrors(objectResult);
-        JSONObject dataObject = objectResult.getJSONObject("#data");
-        return dataObject;
+        return objectResult.getJSONObject("#data");
     }
 
     public List<T> unserializeList(String json) throws DrupalFetchException, JSONException {

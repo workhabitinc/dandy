@@ -16,6 +16,7 @@ import java.util.ArrayList;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 16, 2010, 3:58:44 PM
  */
+@SuppressWarnings({"SameParameterValue"})
 public class DrupalTaxonomyAdapter extends ArrayAdapter<DrupalTaxonomyTerm> {
     private ArrayList<DrupalTaxonomyTerm> terms;
 

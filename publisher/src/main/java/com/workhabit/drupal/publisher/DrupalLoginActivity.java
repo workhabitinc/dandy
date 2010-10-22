@@ -72,8 +72,7 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity implements Vie
     private DrupalUser doLogin() throws DrupalLoginException, DrupalFetchException {
         String username = ((EditText) findViewById(R.id.login_username)).getText().toString();
         String password = ((EditText) findViewById(R.id.login_password)).getText().toString();
-        DrupalUser drupalUser = drupalSiteContext.login(username, password);
-        return drupalUser;
+        return drupalSiteContext.login(username, password);
     }
 
     private void createBanner(DrupalUser drupalUser) {

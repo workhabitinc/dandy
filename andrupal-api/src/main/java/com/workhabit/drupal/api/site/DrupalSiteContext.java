@@ -14,7 +14,7 @@ import java.util.Map;
  * Date: Oct 11, 2010, 5:10:31 PM
  */
 public interface DrupalSiteContext {
-    void connect() throws DrupalFetchException, DrupalLogoutException;
+    void connect() throws DrupalFetchException;
 
     void logout() throws DrupalLogoutException;
 
