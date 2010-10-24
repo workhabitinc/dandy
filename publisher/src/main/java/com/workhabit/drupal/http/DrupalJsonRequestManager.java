@@ -1,14 +1,8 @@
-package com.workhabit.drupal.api.site;
+package com.workhabit.drupal.http;
 
+import org.workhabit.drupal.api.site.RequestSigningInterceptor;
 import org.apache.http.NameValuePair;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -20,20 +14,11 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 5:43:02 PM
  */
-public class DrupalJsonRequestManager extends JsonRequestManager {
+public class DrupalJsonRequestManager extends JsonRequestManagerImpl {
     private RequestSigningInterceptor requestSigningInterceptor;
 
     public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {
         this.requestSigningInterceptor = requestSigningInterceptor;
-    }
-
-    public DrupalJsonRequestManager() {
-        HttpParams params = new BasicHttpParams();
-        SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        schemeRegistry.register(new Scheme("https", PlainSocketFactory.getSocketFactory(), 443));
-        ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
-        client = new DefaultHttpClient(cm, params);
     }
 
     @Override

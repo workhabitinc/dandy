@@ -1,4 +1,4 @@
-package com.workhabit.drupal.api.entity;
+package org.workhabit.drupal.api.entity;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import java.util.List;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 16, 2010, 3:59:12 PM
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public class DrupalTaxonomyTerm {
     private int vid;
     private int tid;

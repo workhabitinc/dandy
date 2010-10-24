@@ -1,18 +1,17 @@
-package com.workhabit.drupal.api.site;
+package org.workhabit.drupal.api.site;
 
-import com.workhabit.drupal.api.entity.DrupalComment;
-import com.workhabit.drupal.api.entity.DrupalNode;
-import com.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
-import com.workhabit.drupal.api.entity.DrupalUser;
-import org.json.JSONException;
+import org.workhabit.drupal.api.entity.DrupalComment;
+import org.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.entity.DrupalUser;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 11, 2010, 5:10:31 PM
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public interface DrupalSiteContext {
     void connect() throws DrupalFetchException;
 

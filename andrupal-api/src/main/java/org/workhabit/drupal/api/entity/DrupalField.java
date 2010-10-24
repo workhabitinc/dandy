@@ -1,4 +1,4 @@
-package com.workhabit.drupal.api.entity;
+package org.workhabit.drupal.api.entity;
 
 import java.util.List;
 import java.util.Map;
@@ -7,6 +7,7 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 12:25:52 PM
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public class DrupalField {
     private String name;
     private List<Map<String, String>> values;

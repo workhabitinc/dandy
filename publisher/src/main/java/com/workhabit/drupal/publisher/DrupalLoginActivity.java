@@ -6,11 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-import com.workhabit.drupal.api.entity.DrupalUser;
-import com.workhabit.drupal.api.site.DrupalFetchException;
-import com.workhabit.drupal.api.site.DrupalLoginException;
-import com.workhabit.drupal.api.site.DrupalSiteContext;
+import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.site.DrupalFetchException;
+import org.workhabit.drupal.api.site.DrupalLoginException;
+import org.workhabit.drupal.api.site.DrupalSiteContext;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -73,17 +72,6 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity implements Vie
         String username = ((EditText) findViewById(R.id.login_username)).getText().toString();
         String password = ((EditText) findViewById(R.id.login_password)).getText().toString();
         return drupalSiteContext.login(username, password);
-    }
-
-    private void createBanner(DrupalUser drupalUser) {
-        TextView view = new TextView(this);
-        StringBuffer sb = new StringBuffer();
-        sb.append("Logged in as: ");
-        sb.append(drupalUser.getName()).append("\n");
-        sb.append("Email: ").append(drupalUser.getMail()).append("\n\n");
-
-        view.setText(sb.toString());
-        setContentView(view);
     }
 
     public void onClick(View view) {

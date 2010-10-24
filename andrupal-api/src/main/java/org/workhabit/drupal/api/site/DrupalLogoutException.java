@@ -1,6 +1,4 @@
-package com.workhabit.drupal.api.site;
-
-import java.security.NoSuchAlgorithmException;
+package org.workhabit.drupal.api.site;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs

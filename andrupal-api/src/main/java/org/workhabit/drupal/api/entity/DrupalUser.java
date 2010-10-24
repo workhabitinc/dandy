@@ -1,6 +1,6 @@
-package com.workhabit.drupal.api.entity;
+package org.workhabit.drupal.api.entity;
 
-import com.workhabit.drupal.api.site.DrupalLoginException;
+import org.workhabit.drupal.api.site.DrupalLoginException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +10,7 @@ import java.util.Date;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 9:37:57 PM
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public class DrupalUser {
     private int uid;
     private String name;

@@ -1,7 +1,6 @@
-package com.workhabit.drupal.api.site.impl;
+package org.workhabit.drupal.api.site.impl;
 
-import android.util.Log;
-import com.workhabit.drupal.api.site.RequestSigningInterceptor;
+import org.workhabit.drupal.api.site.RequestSigningInterceptor;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -36,10 +35,8 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
             try {
                 apiKeyMac = Mac.getInstance("HmacSHA256");
                 apiKeyMac.init(keySpec);
-            } catch (NoSuchAlgorithmException e) {
-                Log.e("crypto", e.getMessage(), e);
             } catch (InvalidKeyException e) {
-                Log.e("crypto", e.getMessage(), e);
+                // shouldn't happen
             }
         }
         Long timestamp = Calendar.getInstance().getTimeInMillis();

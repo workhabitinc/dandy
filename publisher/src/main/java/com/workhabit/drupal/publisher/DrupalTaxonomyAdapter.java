@@ -7,8 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.google.inject.Inject;
-import com.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 
 import java.util.ArrayList;
 
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 public class DrupalTaxonomyAdapter extends ArrayAdapter<DrupalTaxonomyTerm> {
     private ArrayList<DrupalTaxonomyTerm> terms;
 
-    @Inject
     protected LayoutInflater layoutInflater;
 
     public DrupalTaxonomyAdapter(Context context, int textViewResourceId, ArrayList<DrupalTaxonomyTerm> objects) {

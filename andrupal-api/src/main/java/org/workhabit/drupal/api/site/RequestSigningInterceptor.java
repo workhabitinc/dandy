@@ -1,4 +1,4 @@
-package com.workhabit.drupal.api.site;
+package org.workhabit.drupal.api.site;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;

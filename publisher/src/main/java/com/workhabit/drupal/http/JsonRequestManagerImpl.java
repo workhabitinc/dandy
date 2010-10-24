@@ -1,4 +1,4 @@
-package com.workhabit.drupal.api.site;
+package com.workhabit.drupal.http;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -6,7 +6,15 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.*;
 import java.util.List;
@@ -16,8 +24,17 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 5, 2010, 6:50:54 PM
  */
-public abstract class JsonRequestManager {
+public abstract class JsonRequestManagerImpl implements JsonRequestManager {
     HttpClient client;
+
+    public JsonRequestManagerImpl() {
+        HttpParams params = new BasicHttpParams();
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+        schemeRegistry.register(new Scheme("https", PlainSocketFactory.getSocketFactory(), 443));
+        ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+        client = new DefaultHttpClient(cm, params);
+    }
 
     public String post(String path, String method, Map<String, Object> data) throws IOException {
         HttpPost httpPost = new HttpPost(path);

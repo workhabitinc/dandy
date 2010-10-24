@@ -7,8 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.google.inject.Inject;
-import com.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.DrupalNode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ import java.util.ArrayList;
  */
 public class DrupalNodeArrayAdapter extends ArrayAdapter<DrupalNode> {
     private ArrayList<DrupalNode> nodes;
-
-    @Inject
     protected LayoutInflater layoutInflater;
 
     public DrupalNodeArrayAdapter(Context context, int textViewResourceId, ArrayList<DrupalNode> objects) {

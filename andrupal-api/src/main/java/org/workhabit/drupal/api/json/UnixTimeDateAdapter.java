@@ -1,4 +1,4 @@
-package com.workhabit.drupal.api.json;
+package org.workhabit.drupal.api.json;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

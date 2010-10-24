@@ -1,23 +1,20 @@
-package com.workhabit.drupal.api.site.impl;
+package org.workhabit.drupal.api.site.impl;
 
 import android.util.Log;
-import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.workhabit.drupal.api.entity.DrupalComment;
-import com.workhabit.drupal.api.entity.DrupalNode;
-import com.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
-import com.workhabit.drupal.api.entity.DrupalUser;
-import com.workhabit.drupal.api.json.DrupalJSONObjectSerializer;
-import com.workhabit.drupal.api.json.UnixTimeDateAdapter;
-import com.workhabit.drupal.api.site.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.workhabit.drupal.api.entity.DrupalComment;
+import org.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
+import org.workhabit.drupal.api.site.*;
+import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,42 +25,21 @@ import java.util.Map;
  */
 public class DrupalSiteContextImpl implements DrupalSiteContext {
 
-    private DrupalJsonRequestManager manager;
+    private JsonRequestManager jsonRequestManager;
 
     private String session;
+
     private DrupalUser user;
     private boolean isConnected;
-
     private String drupalSiteUrl;
-    private String name;
-    private FieldNamingStrategy fieldNamingStrategy;
 
     /**
      * Constructor takes an authentication token to use for the lifecycle of requests for this instance
      *
      * @param drupalSiteUrl site url to connect to
-     * @param privateKey    the secret key to use when connecting to Drupal
      */
-    public DrupalSiteContextImpl(String drupalSiteUrl, String privateKey) {
-        fieldNamingStrategy = new FieldNamingStrategy() {
-            public String translateName(Field field) {
-                name = field.getName();
-                if ("node_title".equals(name)) {
-                    return "title";
-                }
-                if ("node_created".equals(name)) {
-                    return "created";
-                }
-                return name;
-            }
-        };
+    public DrupalSiteContextImpl(String drupalSiteUrl) {
         this.drupalSiteUrl = drupalSiteUrl;
-        KeyRequestSigningInterceptorImpl requestSigningInterceptor = new KeyRequestSigningInterceptorImpl();
-        String drupalDomain = drupalSiteUrl.replaceAll("^http://(.*?)/.*$", "\\1");
-        requestSigningInterceptor.setDrupalDomain(drupalDomain);
-        requestSigningInterceptor.setPrivateKey(privateKey);
-        manager = new DrupalJsonRequestManager();
-        manager.setRequestSigningInterceptor(requestSigningInterceptor);
     }
 
     /**
@@ -72,7 +48,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public void connect() throws DrupalFetchException {
         if (!isConnected) {
             try {
-                String result = manager.post(drupalSiteUrl + "/services/json", "system.connect", null);
+                String result = jsonRequestManager.post(drupalSiteUrl + "/services/json", "system.connect", null);
                 JSONObject object = new JSONObject(result);
                 if ("true".equals(object.getString("#error"))) {
                     throw new DrupalFetchException(object);
@@ -87,7 +63,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public void logout() throws DrupalLogoutException {
         try {
             connect();
-            String result = manager.postSigned(drupalSiteUrl + "/services/json", "user.logout", null);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.logout", null);
             JSONObject object = new JSONObject(result);
             if ("true".equals(object.getString("#error"))) {
                 throw new DrupalFetchException(object);
@@ -122,8 +98,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         data.put("nid", nid);
         data.put("sessid", session);
         try {
-            String result = manager.postSigned(drupalSiteUrl + "/services/json", "node.get", data);
-            DrupalJSONObjectSerializer<DrupalNode> serializer = new DrupalJSONObjectSerializer<DrupalNode>(DrupalNode.class);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data);
+            DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -137,8 +113,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
 
         data.put("sessid", session);
         try {
-            String result = manager.postSigned(drupalSiteUrl + "/services/json", "node.get", data);
-            DrupalJSONObjectSerializer<DrupalComment> serializer = new DrupalJSONObjectSerializer<DrupalComment>(DrupalComment.class);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data);
+            DrupalJsonObjectSerializer<DrupalComment> serializer = new DrupalJsonObjectSerializer<DrupalComment>(DrupalComment.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -153,7 +129,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("comment", jsonComment);
         try {
-            manager.postSigned(drupalSiteUrl + "/services/json", "comment.save", data);
+            jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "comment.save", data);
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalSaveException(e);
         } catch (IOException e) {
@@ -171,7 +147,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         data.put("username", username);
         data.put("password", password);
         try {
-            String result = manager.postSigned(drupalSiteUrl + "/services/json", "user.login", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.login", data);
             return processLoginResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -182,7 +158,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", viewName);
         try {
-            String result = manager.postSigned(drupalSiteUrl + "/services/json", "views.get", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data);
             return processGetTermViewResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -193,7 +169,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("vid", 1);
         try {
-            String result = manager.postSigned(drupalSiteUrl + "/services/json", "taxonomy.dictionary", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "taxonomy.dictionary", data);
             return processGetTermViewResult(result);
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
@@ -212,8 +188,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
             data.put("args", viewArguments);
         }
         try {
-            String result = manager.postSigned(drupalSiteUrl + "/services/json", "views.get", data);
-            DrupalJSONObjectSerializer<DrupalNode> serializer = new DrupalJSONObjectSerializer<DrupalNode>(DrupalNode.class);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data);
+            DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
             return serializer.unserializeList(result);
         } catch (Exception e) {
             Log.e("error", e.getMessage(), e);
@@ -222,7 +198,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     }
 
     private List<DrupalTaxonomyTerm> processGetTermViewResult(String result) throws DrupalFetchException, JSONException {
-        DrupalJSONObjectSerializer<DrupalTaxonomyTerm> serializer = new DrupalJSONObjectSerializer<DrupalTaxonomyTerm>(DrupalTaxonomyTerm.class);
+        DrupalJsonObjectSerializer<DrupalTaxonomyTerm> serializer = new DrupalJsonObjectSerializer<DrupalTaxonomyTerm>(DrupalTaxonomyTerm.class);
         return serializer.unserializeList(result);
     }
 
@@ -237,11 +213,12 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         return user;
     }
 
-
     public void setSession(String session) {
         this.session = session;
     }
 
-    // convert integer timestamp to date
+    public void setJsonRequestManager(JsonRequestManager jsonRequestManager) {
+        this.jsonRequestManager = jsonRequestManager;
+    }
 
 }

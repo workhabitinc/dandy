@@ -1,4 +1,4 @@
-package com.workhabit.drupal.api.site;
+package org.workhabit.drupal.api.site;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +21,7 @@ public class DrupalLoginException extends Throwable {
         }
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public JSONObject getObjectResult() {
         return objectResult;
     }

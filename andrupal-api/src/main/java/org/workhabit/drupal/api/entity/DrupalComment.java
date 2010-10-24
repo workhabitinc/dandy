@@ -1,9 +1,10 @@
-package com.workhabit.drupal.api.entity;
+package org.workhabit.drupal.api.entity;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 4:40:51 PM
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public class DrupalComment {
     private int nid;
     private int cid;
