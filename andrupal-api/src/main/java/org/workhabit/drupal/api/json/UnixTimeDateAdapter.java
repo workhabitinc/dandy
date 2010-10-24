@@ -12,6 +12,7 @@ import java.util.Date;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 22, 2010, 11:00:08 AM
  */
+@SuppressWarnings({"WeakerAccess"})
 public class UnixTimeDateAdapter implements JsonDeserializer<Date> {
     public Date deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         return new Date(jsonElement.getAsJsonPrimitive().getAsLong() * 1000);

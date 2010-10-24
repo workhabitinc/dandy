@@ -24,8 +24,9 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 5, 2010, 6:50:54 PM
  */
+@SuppressWarnings({"WeakerAccess"})
 public abstract class JsonRequestManagerImpl implements JsonRequestManager {
-    HttpClient client;
+    private HttpClient client;
 
     public JsonRequestManagerImpl() {
         HttpParams params = new BasicHttpParams();

@@ -8,7 +8,7 @@ import android.content.DialogInterface;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 25, 2010, 8:10:55 PM
  */
-public class DrupalDialogHandler {
+class DrupalDialogHandler {
     public static void showMessageDialog(Activity activity, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("An Error occurred!");

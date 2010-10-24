@@ -1,7 +1,6 @@
 package org.workhabit.drupal.api;
 
 import org.json.JSONException;
-import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
@@ -21,11 +20,6 @@ import static org.junit.Assert.*;
  */
 
 public class DrupalJsonObjectSerializerTest {
-    @Before
-    public void setUp() {
-
-    }
-
     @Test
     public void testDrupalNodeSerialization() throws DrupalFetchException, JSONException, IOException {
         DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
