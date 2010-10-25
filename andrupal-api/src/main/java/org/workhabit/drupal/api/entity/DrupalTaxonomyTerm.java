@@ -15,7 +15,7 @@ public class DrupalTaxonomyTerm {
     private int weight;
     private int depth;
     private List<Integer> parents;
-    private int node_count;
+    private int nodeCount;
 
 
     public int getVid() {
@@ -50,12 +50,12 @@ public class DrupalTaxonomyTerm {
         this.description = description;
     }
 
-    public int getNode_count() {
-        return node_count;
+    public int getNodeCount() {
+        return nodeCount;
     }
 
-    public void setNode_count(int node_count) {
-        this.node_count = node_count;
+    public void setNodeCount(int node_count) {
+        this.nodeCount = node_count;
     }
 
     public int getWeight() {

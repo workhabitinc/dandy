@@ -1,6 +1,5 @@
 package org.workhabit.drupal.api.site.impl;
 
-import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.JSONException;
@@ -192,9 +191,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
             DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
             return serializer.unserializeList(result);
         } catch (Exception e) {
-            Log.e("error", e.getMessage(), e);
+            throw new DrupalFetchException(e);
         }
-        return null;
     }
 
     private List<DrupalTaxonomyTerm> processGetTermViewResult(String result) throws DrupalFetchException, JSONException {
@@ -204,7 +202,6 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
 
     private DrupalUser processLoginResult(String result) throws JSONException, DrupalFetchException, DrupalLoginException {
         JSONObject objectResult = new JSONObject(result);
-        Log.i("result", result);
         assertNoErrors(objectResult);
 
         JSONObject dataObject = objectResult.getJSONObject("#data");

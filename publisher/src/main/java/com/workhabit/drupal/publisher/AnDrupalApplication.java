@@ -26,6 +26,11 @@ public class AnDrupalApplication extends Application {
         drupalDomain = this.getResources().getString(R.string.drupal_domain);
     }
 
+    /**
+     * provides a helper method to return a singleton of a DrupalSiteContext for use by activities
+     *
+     * @return wired instance of DrupalSiteContext
+     */
     public static DrupalSiteContext getDrupalSiteContext() {
         if (drupalSiteContext == null) {
             drupalSiteContext = new DrupalSiteContextImpl(drupalSiteUrl);

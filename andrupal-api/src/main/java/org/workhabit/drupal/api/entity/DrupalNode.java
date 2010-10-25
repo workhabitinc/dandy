@@ -14,9 +14,9 @@ public class DrupalNode {
     private boolean status;
     private String title;
     private int comment;
-    private boolean promote;
-    private boolean moderate;
-    private boolean sticky;
+    private Boolean promote;
+    private Boolean moderate;
+    private Boolean sticky;
     private String body;
     private String teaser;
     private String log;
@@ -73,27 +73,27 @@ public class DrupalNode {
         this.comment = comment;
     }
 
-    public boolean isPromote() {
+    public Boolean isPromote() {
         return promote;
     }
 
-    public void setPromote(boolean promote) {
+    public void setPromote(Boolean promote) {
         this.promote = promote;
     }
 
-    public boolean isModerate() {
+    public Boolean isModerate() {
         return moderate;
     }
 
-    public void setModerate(boolean moderate) {
+    public void setModerate(Boolean moderate) {
         this.moderate = moderate;
     }
 
-    public boolean isSticky() {
+    public Boolean isSticky() {
         return sticky;
     }
 
-    public void setSticky(boolean sticky) {
+    public void setSticky(Boolean sticky) {
         this.sticky = sticky;
     }
 

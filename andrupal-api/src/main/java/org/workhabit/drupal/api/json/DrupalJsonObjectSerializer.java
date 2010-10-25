@@ -1,7 +1,6 @@
 package org.workhabit.drupal.api.json;
 
 import com.google.gson.FieldNamingPolicy;
-import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
@@ -9,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.workhabit.drupal.api.site.DrupalFetchException;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,23 +23,16 @@ public class DrupalJsonObjectSerializer<T> {
     public DrupalJsonObjectSerializer(Class<T> clazz) {
         this.clazz = clazz;
         GsonBuilder builder = new GsonBuilder();
-        UnixTimeDateAdapter adapter = new UnixTimeDateAdapter();
-        builder.registerTypeAdapter(Date.class, adapter);
+        UnixTimeDateAdapter dateAdapter = new UnixTimeDateAdapter();
+        builder.registerTypeAdapter(Date.class, dateAdapter);
+        BooleanAdapter booleanAdapter = new BooleanAdapter();
+        builder.registerTypeAdapter(Boolean.class, booleanAdapter);
         builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
-        FieldNamingStrategy fieldNamingStrategy = new FieldNamingStrategy() {
-            public String translateName(Field field) {
-                String name = field.getName();
-                if ("node_title".equals(name)) {
-                    return "title";
-                }
-                if ("node_created".equals(name)) {
-                    return "created";
-                }
-                return name;
-            }
-        };
         gson = builder.create();
-        builder.setFieldNamingStrategy(fieldNamingStrategy);
+    }
+
+    public String serialize(T object) {
+        return gson.toJson(object);
     }
 
     public T unserialize(String json) throws DrupalFetchException, JSONException {
