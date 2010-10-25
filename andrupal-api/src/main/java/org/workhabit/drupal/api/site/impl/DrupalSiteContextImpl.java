@@ -13,6 +13,7 @@ import org.workhabit.drupal.api.site.*;
 import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +78,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
             throw new DrupalLogoutException(e);
         } catch (DrupalFetchException e) {
             throw new DrupalLogoutException(e);
+        } catch (InvalidKeyException e) {
+            throw new DrupalLogoutException(e);
         }
 
     }
@@ -133,6 +136,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
             throw new DrupalSaveException(e);
         } catch (IOException e) {
             throw new DrupalSaveException(e);
+        } catch (InvalidKeyException e) {
+            throw new DrupalSaveException(e);
         }
 
     }
@@ -175,6 +180,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalFetchException(e);
         } catch (IOException e) {
+            throw new DrupalFetchException(e);
+        } catch (InvalidKeyException e) {
             throw new DrupalFetchException(e);
         }
     }

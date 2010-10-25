@@ -8,6 +8,7 @@ import org.workhabit.drupal.api.site.RequestSigningInterceptor;
 import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class CommonsHttpClientJsonRequestManager implements JsonRequestManager {
         return postMethod.getResponseBodyAsString();
     }
 
-    public String postSigned(String path, String method, Map<String, Object> data) throws IOException, NoSuchAlgorithmException {
+    public String postSigned(String path, String method, Map<String, Object> data) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
         if (requestSigningInterceptor != null) {
             requestSigningInterceptor.sign(path, method, data);
         }

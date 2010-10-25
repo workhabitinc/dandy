@@ -1,5 +1,6 @@
 package org.workhabit.drupal.api.site;
 
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -9,5 +10,5 @@ import java.util.Map;
  */
 @SuppressWarnings({"UnusedParameters"})
 public interface RequestSigningInterceptor {
-    public void sign(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException;
+    public void sign(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException, InvalidKeyException;
 }

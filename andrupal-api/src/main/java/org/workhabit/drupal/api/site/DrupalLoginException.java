@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 8:27:56 PM
  */
-public class DrupalLoginException extends Throwable {
+public class DrupalLoginException extends Exception {
     private JSONObject objectResult;
     private String message;
 

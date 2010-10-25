@@ -6,8 +6,7 @@ import java.lang.reflect.Type;
 import java.util.Date;
 
 /**
- * Copyright 2009 - WorkHabit, Inc. - acs
- * Date: Oct 22, 2010, 11:00:08 AM
+ * Handles (de)serialization of Drupal dates from unixtimestamp in seconds to @link java.util.Date
  */
 @SuppressWarnings({"WeakerAccess"})
 public class UnixTimeDateAdapter implements JsonDeserializer<Date>, JsonSerializer<Date> {

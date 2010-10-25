@@ -29,14 +29,18 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
         this.drupalDomain = drupalDomain;
     }
 
-    public void sign(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException {
+    public void sign(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException, InvalidKeyException {
         if (apiKeyMac == null) {
-            SecretKeySpec keySpec = new javax.crypto.spec.SecretKeySpec(asciiCs.encode(this.privateKey).array(), "HmacSHA256");
-            try {
-                apiKeyMac = Mac.getInstance("HmacSHA256");
-                apiKeyMac.init(keySpec);
-            } catch (InvalidKeyException e) {
-                // shouldn't happen
+            if (privateKey != null) {
+                SecretKeySpec keySpec = new javax.crypto.spec.SecretKeySpec(asciiCs.encode(this.privateKey).array(), "HmacSHA256");
+                try {
+                    apiKeyMac = Mac.getInstance("HmacSHA256");
+                    apiKeyMac.init(keySpec);
+                } catch (InvalidKeyException e) {
+                    // shouldn't happen
+                }
+            } else {
+                throw new InvalidKeyException("Specified key is null.");
             }
         }
         Long timestamp = Calendar.getInstance().getTimeInMillis();
@@ -64,9 +68,7 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
 
         String result = "";
         for (byte aHash : hash) {
-            // FYI: I don't understand why this is here..
-            result += Integer.toString((aHash & 0xff) + 0x100, 16)
-                    .substring(1);
+            result += Integer.toString((aHash & 0xff) + 0x100, 16).substring(1);
         }
         return result;
     }
