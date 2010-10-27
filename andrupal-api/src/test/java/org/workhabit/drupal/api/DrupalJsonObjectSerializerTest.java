@@ -168,15 +168,15 @@ public class DrupalJsonObjectSerializerTest {
         node.setRevisionTimestamp(new Date());
         node.setStatus(true);
         node.setSticky(true);
-        Map<Integer, DrupalTaxonomyTerm> termArrayList = new HashMap<Integer, DrupalTaxonomyTerm>();
+        HashMap<Integer, DrupalTaxonomyTerm> terms = new HashMap<Integer, DrupalTaxonomyTerm>();
         DrupalTaxonomyTerm term = new DrupalTaxonomyTerm();
         term.setVid(1);
         term.setTid(2);
         term.setDepth(1);
         term.setDescription("Test Description");
         term.setNodeCount(1);
-        termArrayList.put(2, term);
-        node.setTaxonomy(termArrayList);
+        terms.put(2, term);
+        node.setTaxonomy(terms);
         node.setTitle("Foo");
         DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
         String json = serializer.serialize(node);

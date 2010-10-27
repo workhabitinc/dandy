@@ -1,6 +1,11 @@
 package org.workhabit.drupal.api.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -8,30 +13,54 @@ import java.util.Map;
  * Date: Sep 24, 2010, 12:25:05 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class DrupalNode {
+@Entity
+public class DrupalNode implements DrupalEntity {
+    @Id
     private int nid;
+    @Column(nullable = false)
     private int uid;
+    @Column(nullable = false)
     private boolean status;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = true)
     private int comment;
+    @Column(nullable = true)
     private Boolean promote;
+    @Column(nullable = true)
     private Boolean moderate;
+    @Column(nullable = true)
     private Boolean sticky;
+    @Column(nullable = true)
     private String body;
+    @Column(nullable = true)
     private String teaser;
+    @Column(nullable = true)
     private String log;
+    @Column(nullable = false)
     private Date revisionTimestamp;
+    @Column(nullable = false)
     private int format;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = true)
     private String picture;
+    @Column(nullable = true)
     private String data;
+    @Column(nullable = true)
     private Date lastCommentTimestamp;
+    @Column(nullable = true)
     private String lastCommentName;
+    @Column(nullable = false)
     private int commentCount;
-    private Map<Integer, DrupalTaxonomyTerm> taxonomy;
+    @ManyToMany
+    private HashMap<Integer, DrupalTaxonomyTerm> taxonomy;
+    @Column(nullable = false)
     private Date created;
+    @Column(nullable = false)
     private Date changed;
-    private Map<String, DrupalField> fields;
+    @Column(nullable = true)
+    private HashMap<String, DrupalField> fields;
 
     public int getNid() {
         return nid;
@@ -185,11 +214,11 @@ public class DrupalNode {
         this.commentCount = commentCount;
     }
 
-    public Map<Integer, DrupalTaxonomyTerm> getTaxonomy() {
+    public HashMap<Integer, DrupalTaxonomyTerm> getTaxonomy() {
         return taxonomy;
     }
 
-    public void setTaxonomy(Map<Integer, DrupalTaxonomyTerm> taxonomy) {
+    public void setTaxonomy(HashMap<Integer, DrupalTaxonomyTerm> taxonomy) {
         this.taxonomy = taxonomy;
     }
 
@@ -209,11 +238,11 @@ public class DrupalNode {
         this.changed = changed;
     }
 
-    public Map<String, DrupalField> getFields() {
+    public HashMap<String, DrupalField> getFields() {
         return fields;
     }
 
-    public void setFields(Map<String, DrupalField> fields) {
+    public void setFields(HashMap<String, DrupalField> fields) {
         this.fields = fields;
     }
 }

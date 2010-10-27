@@ -32,4 +32,6 @@ public interface DrupalSiteContext {
     List<DrupalTaxonomyTerm> getTermView(String s) throws DrupalFetchException;
 
     List<DrupalTaxonomyTerm> getCategoryList() throws DrupalFetchException;
+
+    DrupalUser registerNewUser(String username, String password, String email);
 }

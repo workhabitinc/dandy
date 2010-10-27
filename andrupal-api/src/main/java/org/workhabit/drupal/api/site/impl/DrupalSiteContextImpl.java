@@ -186,6 +186,11 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
     }
 
+    public DrupalUser registerNewUser(String username, String password, String email) {
+        // TODO: Implement
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public List<DrupalNode> getNodeView(String viewName, String viewArguments) throws DrupalFetchException {
         connect();
         Map<String, Object> data = new HashMap<String, Object>();

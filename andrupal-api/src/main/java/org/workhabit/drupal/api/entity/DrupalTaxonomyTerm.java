@@ -7,7 +7,7 @@ import java.util.List;
  * Date: Oct 16, 2010, 3:59:12 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class DrupalTaxonomyTerm {
+public class DrupalTaxonomyTerm implements DrupalEntity {
     private int vid;
     private int tid;
     private String name;

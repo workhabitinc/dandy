@@ -1,5 +1,6 @@
 package org.workhabit.drupal.api.entity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,7 @@ import java.util.Map;
  * Date: Sep 24, 2010, 12:25:52 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class DrupalField {
+public class DrupalField implements DrupalEntity, Serializable {
     private String name;
     private List<Map<String, String>> values;
 
@@ -27,4 +28,5 @@ public class DrupalField {
     public void setValues(List<Map<String, String>> values) {
         this.values = values;
     }
+    
 }
