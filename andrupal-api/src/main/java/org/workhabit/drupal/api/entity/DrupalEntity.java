@@ -6,4 +6,6 @@ package org.workhabit.drupal.api.entity;
  */
 public interface DrupalEntity {
     //marker interface
+
+    String getId();
 }

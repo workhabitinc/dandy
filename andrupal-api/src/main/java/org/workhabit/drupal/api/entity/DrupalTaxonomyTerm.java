@@ -1,5 +1,10 @@
 package org.workhabit.drupal.api.entity;
 
+import org.workhabit.drupal.api.annotations.IdFieldName;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.List;
 
 /**
@@ -7,14 +12,24 @@ import java.util.List;
  * Date: Oct 16, 2010, 3:59:12 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
+@IdFieldName("tid")
+@Entity
 public class DrupalTaxonomyTerm implements DrupalEntity {
-    private int vid;
+    @Id
     private int tid;
+    @Column
+    private int vid;
+    @Column
     private String name;
+    @Column
     private String description;
+    @Column
     private int weight;
+    @Column
     private int depth;
+    @Column
     private List<Integer> parents;
+    @Column
     private int nodeCount;
 
 
@@ -80,5 +95,9 @@ public class DrupalTaxonomyTerm implements DrupalEntity {
 
     public void setParents(List<Integer> parents) {
         this.parents = parents;
+    }
+
+    public String getId() {
+        return Integer.toString(tid);
     }
 }

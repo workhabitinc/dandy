@@ -1,6 +1,7 @@
 package org.workhabit.andrupal.dao.impl;
 
 import com.j256.ormlite.support.ConnectionSource;
+import org.workhabit.andrupal.dao.GenericDao;
 import org.workhabit.drupal.api.entity.DrupalEntity;
 
 import java.sql.SQLException;
@@ -12,9 +13,12 @@ import java.util.Map;
  * Date: Oct 27, 2010, 1:39:12 PM
  */
 public class DaoFactory {
-    private static Map<Class, GenericDaoImpl> daoMap = new HashMap<Class, GenericDaoImpl>();
+    private DaoFactory() {
+        // no constructor, static object factory.
+    }
+    private static Map<Class, GenericDao> daoMap = new HashMap<Class, GenericDao>();
 
-    public static <T extends DrupalEntity> GenericDaoImpl<T> getInstanceForClass(ConnectionSource connectionSource, Class<T> clazz) throws SQLException {
+    public static <T extends DrupalEntity> GenericDao<T> getInstanceForClass(ConnectionSource connectionSource, Class<T> clazz) throws SQLException {
         if (!daoMap.containsKey(clazz)) {
             daoMap.put(clazz, new GenericDaoImpl<T>(connectionSource, clazz));
         }

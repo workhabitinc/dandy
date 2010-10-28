@@ -1,12 +1,13 @@
 package org.workhabit.drupal.api.entity;
 
+import org.workhabit.drupal.api.annotations.IdFieldName;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -14,6 +15,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"UnusedDeclaration"})
 @Entity
+@IdFieldName("nid")
 public class DrupalNode implements DrupalEntity {
     @Id
     private int nid;
@@ -244,5 +246,9 @@ public class DrupalNode implements DrupalEntity {
 
     public void setFields(HashMap<String, DrupalField> fields) {
         this.fields = fields;
+    }
+
+    public String getId() {
+        return Integer.toString(getNid());
     }
 }

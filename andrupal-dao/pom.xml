@@ -9,6 +9,17 @@
     <name>AnDrupal DAO</name>
     <description>Provides helper classes for persisting drupal objects to SQLite Database</description>
 
+    <parent>
+        <groupId>org.workhabit.andrupal</groupId>
+        <artifactId>andrupal-parent</artifactId>
+        <version>1.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <developers>
         <developer>
             <name>Aaron C. Stewart</name>

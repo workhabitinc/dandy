@@ -1,5 +1,6 @@
 package org.workhabit.drupal.api.entity;
 
+import org.workhabit.drupal.api.annotations.IdFieldName;
 import org.workhabit.drupal.api.site.DrupalLoginException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +12,7 @@ import java.util.Date;
  * Date: Sep 24, 2010, 9:37:57 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
+@IdFieldName("uid")
 public class DrupalUser implements DrupalEntity {
     private int uid;
     private String name;
@@ -55,5 +57,13 @@ public class DrupalUser implements DrupalEntity {
 
     public Date getLogin() {
         return login;
+    }
+
+    public String getId() {
+        return Integer.toString(uid);
+    }
+
+    public String getIdFieldName() {
+        return "uid";
     }
 }
