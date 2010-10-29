@@ -168,6 +168,7 @@ public class DrupalJsonObjectSerializerTest {
         node.setRevisionTimestamp(new Date());
         node.setStatus(true);
         node.setSticky(true);
+        node.setStatus(true);
         HashMap<Integer, DrupalTaxonomyTerm> terms = new HashMap<Integer, DrupalTaxonomyTerm>();
         DrupalTaxonomyTerm term = new DrupalTaxonomyTerm();
         term.setVid(1);

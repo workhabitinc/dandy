@@ -16,6 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.url>http://nexus.workhabit.com/andrupal</project.url>
     </properties>
     
     <developers>
@@ -26,6 +27,32 @@
             <email>aaron@workhabit.com</email>
         </developer>
     </developers>
+
+
+    <scm>
+        <url>http://github.com/workhabitinc/andrupal</url>
+        <developerConnection>scm:git:git://github.com/workhabitinc/andrupal.git</developerConnection>
+        <connection>scm:git:git://github.com/workhabitinc/andrupal.git</connection>
+    </scm>
+
+    <distributionManagement>
+        <downloadUrl>http://nexus.workhabit.com/andrupal</downloadUrl>
+        <site>
+            <id>nexus-site.workhabit.com</id>
+            <name>nexus.workhabit.com</name>
+            <url>scp://nexus.workhabit.com/var/www/nexus/htdocs/andrupal</url>
+        </site>
+        <repository>
+            <id>nexus.workhabit.com</id>
+            <url>http://nexus.workhabit.com/nexus/content/repositories/releases</url>
+            <layout>default</layout>
+        </repository>
+        <snapshotRepository>
+            <id>nexus.workhabit.com</id>
+            <url>http://nexus.workhabit.com/nexus/content/repositories/snapshots</url>
+            <uniqueVersion>true</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 
     <reporting>
         <plugins>
