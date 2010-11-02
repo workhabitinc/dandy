@@ -1,10 +1,9 @@
 package org.workhabit.drupal.api.entity;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import org.workhabit.drupal.api.annotations.IdFieldName;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.List;
 
 /**
@@ -13,23 +12,23 @@ import java.util.List;
  */
 @SuppressWarnings({"UnusedDeclaration"})
 @IdFieldName("tid")
-@Entity
+@DatabaseTable(tableName = "DrupalTaxonomyTerm")
 public class DrupalTaxonomyTerm implements DrupalEntity {
-    @Id
+    @DatabaseField(id = true)
     private int tid;
-    @Column
+    @DatabaseField(canBeNull = false)
     private int vid;
-    @Column
+    @DatabaseField(canBeNull = false)
     private String name;
-    @Column
+    @DatabaseField(canBeNull = true)
     private String description;
-    @Column
+    @DatabaseField(canBeNull = true)
     private int weight;
-    @Column
+    @DatabaseField(canBeNull = true)
     private int depth;
-    @Column
+    @DatabaseField(canBeNull = true)
     private List<Integer> parents;
-    @Column
+    @DatabaseField(canBeNull = true)
     private int nodeCount;
 
 

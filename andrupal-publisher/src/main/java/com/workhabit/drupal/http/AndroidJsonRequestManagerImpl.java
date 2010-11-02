@@ -25,10 +25,10 @@ import java.util.Map;
  * Date: Oct 5, 2010, 6:50:54 PM
  */
 @SuppressWarnings({"WeakerAccess"})
-public abstract class JsonRequestManagerImpl implements JsonRequestManager {
+public abstract class AndroidJsonRequestManagerImpl implements JsonRequestManager {
     private HttpClient client;
 
-    public JsonRequestManagerImpl() {
+    public AndroidJsonRequestManagerImpl() {
         HttpParams params = new BasicHttpParams();
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));

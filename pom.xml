@@ -12,6 +12,7 @@
     <modules>
         <module>andrupal-api</module>
         <module>andrupal-dao</module>
+        <module>andrupal-publisher</module>
     </modules>
 
     <properties>

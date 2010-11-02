@@ -1,11 +1,10 @@
 package org.workhabit.drupal.api.entity;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import org.workhabit.drupal.api.annotations.IdFieldName;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -14,55 +13,58 @@ import java.util.HashMap;
  * Date: Sep 24, 2010, 12:25:05 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
-@Entity
+@DatabaseTable(tableName = "DrupalNode")
 @IdFieldName("nid")
 public class DrupalNode implements DrupalEntity {
-    @Id
+    @DatabaseField(id = true)
     private int nid;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private int uid;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private boolean status;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private String title;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private int comment;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private Boolean promote;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private Boolean moderate;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private Boolean sticky;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private String body;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private String teaser;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private String log;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private Date revisionTimestamp;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private int format;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private String name;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private String picture;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private String data;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private Date lastCommentTimestamp;
-    @Column(nullable = true)
+    @DatabaseField(canBeNull = true)
     private String lastCommentName;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private int commentCount;
-    @ManyToMany
+
+    // no need to serialize taxonomy
+    @DatabaseField(canBeNull = true)
     private HashMap<Integer, DrupalTaxonomyTerm> taxonomy;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private Date created;
-    @Column(nullable = false)
+    @DatabaseField(canBeNull = false)
     private Date changed;
-    @Column(nullable = true)
-    private HashMap<String, DrupalField> fields;
+
+    @DatabaseField(canBeNull = true)
+    private ArrayList<DrupalField> fields;
 
     public int getNid() {
         return nid;
@@ -240,11 +242,11 @@ public class DrupalNode implements DrupalEntity {
         this.changed = changed;
     }
 
-    public HashMap<String, DrupalField> getFields() {
+    public ArrayList<DrupalField> getFields() {
         return fields;
     }
 
-    public void setFields(HashMap<String, DrupalField> fields) {
+    public void setFields(ArrayList<DrupalField> fields) {
         this.fields = fields;
     }
 

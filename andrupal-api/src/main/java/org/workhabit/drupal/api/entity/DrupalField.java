@@ -1,9 +1,9 @@
 package org.workhabit.drupal.api.entity;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import org.workhabit.drupal.api.annotations.IdFieldName;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,14 +13,15 @@ import java.util.HashMap;
  * Date: Sep 24, 2010, 12:25:52 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
+@DatabaseTable(tableName = "DrupalField")
 @IdFieldName("id")
 public class DrupalField implements DrupalEntity, Serializable {
-    @Id
+    @DatabaseField(id = true)
     private int id;
-    @Column
+    @DatabaseField(canBeNull = false)
     private String name;
 
-    @Column
+    @DatabaseField(canBeNull = true)
     private ArrayList<HashMap<String, String>> values;
 
     public String getName() {

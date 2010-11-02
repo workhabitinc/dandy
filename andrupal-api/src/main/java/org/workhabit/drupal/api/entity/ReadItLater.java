@@ -1,27 +1,24 @@
 package org.workhabit.drupal.api.entity;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import org.workhabit.drupal.api.annotations.IdFieldName;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 28, 2010, 11:50:24 AM
  */
-@Entity
 @IdFieldName("id")
+@DatabaseTable(tableName = "ReadItLater")
 public class ReadItLater implements DrupalEntity {
 
     public static final String WEIGHT_FIELD_NAME = "weight";
-    
-    @Id
+
+    @DatabaseField(id = true)
     private int id;
-    @OneToOne
+    @DatabaseField(foreign = true, canBeNull = false)
     private DrupalNode node;
-    @Column
+    @DatabaseField(canBeNull = false)
     private int weight;
 
     public String getId() {

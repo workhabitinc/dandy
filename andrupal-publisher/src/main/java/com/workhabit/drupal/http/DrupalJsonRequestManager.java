@@ -5,6 +5,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 5:43:02 PM
  */
-public class DrupalJsonRequestManager extends JsonRequestManagerImpl {
+public class DrupalJsonRequestManager extends AndroidJsonRequestManagerImpl {
     private RequestSigningInterceptor requestSigningInterceptor;
 
     public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {
@@ -35,7 +36,7 @@ public class DrupalJsonRequestManager extends JsonRequestManagerImpl {
         return parameters;
     }
 
-    public String postSigned(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException, IOException {
+    public String postSigned(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException, IOException, InvalidKeyException {
         if (requestSigningInterceptor != null) {
             requestSigningInterceptor.sign(path, method, data);
         }

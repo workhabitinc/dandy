@@ -7,10 +7,7 @@ import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.site.DrupalFetchException;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -176,7 +173,7 @@ public class DrupalJsonObjectSerializerTest {
         term.setDepth(1);
         term.setDescription("Test Description");
         term.setNodeCount(1);
-        terms.put(2, term);
+        terms.put(term.getTid(), term);
         node.setTaxonomy(terms);
         node.setTitle("Foo");
         DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);

@@ -1,5 +1,7 @@
 package org.workhabit.drupal.api.entity;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import org.workhabit.drupal.api.annotations.IdFieldName;
 
 /**
@@ -7,12 +9,18 @@ import org.workhabit.drupal.api.annotations.IdFieldName;
  * Date: Sep 24, 2010, 4:40:51 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
+@DatabaseTable(tableName = "DrupalComment")
 @IdFieldName("cid")
 public class DrupalComment {
+    @DatabaseField(canBeNull = false)
     private int nid;
+    @DatabaseField(canBeNull = false)
     private int cid;
+    @DatabaseField(canBeNull = false)
     private int uid;
+    @DatabaseField(canBeNull = true)
     private String title;
+    @DatabaseField(canBeNull = true)
     private String body;
 
     public int getNid() {
