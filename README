@@ -5,6 +5,48 @@ Working implementation of andrupal-api for almost all fetch functionality (e.g. 
 
 UPDATE 2010-Oct-25: The name will be changing.  To what, we're not sure, but stay tuned!
 
+Build Instructions
+------------------
+
+Step 1: Download the Android SDK
+Download it from http://developer.android.com/sdk/index.html.
+
+For the purposes of this install, we assume it was extracted at /opt/android-sdk
+
+In your ~/.bashrc, add the following two lines:
+
+export ANDROID_HOME=/opt/android-sdk
+export PATH="$PATH:$ANDROID_HOME/bin"
+
+To activate this change, run:
+
+source ~/.bashrc
+
+Step 2: Download maven
+
+You can get maven from http://maven.apache.org/.  We assume it's installed in /opt/maven.
+
+Add it to your path by modifying .bashrc so the above lines read:
+
+export ANDROID_HOME=/opt/android-sdk
+export M2_HOME=/opt/maven
+export PATH="$PATH:$ANDROID_HOME/bin:$M2_HOME/bin"
+
+Step 3: Build the project
+
+Note: You will need an Android Virtual Device configured.  By default the project looks for an AVD
+called "EVO4G."  You can change this in andrupal-publisher/pom.xml.
+
+Go to your project directory in terminal (e.g. the directory you found this readme in).
+
+Run:
+
+mvn install
+
+To deploy to your virtual device:
+
+mvn android:deploy
+
 TODO: Implement save functionality
 TODO: Implement getComment functionality
 TODO: Work out UI side of things.
