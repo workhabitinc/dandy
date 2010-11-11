@@ -12,4 +12,6 @@
     <string name="invalid_login_title">Invalid Login</string>
     <string name="invalid_login_message">The username and/or password you specified is invalid. Please try again.</string>
     <string name="main_no_items">No news items to display.</string>
+    <string name="readItLater">Read it Later</string>
+    <string name="headlines">Headlines</string>
 </resources>

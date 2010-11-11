@@ -5,31 +5,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
+import com.workhabit.drupal.publisher.support.DrupalNodeArrayAdapter;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.site.DrupalFetchException;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
- * Date: Sep 25, 2010, 5:01:14 PM
+ * Date: 11/3/10, 8:45 PM
  */
-public class DrupalNodeListActivity extends ListActivity {
-    private DrupalNodeArrayAdapter nodeAdapter;
+public abstract class AbstractDrupalNodeListActivity extends ListActivity {
+    protected DrupalNodeArrayAdapter nodeAdapter;
+    protected DrupalSiteContext drupalSiteContext;
+    protected String viewArguments;
+    protected String viewName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DrupalSiteContext drupalSiteContext = AnDrupalApplication.getDrupalSiteContext();
+        drupalSiteContext = AnDrupalApplication.getDrupalSiteContext();
 
         try {
             // fetch list of recent drupal nodes
             //
-            Bundle extras = getIntent().getExtras();
-            String viewArguments = extras.getString("viewArguments");
-            String viewName = extras.getString("viewName");
-            ArrayList<DrupalNode> nodes = (ArrayList<DrupalNode>) drupalSiteContext.getNodeView(viewName, viewArguments);
+            List<DrupalNode> nodes = doGetNodes(viewArguments, viewName);
 
             // we use a custom node adapter
             if (nodeAdapter == null) {
@@ -43,6 +45,8 @@ public class DrupalNodeListActivity extends ListActivity {
         }
         setContentView(R.layout.nodelist);
     }
+
+    protected abstract List<DrupalNode> doGetNodes(String viewArguments, String viewName) throws DrupalFetchException;
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {

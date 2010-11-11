@@ -26,4 +26,5 @@
                   android:layout_weight="1"
                 />
     </ScrollView>
+    <include android:id="@id/bottomNav" layout="@layout/bottomnav"/>
 </LinearLayout>

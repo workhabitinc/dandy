@@ -12,34 +12,4 @@ import android.view.MenuItem;
  */
 public abstract class AbstractAnDrupalActivity extends Activity {
 
-    /**
-     * load menu from xml
-     *
-     * @param menu the menu that invoked the create operation
-     * @return true if create succeeded
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.refresh:
-                this.handleRefresh();
-                break;
-            case R.id.recent:
-                this.startActivity(new Intent(this.getApplicationContext(), DrupalNodeListActivity.class));
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
-    protected abstract void handleRefresh();
 }

@@ -32,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-core</artifactId>
+            <artifactId>ormlite-android</artifactId>
             <version>4.2</version>
         </dependency>
         <dependency>

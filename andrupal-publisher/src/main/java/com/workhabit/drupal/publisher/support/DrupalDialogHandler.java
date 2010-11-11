@@ -1,4 +1,4 @@
-package com.workhabit.drupal.publisher;
+package com.workhabit.drupal.publisher.support;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,7 +8,7 @@ import android.content.DialogInterface;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 25, 2010, 8:10:55 PM
  */
-class DrupalDialogHandler {
+public class DrupalDialogHandler {
     public static void showMessageDialog(Activity activity, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("An Error occurred!");

@@ -1,4 +1,4 @@
-package com.workhabit.drupal.publisher;
+package com.workhabit.drupal.publisher.support;
 
 import android.app.Service;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import com.workhabit.drupal.publisher.R;
 import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class DrupalTaxonomyAdapter extends ArrayAdapter<DrupalTaxonomyTerm> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
-            v = layoutInflater.inflate(R.layout.row, parent, false);
+            v = layoutInflater.inflate(R.layout.row, (ViewGroup) convertView);
         }
         DrupalTaxonomyTerm term = terms.get(position);
         if (term != null) {

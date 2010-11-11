@@ -4,22 +4,18 @@
 
     <application android:icon="@drawable/icon" android:label="andrupal"
                  android:name="com.workhabit.drupal.publisher.AnDrupalApplication">
-        <!--<activity android:name=".DrupalLoginActivity" android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>-->
-        <activity android:name=".DrupalLoginActivity"
-                  android:label="@string/app_name" android:windowSoftInputMode="adjustResize">
+        <activity android:name=".DrupalTaxonomyListActivity" android:label="@string/categories">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".DrupalNodeListActivity" android:label="@string/recent"/>
+        <activity android:name=".DrupalLoginActivity"
+                  android:label="@string/app_name" android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".DrupalHeadlineNodeListActivity" android:label="@string/recent"/>
         <activity android:name=".DrupalNodeActivity"/>
-        <activity android:name=".DrupalTaxonomyListActivity" android:label="@string/categories"/>
+        <activity android:name=".DrupalReadLaterActivity" android:label="@string/readItLater"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-feature android:name="java.beans"/>

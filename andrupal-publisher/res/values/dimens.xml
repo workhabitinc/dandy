@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="buttonMarginTop">8px</dimen>
+    <dimen name="buttonHeight">66px</dimen>
+    <dimen name="buttonWidth">114px</dimen>
+</resources>

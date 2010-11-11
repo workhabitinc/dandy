@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
+import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.site.DrupalFetchException;
 import org.workhabit.drupal.api.site.DrupalSiteContext;

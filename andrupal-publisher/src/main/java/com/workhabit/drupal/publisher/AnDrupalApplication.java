@@ -2,6 +2,7 @@ package com.workhabit.drupal.publisher;
 
 import android.app.Application;
 import com.workhabit.drupal.http.DrupalJsonRequestManager;
+import com.workhabit.drupal.publisher.R;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
 import org.workhabit.drupal.api.site.impl.KeyRequestSigningInterceptorImpl;
