@@ -1,6 +1,7 @@
 package com.workhabit.drupal.publisher;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
@@ -11,16 +12,17 @@ import android.view.View;
 public abstract class AbstractAnDrupalListActivity extends ListActivity {
     public void bottomNavOnClick(View v) {
         Intent intent = null;
+        Context context = getApplicationContext();
         switch (v.getId()) {
             case R.id.button_headlines:
-                intent = new Intent(getApplicationContext(), DrupalHeadlineNodeListActivity.class);
+                intent = new Intent(context, DrupalHeadlineNodeListActivity.class);
                 intent.putExtra("viewName", "andrupal_recent");
                 break;
             case R.id.button_categories:
-                intent = new Intent(getApplicationContext(), DrupalTaxonomyListActivity.class);
+                intent = new Intent(context, DrupalTaxonomyListActivity.class);
                 break;
             case R.id.button_readlater:
-                intent = new Intent(getApplicationContext(), DrupalReadLaterActivity.class);
+                intent = new Intent(context, DrupalReadLaterActivity.class);
                 break;
             case R.id.button_settings:
                 break;
