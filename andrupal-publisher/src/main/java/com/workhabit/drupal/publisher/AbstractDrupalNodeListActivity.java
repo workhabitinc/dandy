@@ -17,7 +17,7 @@ import java.util.List;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 11/3/10, 8:45 PM
  */
-public abstract class AbstractDrupalNodeListActivity extends ListActivity {
+public abstract class AbstractDrupalNodeListActivity extends AbstractAnDrupalListActivity {
     protected DrupalNodeArrayAdapter nodeAdapter;
     protected DrupalSiteContext drupalSiteContext;
     protected String viewArguments;

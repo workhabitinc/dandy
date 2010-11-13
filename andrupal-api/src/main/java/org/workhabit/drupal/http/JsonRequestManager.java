@@ -10,7 +10,7 @@ import java.util.Map;
  * Date: Oct 22, 2010, 10:12:37 PM
  */
 public interface JsonRequestManager {
-    public String post(String path, String method, Map<String, Object> data) throws IOException;
+    public String post(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException;
 
-    public String postSigned(String path, String method, Map<String, Object> data) throws IOException, NoSuchAlgorithmException, InvalidKeyException;
+    public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 }

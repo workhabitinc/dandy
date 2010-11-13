@@ -3,6 +3,7 @@ package com.workhabit.drupal.publisher;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import com.workhabit.drupal.publisher.support.DrupalTaxonomyAdapter;
@@ -32,7 +33,15 @@ public class DrupalTaxonomyListActivity extends AbstractAnDrupalListActivity {
             DrupalDialogHandler.showMessageDialog(this, e.getMessage());
         }
         setContentView(R.layout.taxonomylist);
-
+        // set active state on button
+        Button b = (Button) findViewById(R.id.button_categories);
+        b.setCompoundDrawablesWithIntrinsicBounds(
+                null,
+                getResources().getDrawable(R.drawable.button_categories_icon_active),
+                null,
+                null
+        );
+        b.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_active_bg));
     }
 
     @Override

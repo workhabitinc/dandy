@@ -19,9 +19,9 @@ public class DrupalComment {
     @DatabaseField(canBeNull = false)
     private int uid;
     @DatabaseField(canBeNull = true)
-    private String title;
+    private String subject;
     @DatabaseField(canBeNull = true)
-    private String body;
+    private String comment;
 
     public int getNid() {
         return nid;
@@ -47,19 +47,19 @@ public class DrupalComment {
         this.uid = uid;
     }
 
-    public String getTitle() {
-        return title;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
-    public String getBody() {
-        return body;
+    public String getComment() {
+        return comment;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

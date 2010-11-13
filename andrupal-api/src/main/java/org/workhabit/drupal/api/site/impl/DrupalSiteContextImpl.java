@@ -1,5 +1,7 @@
 package org.workhabit.drupal.api.site.impl;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.JSONException;
@@ -48,7 +50,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public void connect() throws DrupalFetchException {
         if (!isConnected) {
             try {
-                String result = jsonRequestManager.post(drupalSiteUrl + "/services/json", "system.connect", null);
+                String result = jsonRequestManager.post(drupalSiteUrl + "/services/json", "system.connect", null, false);
                 JSONObject object = new JSONObject(result);
                 if ("true".equals(object.getString("#error"))) {
                     throw new DrupalFetchException(object);
@@ -63,7 +65,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public void logout() throws DrupalLogoutException {
         try {
             connect();
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.logout", null);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.logout", null, false);
             JSONObject object = new JSONObject(result);
             if ("true".equals(object.getString("#error"))) {
                 throw new DrupalFetchException(object);
@@ -100,7 +102,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         data.put("nid", nid);
         data.put("sessid", session);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data, false);
             DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -115,7 +117,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
 
         data.put("sessid", session);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data, false);
             DrupalJsonObjectSerializer<DrupalComment> serializer = new DrupalJsonObjectSerializer<DrupalComment>(DrupalComment.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -123,15 +125,36 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
     }
 
-    public void saveComment(DrupalComment comment) throws DrupalFetchException {
+    public void saveComment(final DrupalComment comment) throws DrupalFetchException {
         connect();
         GsonBuilder builder = new GsonBuilder();
+        ExclusionStrategy strategy = new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                if ("cid".equals(f.getName())) {
+                    if (comment.getCid() == 0) {
+                        return true;
+                    }
+                }
+                if ("uid".equals(f.getName())) {
+                    if (comment.getUid() == 0) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        };
+        builder.setExclusionStrategies(strategy);
         Gson gson = builder.create();
         String jsonComment = gson.toJson(comment);
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("comment", jsonComment);
         try {
-            jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "comment.save", data);
+            String response = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "comment.save", data, false);
+            System.out.println(response);
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalSaveException(e);
         } catch (IOException e) {
@@ -151,7 +174,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         data.put("username", username);
         data.put("password", password);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.login", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.login", data, false);
             return processLoginResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -162,7 +185,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", viewName);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data, false);
             return processGetTermViewResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -173,7 +196,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("vid", 1);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "taxonomy.dictionary", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "taxonomy.dictionary", data, false);
             return processGetTermViewResult(result);
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
@@ -199,7 +222,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
             data.put("args", viewArguments);
         }
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data, false);
             DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
             return serializer.unserializeList(result);
         } catch (Exception e) {

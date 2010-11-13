@@ -23,23 +23,27 @@ public class DrupalJsonRequestManager extends AndroidJsonRequestManagerImpl {
     }
 
     @Override
-    protected List<NameValuePair> processParameters(String method, Map<String, Object> data) {
+    protected List<NameValuePair> processParameters(String method, Map<String, Object> data, boolean escapeInput) {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         NameValuePair pair = new BasicNameValuePair("method", "\"" + method + "\"");
         parameters.add(pair);
         if (data != null) {
             for (Map.Entry<String, Object> entry : data.entrySet()) {
-                pair = new BasicNameValuePair(entry.getKey(), "\"" + entry.getValue() + "\"");
+                if (escapeInput) {
+                    pair = new BasicNameValuePair(entry.getKey(), "\"" + entry.getValue() + "\"");
+                } else {
+                    pair = new BasicNameValuePair(entry.getKey(), "" + entry.getValue());
+                }
                 parameters.add(pair);
             }
         }
         return parameters;
     }
 
-    public String postSigned(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException, IOException, InvalidKeyException {
+    public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws NoSuchAlgorithmException, IOException, InvalidKeyException {
         if (requestSigningInterceptor != null) {
             requestSigningInterceptor.sign(path, method, data);
         }
-        return post(path, method, data);
+        return post(path, method, data, escapeInput);
     }
 }

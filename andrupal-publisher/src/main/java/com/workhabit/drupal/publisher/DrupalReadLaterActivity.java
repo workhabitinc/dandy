@@ -3,6 +3,8 @@ package com.workhabit.drupal.publisher;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.*;
+import android.os.Bundle;
+import android.widget.Button;
 import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.android.apptools.ClassNameProvidedOpenHelperFactory;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -26,6 +28,18 @@ import java.util.List;
 public class DrupalReadLaterActivity extends AbstractDrupalNodeListActivity {
     private GenericDao<ReadItLater> readLaterDao;
     private static boolean initialized = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Button b = (Button) findViewById(R.id.button_readlater);
+        b.setCompoundDrawablesWithIntrinsicBounds(
+                null,
+                getResources().getDrawable(R.drawable.button_readitlater_icon_active),
+                null,
+                null
+        );
+    }
 
     @Override
     protected List<DrupalNode> doGetNodes(String viewArguments, String viewName) throws DrupalFetchException {

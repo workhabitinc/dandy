@@ -37,7 +37,7 @@ public class DrupalTaxonomyAdapter extends ArrayAdapter<DrupalTaxonomyTerm> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
-            v = layoutInflater.inflate(R.layout.row, (ViewGroup) convertView);
+            v = layoutInflater.inflate(R.layout.row, (ViewGroup) v);
         }
         DrupalTaxonomyTerm term = terms.get(position);
         if (term != null) {

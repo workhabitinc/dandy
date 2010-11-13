@@ -26,11 +26,17 @@ public class CommonsHttpClientJsonRequestManager implements JsonRequestManager {
         client.setHttpConnectionManager(new SimpleHttpConnectionManager());
     }
 
-    public String post(String path, String method, Map<String, Object> data) throws IOException {
+    public String post(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException {
         PostMethod postMethod = new PostMethod(path);
         postMethod.setParameter("method", "\"" + method + "\"");
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
-            postMethod.setParameter(entry.getKey(), "\"" + entry.getValue() + "\"");
+        if (data != null) {
+            for (Map.Entry<String, Object> entry : data.entrySet()) {
+                if (escapeInput) {
+                    postMethod.setParameter(entry.getKey(), "\"" + entry.getValue() + "\"");
+                } else {
+                    postMethod.setParameter(entry.getKey(), "" + entry.getValue());
+                }
+            }
         }
         Header contentTypeHeader = new Header("Content-Type", "application/x-www-form-urlencoded");
         postMethod.setRequestHeader(contentTypeHeader);
@@ -38,11 +44,11 @@ public class CommonsHttpClientJsonRequestManager implements JsonRequestManager {
         return postMethod.getResponseBodyAsString();
     }
 
-    public String postSigned(String path, String method, Map<String, Object> data) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
         if (requestSigningInterceptor != null) {
             requestSigningInterceptor.sign(path, method, data);
         }
-        return post(path, method, data);
+        return post(path, method, data, escapeInput);
     }
 
     public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {

@@ -13,7 +13,7 @@ import org.workhabit.drupal.api.site.DrupalSiteContext;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 25, 2010, 7:39:37 PM
  */
-public class DrupalNodeActivity extends Activity {
+public class DrupalNodeActivity extends AbstractAnDrupalActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

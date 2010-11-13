@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import com.workhabit.drupal.publisher.support.BottomNavClickHandler;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -11,26 +12,6 @@ import android.view.View;
  */
 public abstract class AbstractAnDrupalListActivity extends ListActivity {
     public void bottomNavOnClick(View v) {
-        Intent intent = null;
-        Context context = getApplicationContext();
-        switch (v.getId()) {
-            case R.id.button_headlines:
-                intent = new Intent(context, DrupalHeadlineNodeListActivity.class);
-                intent.putExtra("viewName", "andrupal_recent");
-                break;
-            case R.id.button_categories:
-                intent = new Intent(context, DrupalTaxonomyListActivity.class);
-                break;
-            case R.id.button_readlater:
-                intent = new Intent(context, DrupalReadLaterActivity.class);
-                break;
-            case R.id.button_settings:
-                break;
-        }
-
-        if (intent != null) {
-            startActivity(intent);
-        }
-
+        BottomNavClickHandler.bottomNavOnClick(v, this);
     }
 }

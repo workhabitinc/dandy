@@ -1,6 +1,9 @@
 package com.workhabit.drupal.publisher;
 
 import android.os.Bundle;
+import android.widget.Button;
+
+import javax.naming.ldap.Rdn;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -11,6 +14,10 @@ public class DrupalHeadlineNodeListActivity extends DrupalNodeListViewActivity {
     protected void onCreate(Bundle savedInstanceState) {
         viewName = "andrupal_recent";
         viewArguments = "";
+
         super.onCreate(savedInstanceState);
+        Button b = (Button) findViewById(R.id.button_headlines);
+        b.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.button_headlines_icon_active), null, null);
+        b.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_active_bg));
     }
 }

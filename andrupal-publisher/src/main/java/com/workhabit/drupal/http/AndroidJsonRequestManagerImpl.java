@@ -37,10 +37,10 @@ public abstract class AndroidJsonRequestManagerImpl implements JsonRequestManage
         client = new DefaultHttpClient(cm, params);
     }
 
-    public String post(String path, String method, Map<String, Object> data) throws IOException {
+    public String post(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException {
         HttpPost httpPost = new HttpPost(path);
 
-        List<NameValuePair> parameters = processParameters(method, data);
+        List<NameValuePair> parameters = processParameters(method, data, escapeInput);
 
         Header contentTypeHeader = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
         httpPost.setHeader(contentTypeHeader);
@@ -58,5 +58,5 @@ public abstract class AndroidJsonRequestManagerImpl implements JsonRequestManage
 
     }
 
-    protected abstract List<NameValuePair> processParameters(String method, Map<String, Object> data);
+    protected abstract List<NameValuePair> processParameters(String method, Map<String, Object> data, boolean escapeInput);
 }
