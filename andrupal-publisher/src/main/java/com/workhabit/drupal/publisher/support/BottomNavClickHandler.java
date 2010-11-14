@@ -21,7 +21,6 @@ public class BottomNavClickHandler {
         switch (v.getId()) {
             case R.id.button_headlines:
                 intent = new Intent(context, DrupalHeadlineNodeListActivity.class);
-                intent.putExtra("viewName", "andrupal_recent");
                 break;
             case R.id.button_categories:
                 intent = new Intent(context, DrupalTaxonomyListActivity.class);

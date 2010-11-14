@@ -41,7 +41,6 @@ public abstract class AndroidJsonRequestManagerImpl implements JsonRequestManage
         HttpPost httpPost = new HttpPost(path);
 
         List<NameValuePair> parameters = processParameters(method, data, escapeInput);
-
         Header contentTypeHeader = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
         httpPost.setHeader(contentTypeHeader);
         httpPost.setEntity(new UrlEncodedFormEntity(parameters));

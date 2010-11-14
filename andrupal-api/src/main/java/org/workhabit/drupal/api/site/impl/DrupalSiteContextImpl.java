@@ -50,10 +50,24 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public void connect() throws DrupalFetchException {
         if (!isConnected) {
             try {
-                String result = jsonRequestManager.post(drupalSiteUrl + "/services/json", "system.connect", null, false);
+                String result = jsonRequestManager.post(drupalSiteUrl + "/services/json", "system.connect", null, true);
                 JSONObject object = new JSONObject(result);
                 if ("true".equals(object.getString("#error"))) {
                     throw new DrupalFetchException(object);
+                }
+                if (object.has("#data")) {
+                    try {
+                        JSONObject data = object.getJSONObject("#data");
+                        if (data != null) {
+                            String sessid = data.getString("sessid");
+                            if (sessid != null) {
+                                setSession(sessid);
+                            }
+
+                        }
+                    } catch (Exception e) {
+                        // no sessid returned
+                    }
                 }
             } catch (Exception e) {
                 throw new DrupalFetchException(e);
@@ -65,7 +79,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public void logout() throws DrupalLogoutException {
         try {
             connect();
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.logout", null, false);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.logout", null, true);
             JSONObject object = new JSONObject(result);
             if ("true".equals(object.getString("#error"))) {
                 throw new DrupalFetchException(object);
@@ -102,7 +116,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         data.put("nid", nid);
         data.put("sessid", session);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data, false);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data, true);
             DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -114,10 +128,12 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         connect();
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("cid", cid);
+        if (session != null && !"".equals(session)) {
+            data.put("sessid", session);
+        }
 
-        data.put("sessid", session);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data, false);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data, true);
             DrupalJsonObjectSerializer<DrupalComment> serializer = new DrupalJsonObjectSerializer<DrupalComment>(DrupalComment.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -152,6 +168,10 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         String jsonComment = gson.toJson(comment);
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("comment", jsonComment);
+        if (session != null && !"".equals(session)) {
+            data.put("sessid", session);
+        }
+
         try {
             String response = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "comment.save", data, false);
             System.out.println(response);
@@ -173,8 +193,13 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("username", username);
         data.put("password", password);
+
+        if (session != null && !"".equals(session)) {
+            data.put("sessid", session);
+        }
+
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.login", data, false);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "user.login", data, true);
             return processLoginResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -184,8 +209,12 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public List<DrupalTaxonomyTerm> getTermView(String viewName) throws DrupalFetchException {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", viewName);
+        if (session != null && !"".equals(session)) {
+            data.put("sessid", session);
+        }
+
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data, false);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data, true);
             return processGetTermViewResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -193,10 +222,15 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     }
 
     public List<DrupalTaxonomyTerm> getCategoryList() throws DrupalFetchException {
+        connect();
         Map<String, Object> data = new HashMap<String, Object>();
+        if (session != null && !"".equals(session)) {
+            data.put("sessid", session);
+        }
+
         data.put("vid", 1);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "taxonomy.dictionary", data, false);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "taxonomy.dictionary", data, true);
             return processGetTermViewResult(result);
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
@@ -221,8 +255,11 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         if (viewArguments != null) {
             data.put("args", viewArguments);
         }
+        if (session != null && !"".equals(session)) {
+            data.put("sessid", session);
+        }
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data, false);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "views.get", data, true);
             DrupalJsonObjectSerializer<DrupalNode> serializer = new DrupalJsonObjectSerializer<DrupalNode>(DrupalNode.class);
             return serializer.unserializeList(result);
         } catch (Exception e) {

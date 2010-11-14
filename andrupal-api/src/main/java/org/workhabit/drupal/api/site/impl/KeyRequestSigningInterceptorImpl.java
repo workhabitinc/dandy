@@ -57,8 +57,9 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
         String hash = generateHmacHash(timestamp, drupalDomain, nonce, method);
 
         // add params for hash
+        data.put("domain_name", drupalDomain);
         data.put("hash", hash);
-        data.put("timestamp", Long.toString(timestamp));
+        data.put("domain_time_stamp", Long.toString(timestamp));
         data.put("nonce", nonce);
     }
 

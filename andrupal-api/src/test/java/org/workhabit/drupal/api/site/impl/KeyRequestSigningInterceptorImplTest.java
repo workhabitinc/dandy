@@ -26,7 +26,8 @@ public class KeyRequestSigningInterceptorImplTest {
         assertNotNull(data);
         assertTrue(data.containsKey("hash"));
         assertTrue(data.containsKey("nonce"));
-        assertTrue(data.containsKey("timestamp"));
+        assertTrue(data.containsKey("domain_name"));
+        assertTrue(data.containsKey("domain_time_stamp"));
     }
 
     @Test
