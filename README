@@ -1,7 +1,7 @@
-Version 0.2 of the AnDrupal toolkit
+Version 0.2 of the Dandy toolkit
 
 Current Status:
-Working implementation of andrupal-api for almost all fetch functionality (e.g. saves don't yet work).
+Working implementation of dandy-api for almost all fetch functionality (e.g. saves don't yet work).
 
 UPDATE 2010-Oct-25: The name will be changing.  To what, we're not sure, but stay tuned!
 
@@ -35,7 +35,7 @@ export PATH="$PATH:$ANDROID_HOME/bin:$M2_HOME/bin"
 Step 3: Build the project
 
 Note: You will need an Android Virtual Device configured.  By default the project looks for an AVD
-called "EVO4G."  You can change this in andrupal-publisher/pom.xml.
+called "EVO4G."  You can change this in dandy-publisher/pom.xml.
 
 Go to your project directory in terminal (e.g. the directory you found this readme in).
 

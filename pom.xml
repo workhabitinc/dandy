@@ -3,21 +3,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.workhabit.andrupal</groupId>
-    <artifactId>andrupal-parent</artifactId>
+    <groupId>org.workhabit.dandy</groupId>
+    <artifactId>dandy-parent</artifactId>
     <version>1.0</version>
-    <name>AnDrupal Parent</name>
+    <name>Dandy Parent</name>
     <packaging>pom</packaging>
 
     <modules>
-        <module>andrupal-api</module>
-        <module>andrupal-dao</module>
-        <module>andrupal-publisher</module>
+        <module>dandy-api</module>
+        <module>dandy-dao</module>
+        <module>dandy-publisher</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.url>http://nexus.workhabit.com/andrupal</project.url>
+        <project.url>http://nexus.workhabit.com/dandy</project.url>
     </properties>
     
     <developers>

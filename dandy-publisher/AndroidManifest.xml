@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.workhabit.drupal.publisher" android:versionCode="1">
+
+    <application android:icon="@drawable/icon" android:label="Dandy"
+                 android:name="com.workhabit.drupal.publisher.DandyApplication">
+        <activity android:name=".DrupalTaxonomyListActivity" android:label="@string/categories">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".DrupalLoginActivity"
+                  android:label="@string/app_name" android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".DrupalHeadlineNodeListActivity" android:label="@string/recent"/>
+        <activity android:name=".DrupalNodeActivity"/>
+        <activity android:name=".DrupalNodeListViewActivity" android:label="@string/categories"/>
+        <activity android:name=".DrupalReadLaterActivity" android:label="@string/readItLater"/>
+    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-feature android:name="java.beans"/>
+</manifest>
