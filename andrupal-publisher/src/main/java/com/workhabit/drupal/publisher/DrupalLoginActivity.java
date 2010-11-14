@@ -16,7 +16,7 @@ import org.workhabit.drupal.api.site.DrupalSiteContext;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 12:01:59 PM
  */
-public class DrupalLoginActivity extends AbstractAnDrupalActivity implements View.OnClickListener {
+public class DrupalLoginActivity extends AbstractDandyActivity implements View.OnClickListener {
 
     private DrupalSiteContext drupalSiteContext;
     private AlertDialog.Builder progressDialogBuilder;
@@ -30,7 +30,7 @@ public class DrupalLoginActivity extends AbstractAnDrupalActivity implements Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loginscreen);
         findViewById(R.id.login_button).setOnClickListener(this);
-        drupalSiteContext = AnDrupalApplication.getDrupalSiteContext();
+        drupalSiteContext = DandyApplication.getDrupalSiteContext();
     }
 
     public void handleRefresh() {

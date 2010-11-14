@@ -17,13 +17,13 @@ import java.util.ArrayList;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 16, 2010, 3:55:47 PM
  */
-public class DrupalTaxonomyListActivity extends AbstractAnDrupalListActivity {
+public class DrupalTaxonomyListActivity extends AbstractDandyListActivity {
     private DrupalTaxonomyAdapter drupalTaxonomyAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DrupalSiteContext drupalSiteContext = AnDrupalApplication.getDrupalSiteContext();
+        DrupalSiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext();
         try {
             ArrayList<DrupalTaxonomyTerm> terms = (ArrayList<DrupalTaxonomyTerm>) drupalSiteContext.getCategoryList();
             drupalTaxonomyAdapter = new DrupalTaxonomyAdapter(this, R.layout.row, terms);

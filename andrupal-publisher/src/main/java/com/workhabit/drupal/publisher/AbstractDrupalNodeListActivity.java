@@ -1,6 +1,5 @@
 package com.workhabit.drupal.publisher;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +16,7 @@ import java.util.List;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 11/3/10, 8:45 PM
  */
-public abstract class AbstractDrupalNodeListActivity extends AbstractAnDrupalListActivity {
+public abstract class AbstractDrupalNodeListActivity extends AbstractDandyListActivity {
     protected DrupalNodeArrayAdapter nodeAdapter;
     protected DrupalSiteContext drupalSiteContext;
     protected String viewArguments;
@@ -26,7 +25,7 @@ public abstract class AbstractDrupalNodeListActivity extends AbstractAnDrupalLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        drupalSiteContext = AnDrupalApplication.getDrupalSiteContext();
+        drupalSiteContext = DandyApplication.getDrupalSiteContext();
 
         try {
             // fetch list of recent drupal nodes

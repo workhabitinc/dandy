@@ -1,6 +1,5 @@
 package com.workhabit.drupal.publisher;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
@@ -13,12 +12,12 @@ import org.workhabit.drupal.api.site.DrupalSiteContext;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 25, 2010, 7:39:37 PM
  */
-public class DrupalNodeActivity extends AbstractAnDrupalActivity {
+public class DrupalNodeActivity extends AbstractDandyActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DrupalSiteContext drupalSiteContext = AnDrupalApplication.getDrupalSiteContext();
+        DrupalSiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext();
         int nid = getIntent().getExtras().getInt("nid");
 
         setContentView(R.layout.node);

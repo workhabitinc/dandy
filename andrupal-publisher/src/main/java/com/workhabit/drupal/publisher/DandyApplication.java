@@ -12,7 +12,7 @@ import org.workhabit.drupal.api.site.impl.KeyRequestSigningInterceptorImpl;
  * Date: Oct 11, 2010, 4:29:53 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class AnDrupalApplication extends Application {
+public class DandyApplication extends Application {
     private static String drupalSiteUrl;
     private static String privateKey;
     private static String drupalDomain;
