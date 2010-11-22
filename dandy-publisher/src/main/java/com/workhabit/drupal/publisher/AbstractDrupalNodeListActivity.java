@@ -28,9 +28,11 @@ public abstract class AbstractDrupalNodeListActivity extends AbstractDandyListAc
         drupalSiteContext = DandyApplication.getDrupalSiteContext();
 
         try {
+            viewName = getIntent().getStringExtra("viewName");
+            viewArguments = getIntent().getStringExtra("viewArguments");
             // fetch list of recent drupal nodes
             //
-            List<DrupalNode> nodes = doGetNodes(viewArguments, viewName);
+            List<DrupalNode> nodes = doGetNodes(viewArguments, this.viewName);
 
             // we use a custom node adapter
             if (nodeAdapter == null) {
