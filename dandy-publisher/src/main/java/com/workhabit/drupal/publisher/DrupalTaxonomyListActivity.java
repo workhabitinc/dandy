@@ -41,7 +41,7 @@ public class DrupalTaxonomyListActivity extends AbstractDandyListActivity {
                 null,
                 null
         );
-        b.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_active_bg));
+        b.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_bg_active));
     }
 
     @Override

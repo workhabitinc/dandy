@@ -1,5 +1,6 @@
 package com.workhabit.drupal.http;
 
+import android.util.Log;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,13 @@ public class DrupalJsonRequestManager extends AndroidJsonRequestManagerImpl {
                 }
                 parameters.add(pair);
             }
+        }
+        if (Log.isLoggable("request", Log.DEBUG)) {
+            StringBuffer paramString = new StringBuffer();
+            for (NameValuePair parameter : parameters) {
+                paramString.append(pair.getName()).append("=").append(parameter.getValue()).append("&");
+            }
+            Log.d("request", "parameter string: " + paramString.toString());
         }
         return parameters;
     }

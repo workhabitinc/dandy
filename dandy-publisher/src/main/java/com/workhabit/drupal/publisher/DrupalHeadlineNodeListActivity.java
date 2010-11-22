@@ -18,6 +18,6 @@ public class DrupalHeadlineNodeListActivity extends DrupalNodeListViewActivity {
         super.onCreate(savedInstanceState);
         Button b = (Button) findViewById(R.id.button_headlines);
         b.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.button_headlines_icon_active), null, null);
-        b.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_active_bg));
+        b.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_bg_active));
     }
 }

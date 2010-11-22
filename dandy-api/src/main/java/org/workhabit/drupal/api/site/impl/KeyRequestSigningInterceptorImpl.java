@@ -1,14 +1,17 @@
 package org.workhabit.drupal.api.site.impl;
 
+import org.workhabit.drupal.api.site.CalendarFactory;
+import org.workhabit.drupal.api.site.DefaultCalendarFactory;
+import org.workhabit.drupal.api.site.NonceFactory;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Calendar;
 import java.util.Map;
 
 /**
@@ -20,6 +23,13 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
     private String privateKey;
     private Mac apiKeyMac;
     private final Charset asciiCs = Charset.forName("US-ASCII");
+    private CalendarFactory calendarFactory;
+    private NonceFactory nonceFactory;
+
+    public KeyRequestSigningInterceptorImpl() {
+        calendarFactory = new DefaultCalendarFactory();
+        nonceFactory = new NonceFactoryImpl();
+    }
 
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
@@ -29,31 +39,30 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
         this.drupalDomain = drupalDomain;
     }
 
+    public void setCalendarFactory(CalendarFactory calendarFactory) {
+        this.calendarFactory = calendarFactory;
+    }
+
+    public void setNonceFactory(NonceFactory nonceFactory) {
+        this.nonceFactory = nonceFactory;
+    }
+
     public void sign(String path, String method, Map<String, Object> data) throws NoSuchAlgorithmException, InvalidKeyException {
         if (apiKeyMac == null) {
-            if (privateKey != null) {
-                SecretKeySpec keySpec = new javax.crypto.spec.SecretKeySpec(asciiCs.encode(this.privateKey).array(), "HmacSHA256");
-                try {
-                    apiKeyMac = Mac.getInstance("HmacSHA256");
-                    apiKeyMac.init(keySpec);
-                } catch (InvalidKeyException e) {
-                    // shouldn't happen
-                }
-            } else {
-                throw new InvalidKeyException("Specified key is null.");
+            if (privateKey == null) {
+                throw new InvalidKeyException();
             }
-        }
-        Long timestamp = Calendar.getInstance().getTimeInMillis();
-        MessageDigest digest = MessageDigest.getInstance("MD5");
-        digest.update(Double.toString(System.currentTimeMillis() + Math.random()).getBytes());
-        StringBuffer hexString = new StringBuffer();
-        byte messageDigest[] = digest.digest();
-        for (byte aMessageDigest : messageDigest) {
-            hexString.append(Integer.toHexString(0xFF & aMessageDigest));
+            // Create the HMAC/SHA256 key
+            final SecretKeySpec signingKey = new SecretKeySpec(privateKey.getBytes(), "HmacSHA256");
+
+            // Create the message authentication code (MAC)
+            apiKeyMac = Mac.getInstance("HmacSHA256");
+            apiKeyMac.init(signingKey);
         }
 
-        String nonce = hexString.toString();
-        //();
+        Long timestamp = calendarFactory.getInstance().getTime() / 1000;
+        String nonce = nonceFactory.getNonce();
+
         String hash = generateHmacHash(timestamp, drupalDomain, nonce, method);
 
         // add params for hash
@@ -63,15 +72,21 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
         data.put("nonce", nonce);
     }
 
-    private String generateHmacHash(Long timestamp, String serviceDomain, String nonce, String operation) {
-        String hashString = String.format("%s;%s;%s;%s", Long.toString(timestamp), serviceDomain, nonce, operation);
-        byte[] hash = apiKeyMac.doFinal(asciiCs.encode(hashString).array());
+    private String generateHmacHash(Long timestamp, String serviceDomain, String nonce, String method) {
+        String hashString = String.format("%s;%s;%s;%s", Long.toString(timestamp), serviceDomain, nonce, method);
+        StringBuffer result = new StringBuffer();
 
-        String result = "";
-        for (byte aHash : hash) {
-            result += Integer.toString((aHash & 0xff) + 0x100, 16).substring(1);
+        // Compute the HMAC value
+        try {
+            byte[] hash = apiKeyMac.doFinal(hashString.getBytes("UTF-8"));
+
+            for (byte aHash : hash) {
+                result.append(Integer.toString((aHash & 0xff) + 0x100, 16).substring(1));
+            }
+        } catch (UnsupportedEncodingException e) {
+            // can someone explain to me why exactly this isn't a RuntimeException? FAIL SAUCE.
         }
-        return result;
+        return result.toString();
     }
 
 }
