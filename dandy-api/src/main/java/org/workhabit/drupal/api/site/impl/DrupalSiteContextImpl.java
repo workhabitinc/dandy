@@ -6,12 +6,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.workhabit.drupal.api.entity.DrupalComment;
-import org.workhabit.drupal.api.entity.DrupalNode;
-import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
-import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.site.*;
+import org.workhabit.drupal.api.site.support.Base64;
 import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.IOException;
@@ -45,7 +43,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     }
 
     /**
-     * call system.connect on the current instance
+     * call system.connect on the current instance.  This is required for key authentication to work properly.
+     *
      */
     public void connect() throws DrupalFetchException {
         if (!isConnected) {
@@ -76,6 +75,12 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
     }
 
+    /**
+     * Logs out the current user.  The user's session id is cleared, and Drupal is notified of the logout event.
+     *
+     * @throws DrupalLogoutException if there is a problem logging out the current user.  This can happen,
+     * for example, if the user is already logged out.
+     */
     public void logout() throws DrupalLogoutException {
         try {
             connect();
@@ -100,16 +105,50 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
 
     }
 
+    /**
+     *
+     * @param viewName the name of the view to return.  This is an override for {@link #getNodeView(String, String)}
+     * for views that don't take any arguments.
+     *
+     * @return list of drupal nodes corresponding to the result of the view.
+     *
+     * @throws DrupalFetchException
+     */
     public List<DrupalNode> getNodeView(String viewName) throws DrupalFetchException {
         return getNodeView(viewName, null);
     }
 
+    /**
+     * Helper function to check for error conditions in the returned JSON object.
+     *
+     * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
+     *
+     * <pre>
+     * {
+     *   '#error': boolean
+     *   '#data': 'json string containing the result or error string if #error is true.'
+     * }
+     * </pre>
+     *
+     * @throws JSONException if there's an error deserializing the response.
+     *
+     * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
+     * See {@link org.workhabit.drupal.api.site.DrupalFetchException#getMessage()}
+     */
     protected void assertNoErrors(JSONObject objectResult) throws JSONException, DrupalFetchException {
         if (objectResult.has("#error") && objectResult.getBoolean("#error")) {
             throw new DrupalFetchException(objectResult);
         }
     }
 
+    /**
+     * Fetches a Drupal Node by Node ID.
+     * @param nid the ID of the drupal node to fetch
+     * @return Drupal Node if there's a match. Null otherwise.
+     *
+     * @throws DrupalFetchException if there's an error fetching the node from Drupal, or if there's a
+     * serialization problem.
+     */
     public DrupalNode getNode(int nid) throws DrupalFetchException {
         connect();
         Map<String, Object> data = new HashMap<String, Object>();
@@ -124,6 +163,13 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
     }
 
+    /**
+     * Fetches an individual comment from Drupal based on CID
+     * @param cid the id of the comment to fetch
+     * @return a DrupalComment object representing the comment data, null otherwise.
+     *
+     * @throws DrupalFetchException if there's a problem fetching the comment.
+     */
     public DrupalComment getComment(int cid) throws DrupalFetchException {
         connect();
         Map<String, Object> data = new HashMap<String, Object>();
@@ -246,6 +292,32 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public DrupalUser registerNewUser(String username, String password, String email) {
         // TODO: Implement
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int saveFile(byte[] bytes, String fileName) throws DrupalFetchException {
+        connect();
+
+        try {
+            Map<String, Object> data = new HashMap<String, Object>();
+            DrupalFile file = new DrupalFile();
+            file.setFile(Base64.encodeBytes(bytes));
+            file.setFilename(fileName);
+            file.setFilepath(fileName);
+            DrupalJsonObjectSerializer<DrupalFile> serializer = new DrupalJsonObjectSerializer<DrupalFile>(DrupalFile.class);
+            data.put("file", serializer.serialize(file));
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "file.save", data, true);
+            JSONObject object = new JSONObject(result);
+            // TODO: handle error case
+            return object.getInt("#data");
+        } catch (IOException e) {
+            throw new DrupalFetchException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new DrupalFetchException(e);
+        } catch (InvalidKeyException e) {
+            throw new DrupalFetchException(e);
+        } catch (JSONException e) {
+            throw new DrupalFetchException(e);
+        }
     }
 
     public List<DrupalNode> getNodeView(String viewName, String viewArguments) throws DrupalFetchException {
