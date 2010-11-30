@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.site;
+package org.workhabit.drupal.api.site.exceptions;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs

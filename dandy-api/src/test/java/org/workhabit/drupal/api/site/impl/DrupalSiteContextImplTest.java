@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalUser;
-import org.workhabit.drupal.api.site.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.IOException;

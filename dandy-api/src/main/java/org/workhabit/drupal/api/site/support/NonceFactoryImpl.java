@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.site.impl;
+package org.workhabit.drupal.api.site.support;
 
 import org.workhabit.drupal.api.site.NonceFactory;
 

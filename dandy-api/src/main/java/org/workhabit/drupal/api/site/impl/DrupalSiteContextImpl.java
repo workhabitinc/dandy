@@ -10,6 +10,10 @@ import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 import org.workhabit.drupal.api.site.*;
+import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
+import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
+import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.support.Base64;
 import org.workhabit.drupal.http.JsonRequestManager;
 
@@ -128,7 +132,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
      *                     </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
-     *                              See {@link org.workhabit.drupal.api.site.DrupalFetchException#getMessage()}
+     *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
      */
     protected void assertNoErrors(JSONObject objectResult) throws JSONException, DrupalFetchException {
         if (objectResult.has("#error") && objectResult.getBoolean("#error")) {

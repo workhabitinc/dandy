@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.workhabit.drupal.api.site.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
 import java.util.ArrayList;
 import java.util.Date;

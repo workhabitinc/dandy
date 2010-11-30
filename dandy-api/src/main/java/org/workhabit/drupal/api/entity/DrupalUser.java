@@ -1,7 +1,7 @@
 package org.workhabit.drupal.api.entity;
 
 import org.workhabit.drupal.api.annotations.IdFieldName;
-import org.workhabit.drupal.api.site.DrupalLoginException;
+import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.json.JSONException;
 import org.json.JSONObject;
 

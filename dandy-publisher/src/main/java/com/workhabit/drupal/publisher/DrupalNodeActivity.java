@@ -19,7 +19,7 @@ import org.workhabit.dandy.dao.impl.DaoFactory;
 import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.ReadItLater;
-import org.workhabit.drupal.api.site.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 
 import java.sql.SQLException;

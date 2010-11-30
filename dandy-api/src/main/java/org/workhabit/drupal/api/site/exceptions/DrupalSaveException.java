@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.site;
+package org.workhabit.drupal.api.site.exceptions;
 
 import org.json.JSONObject;
 

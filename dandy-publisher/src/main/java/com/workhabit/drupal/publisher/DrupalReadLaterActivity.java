@@ -11,7 +11,7 @@ import org.workhabit.dandy.dao.GenericDao;
 import org.workhabit.dandy.dao.impl.DaoFactory;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.ReadItLater;
-import org.workhabit.drupal.api.site.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

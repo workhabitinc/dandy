@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.CommonsHttpClientJsonRequestManager;
 import org.workhabit.drupal.api.entity.DrupalComment;
-import org.workhabit.drupal.api.site.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
 import org.workhabit.drupal.api.site.impl.KeyRequestSigningInterceptorImpl;
 

@@ -1,16 +1,16 @@
 package org.workhabit.drupal.api.site.impl;
 
 import org.workhabit.drupal.api.site.CalendarFactory;
-import org.workhabit.drupal.api.site.DefaultCalendarFactory;
+import org.workhabit.drupal.api.site.support.DefaultCalendarFactoryImpl;
 import org.workhabit.drupal.api.site.NonceFactory;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
+import org.workhabit.drupal.api.site.support.NonceFactoryImpl;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public class KeyRequestSigningInterceptorImpl implements RequestSigningIntercept
     private NonceFactory nonceFactory;
 
     public KeyRequestSigningInterceptorImpl() {
-        calendarFactory = new DefaultCalendarFactory();
+        calendarFactory = new DefaultCalendarFactoryImpl();
         nonceFactory = new NonceFactoryImpl();
     }
 

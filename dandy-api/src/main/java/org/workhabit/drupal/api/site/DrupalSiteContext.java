@@ -4,6 +4,9 @@ import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
+import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 
 import java.util.List;
 

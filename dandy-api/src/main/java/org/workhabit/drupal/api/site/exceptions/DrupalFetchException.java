@@ -1,24 +1,28 @@
-package org.workhabit.drupal.api.site;
+package org.workhabit.drupal.api.site.exceptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
- * Date: Sep 24, 2010, 8:27:56 PM
+ * Date: Sep 25, 2010, 5:15:46 PM
  */
-public class DrupalLoginException extends Exception {
+public class DrupalFetchException extends Exception {
     private JSONObject objectResult;
     private String message;
 
-    public DrupalLoginException(JSONObject objectResult, String siteUrl) {
+    public DrupalFetchException(JSONObject objectResult) {
 
         this.objectResult = objectResult;
         try {
-            this.message = "An error occurred connecting to " + siteUrl + ": " + objectResult.getString("#data");
+            this.message = this.objectResult.getString("#data");
         } catch (JSONException e) {
-            this.message = "Unable to unmarshal JSON Object: " + e.getMessage();
+            this.message = e.getMessage();
         }
+    }
+    public DrupalFetchException(Exception e) {
+        initCause(e);
+        this.message = String.format("%s: %s", e.getClass().getName(), e.getMessage());
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
@@ -26,7 +30,7 @@ public class DrupalLoginException extends Exception {
         return objectResult;
     }
 
-    @Override
+
     public String getMessage() {
         return message;
     }
