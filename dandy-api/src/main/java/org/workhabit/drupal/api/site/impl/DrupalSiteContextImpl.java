@@ -178,7 +178,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
 
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "node.get", data, true);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "comment.load", data, true);
             DrupalJsonObjectSerializer<DrupalComment> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalComment.class);
             return serializer.unserialize(result);
         } catch (Exception e) {

@@ -7,12 +7,16 @@ import org.jmock.Mockery;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.allOf;
@@ -107,6 +111,38 @@ public class DrupalSiteContextImplTest {
     }
 
     @Test
+    public void testLogoutFailure() throws Exception {
+        context.checking(new Expectations() {
+            {
+                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
+                }.getRawType();
+
+                //noinspection unchecked
+                atLeast(1).of(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                String json = "{\"#error\":false,\"#data\":\"\"}";
+                will(returnValue(json));
+
+                atLeast(1).of(mockJsonRequestManager).postSigned(with(equal(siteUrl + "/services/json")), with(equal("user.logout")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                will(
+                        onConsecutiveCalls(
+                                throwException(new NoSuchAlgorithmException()),
+                                throwException(new IOException()),
+                                throwException(new InvalidKeyException())
+                        )
+                );
+            }
+        });
+        for (int i = 0; i < 3; i++) {
+            try {
+                drupalSiteContext.logout();
+                fail("Should have thrown exception");
+            } catch (DrupalLogoutException e) {
+                // ok
+            }
+        }
+    }
+
+    @Test
     public void testGetNodeView() throws Exception {
         /*CommonsHttpClientJsonRequestManager manager = new CommonsHttpClientJsonRequestManager();
         KeyRequestSigningInterceptorImpl requestSigningInterceptor = new KeyRequestSigningInterceptorImpl();
@@ -174,8 +210,27 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testGetComment() throws Exception {
-        // TODO: implement
-        // drupalSiteContext.getComment(2);
+        context.checking(new Expectations() {
+            {
+                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
+                }.getRawType();
+                //noinspection unchecked
+                one(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                String json = "{\"#error\":false,\"#data\":\"\"}";
+                will(returnValue(json));
+
+                one(mockJsonRequestManager).postSigned(
+                        with(equal(siteUrl + "/services/json")),
+                        with(equal("comment.load")),
+                        with(IsMapContaining.hasEntry("cid", (Object) 2)),
+                        with(equal(true))
+                );
+                json = "{\"#error\":false,\"#data\":{\"cid\":\"2\",\"pid\":\"0\",\"nid\":\"1\",\"uid\":\"1\",\"subject\":\"Test comment\",\"comment\":\"test\",\"hostname\":\"127.0.0.1\",\"timestamp\":\"1289589218\",\"status\":\"0\",\"format\":\"1\",\"thread\":\"01/\",\"name\":\"admin\",\"mail\":\"\",\"homepage\":\"\"}}";
+                will(returnValue(json));
+            }
+        });
+        DrupalComment comment = drupalSiteContext.getComment(2);
+        assertNotNull(comment);
     }
 
     @Test
@@ -219,12 +274,54 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testGetTermView() throws Exception {
+        context.checking(new Expectations() {
+            {
+                String json = "{\"#error\": false, \"#data\": []}";
+                one(mockJsonRequestManager).postSigned(
+                        with(equal("http://ad.hourglassone.com/services/json")),
+                        with(equal("views.get")),
+                        with(IsMapContaining.hasEntry("view_name", (Object) "andrupal_categories")),
+                        with(equal(true))
+                );
+                will(returnValue(json));
+            }
+        });
+        drupalSiteContext.getTermView("andrupal_categories");
     }
 
     @Test
     public void testGetCategoryList() throws Exception {
+        context.checking(new Expectations() {
+            {
+                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
+                }.getRawType();
+                //noinspection unchecked
+                one(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                String json = "{\"#error\":false,\"#data\":\"\"}";
+                will(returnValue(json));
+
+                json = "{\"#error\": false, \"#data\": []}";
+                one(mockJsonRequestManager).postSigned(
+                        with(equal("http://ad.hourglassone.com/services/json")),
+                        with(equal("taxonomy.dictionary")),
+                        with(IsMapContaining.hasEntry("vid", (Object) 1)),
+                        with(equal(true))
+                );
+                will(returnValue(json));
+            }
+        });
+        drupalSiteContext.getCategoryList();
     }
 
+    @Test
+    public void testGetComments() {
+
+    }
+
+    @Test
+    public void testGetFile() {
+
+    }
     @After
     public void tearDown() {
         context.assertIsSatisfied();
