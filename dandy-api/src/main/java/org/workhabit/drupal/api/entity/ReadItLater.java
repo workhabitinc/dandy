@@ -1,5 +1,6 @@
 package org.workhabit.drupal.api.entity;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.workhabit.drupal.api.annotations.IdFieldName;
@@ -16,10 +17,14 @@ public class ReadItLater implements DrupalEntity {
 
     @DatabaseField(id = true)
     private int id;
-    @DatabaseField(foreign = true, canBeNull = false)
+    @DatabaseField(canBeNull = false, foreign = true)
     private DrupalNode node;
     @DatabaseField(canBeNull = false)
     private int weight;
+
+    public ReadItLater() {
+
+    }
 
     public String getId() {
         return Integer.toString(id);

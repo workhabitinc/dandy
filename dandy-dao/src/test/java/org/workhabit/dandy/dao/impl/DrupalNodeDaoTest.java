@@ -104,6 +104,18 @@ public class DrupalNodeDaoTest {
         readItLaters.add(createReadItLater());
         readItLaters.add(createReadItLater());
         readItLaterDao.saveAll(readItLaters);
+        for (ReadItLater readitLater : readItLaters) {
+            drupalNodeDao.save(readitLater.getNode());
+        }
+        List<ReadItLater> laters = readItLaterDao.getAll();
+        assertNotNull(laters);
+        assertTrue(laters.size() > 0);
+        for (ReadItLater readItLater : laters) {
+            assertNotNull(readItLater);
+            assertNotNull(readItLater.getNode());
+            drupalNodeDao.refresh(readItLater.getNode());
+            assertNotNull(readItLater.getNode().getTitle());
+        }
     }
 
     @Test

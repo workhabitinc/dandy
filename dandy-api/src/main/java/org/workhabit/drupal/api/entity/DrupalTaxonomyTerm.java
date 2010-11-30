@@ -31,6 +31,9 @@ public class DrupalTaxonomyTerm implements DrupalEntity {
     @DatabaseField(canBeNull = true)
     private int nodeCount;
 
+    public DrupalTaxonomyTerm() {
+
+    }
 
     public int getVid() {
         return vid;

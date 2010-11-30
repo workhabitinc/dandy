@@ -28,7 +28,7 @@ public class GenericDaoImpl<C extends DrupalEntity> extends BaseDaoImpl<C, Strin
     }
 
     public int save(C data) throws SQLException {
-        if (super.queryForId(data.getId()) != null) {
+        if (super.queryForId(data.getId()) != null && !"0".equals(data.getId())) {
             return super.update(data);
         } else {
             return super.create(data);

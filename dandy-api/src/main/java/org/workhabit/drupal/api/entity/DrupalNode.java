@@ -66,6 +66,10 @@ public class DrupalNode implements DrupalEntity {
     @DatabaseField(canBeNull = true)
     private ArrayList<DrupalField> fields;
 
+    public DrupalNode() {
+
+    }
+
     public int getNid() {
         return nid;
     }

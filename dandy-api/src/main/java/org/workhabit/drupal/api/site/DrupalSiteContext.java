@@ -34,4 +34,8 @@ public interface DrupalSiteContext {
     List<DrupalTaxonomyTerm> getCategoryList() throws DrupalFetchException;
 
     DrupalUser registerNewUser(String username, String password, String email);
+
+    int saveFile(byte[] bytes, String fileName) throws DrupalFetchException;
+
+    List<DrupalComment> getComments(int nid) throws DrupalFetchException;
 }

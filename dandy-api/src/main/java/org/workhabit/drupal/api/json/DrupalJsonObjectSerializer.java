@@ -20,7 +20,7 @@ public class DrupalJsonObjectSerializer<T> {
     private Class<T> clazz;
     private Gson gson;
 
-    public DrupalJsonObjectSerializer(Class<T> clazz) {
+    DrupalJsonObjectSerializer(Class<T> clazz) {
         this.clazz = clazz;
         GsonBuilder builder = new GsonBuilder();
         UnixTimeDateAdapter dateAdapter = new UnixTimeDateAdapter();

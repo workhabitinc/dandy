@@ -47,6 +47,9 @@
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
   <component name="FacetAutodetectingManager">
     <autodetection-disabled>
       <facet-type id="android">
@@ -246,10 +249,15 @@
       </item>
     </group>
   </component>
-  <component name="ProjectInspectionProfilesVisibleTreeState">
-    <entry key="Project Default">
-      <profile-state />
-    </entry>
+  <component name="ProjectDictionaryState">
+    <dictionary name="acs">
+      <words>
+        <w>deserializing</w>
+        <w>filepath</w>
+        <w>laters</w>
+        <w>lifecycle</w>
+      </words>
+    </dictionary>
   </component>
   <component name="ProjectKey">
     <option name="state" value="project://default" />

@@ -14,6 +14,8 @@
         <option name="REGENERATE_JAVA_BY_AIDL" value="true" />
         <option name="USE_CUSTOM_APK_RESOURCE_FOLDER" value="false" />
         <option name="CUSTOM_APK_RESOURCE_FOLDER" value="/target/generated-sources/combined-resources/res" />
+        <option name="USE_CUSTOM_COMPILER_MANIFEST" value="false" />
+        <option name="CUSTOM_COMPILER_MANIFEST" value="" />
         <option name="APK_PATH" value="/target/dandy-publisher.apk" />
         <option name="ADD_ANDROID_LIBRARY" value="false" />
         <option name="LIBRARY_PROJECT" value="false" />
