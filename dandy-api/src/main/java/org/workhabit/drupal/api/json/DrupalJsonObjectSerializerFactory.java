@@ -17,4 +17,8 @@ public class DrupalJsonObjectSerializerFactory {
         }
         return instances.get(clazz);
     }
+
+    private DrupalJsonObjectSerializerFactory() {
+        // not instantiable
+    }
 }

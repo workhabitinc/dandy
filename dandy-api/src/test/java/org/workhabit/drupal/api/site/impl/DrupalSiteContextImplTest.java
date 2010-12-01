@@ -301,13 +301,23 @@ public class DrupalSiteContextImplTest {
         setConnectExpectations();
         context.checking(new Expectations() {
             {
+                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
+                }.getRawType();
+                one(mockJsonRequestManager).postSigned(
+                  with(equal("http://ad.hourglassone.com/services/json")),
+                        with(equal("file.getDirectoryPath")),
+                        (Map<String, Object>) with(aNonNull(type)),
+                        with(equal(true))
+                );
+                String json = "{\"#error\":false,\"#data\":\"sites/default/files\"}";
+                will(returnValue(json));
                 one(mockJsonRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("file.save")),
-                        with(IsMapContaining.hasEntry("file", (Object) "{\"file\":\"dGVzdCBmaWxlIGRhdGE\\u003d\",\"filepath\":\"foo.txt\",\"filename\":\"foo.txt\"}")),
+                        with(IsMapContaining.hasEntry("file", (Object) "{\"file\":\"dGVzdCBmaWxlIGRhdGE\\u003d\",\"filepath\":\"sites/default/files/foo.txt\",\"filename\":\"foo.txt\"}")),
                         with(equal(false))
                 );
-                String json = "{\"#error\":false,\"#data\":1}";
+                json = "{\"#error\":false,\"#data\":1}";
                 will(returnValue(json));
             }
         });
