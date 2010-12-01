@@ -252,6 +252,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     }
 
     public List<DrupalTaxonomyTerm> getTermView(String viewName) throws DrupalFetchException {
+        connect();
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", viewName);
         if (session != null && !"".equals(session)) {
@@ -304,7 +305,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
             file.setFilepath(fileName);
             DrupalJsonObjectSerializer<DrupalFile> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
             data.put("file", serializer.serialize(file));
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "file.save", data, true);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "file.save", data, false);
             JSONObject object = new JSONObject(result);
             // TODO: handle error case
             return object.getInt("#data");
@@ -324,7 +325,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("nid", nid);
         try {
-            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "comments.get", data, true);
+            String result = jsonRequestManager.postSigned(drupalSiteUrl + "/services/json", "comment.loadNodeComments", data, true);
             JSONObject objectResult = new JSONObject(result);
             assertNoErrors(objectResult);
             DrupalJsonObjectSerializer<DrupalComment> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalComment.class);

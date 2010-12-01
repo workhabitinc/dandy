@@ -112,16 +112,11 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testLogoutFailure() throws Exception {
+        setConnectExpectations();
         context.checking(new Expectations() {
             {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
-
-                //noinspection unchecked
-                atLeast(1).of(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
-                String json = "{\"#error\":false,\"#data\":\"\"}";
-                will(returnValue(json));
-
                 atLeast(1).of(mockJsonRequestManager).postSigned(with(equal(siteUrl + "/services/json")), with(equal("user.logout")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
                 will(
                         onConsecutiveCalls(
@@ -154,22 +149,16 @@ public class DrupalSiteContextImplTest {
         String json = manager.post("http://ad.hourglassone.com/services/json", "views.get", data);
         System.out.println(json);
                                       */
+        setConnectExpectations();
         context.checking(new Expectations() {
             {
-                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
-                }.getRawType();
-                //noinspection unchecked
-                one(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
-                String json = "{\"#error\":false,\"#data\":\"\"}";
-                will(returnValue(json));
-
                 one(mockJsonRequestManager).postSigned(
                         with(equal(siteUrl + "/services/json")),
                         with(equal("views.get")),
                         with(IsMapContaining.hasEntry("view_name", (Object) "andrupal_recent")),
                         with(equal(true))
                 );
-                json = "{\"#error\":false,\"#data\":[{\"nid\":\"3\",\"type\":\"page\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285472651\",\"changed\":\"1287462859\",\"comment\":\"0\",\"promote\":\"0\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"3\",\"revision_uid\":\"1\",\"title\":\"More Content\",\"body\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.Assertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\",\"teaser\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\",\"log\":\"\",\"revision_timestamp\":\"1287462859\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285472651\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"1\":{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\"}}},{\"nid\":\"2\",\"type\":\"page\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285468757\",\"changed\":\"1287462868\",\"comment\":\"0\",\"promote\":\"0\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"2\",\"revision_uid\":\"1\",\"title\":\"Another display\",\"body\":\"Giving this a try\",\"teaser\":\"Giving this a try\",\"log\":\"\",\"revision_timestamp\":\"1287462868\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285468757\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"1\":{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\"}}},{\"nid\":\"1\",\"type\":\"story\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285374480\",\"changed\":\"1287462879\",\"comment\":\"2\",\"promote\":\"1\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"1\",\"revision_uid\":\"1\",\"title\":\"Test Title\",\"body\":\"Test body. Adding some more text here.\\r\\n\\r\\nIntrinsicly provide access to process-centric experiences via business benefits. Synergistically network interoperable internal or \\\"organic\\\" sources for standards compliant experiences. Credibly predominate 24\\/365 products for superior initiatives.\\r\\n\\r\\nDynamically optimize 24\\/7 leadership skills rather than distinctive web-readiness. Proactively parallel task intuitive platforms before timely action items. Quickly enhance exceptional schemas before highly efficient sources. \\r\\n\",\"teaser\":\"Test body. Adding some more text here.\\r\\n\\r\\nIntrinsicly provide access to process-centric experiences via business benefits. Synergistically network interoperable internal or \\\"organic\\\" sources for standards compliant experiences. Credibly predominate 24\\/365 products for superior initiatives.\\r\\n\\r\\nDynamically optimize 24\\/7 leadership skills rather than distinctive web-readiness. Proactively parallel task intuitive platforms before timely action items. Quickly enhance exceptional schemas before highly efficient sources. \\r\\n\",\"log\":\"\",\"revision_timestamp\":\"1287462879\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285374480\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"2\":{\"tid\":\"2\",\"vid\":\"1\",\"name\":\"Category 2\",\"description\":\"\",\"weight\":\"0\"}}}]}";
+                String json = "{\"#error\":false,\"#data\":[{\"nid\":\"3\",\"type\":\"page\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285472651\",\"changed\":\"1287462859\",\"comment\":\"0\",\"promote\":\"0\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"3\",\"revision_uid\":\"1\",\"title\":\"More Content\",\"body\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.Assertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\",\"teaser\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\",\"log\":\"\",\"revision_timestamp\":\"1287462859\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285472651\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"1\":{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\"}}},{\"nid\":\"2\",\"type\":\"page\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285468757\",\"changed\":\"1287462868\",\"comment\":\"0\",\"promote\":\"0\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"2\",\"revision_uid\":\"1\",\"title\":\"Another display\",\"body\":\"Giving this a try\",\"teaser\":\"Giving this a try\",\"log\":\"\",\"revision_timestamp\":\"1287462868\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285468757\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"1\":{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\"}}},{\"nid\":\"1\",\"type\":\"story\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285374480\",\"changed\":\"1287462879\",\"comment\":\"2\",\"promote\":\"1\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"1\",\"revision_uid\":\"1\",\"title\":\"Test Title\",\"body\":\"Test body. Adding some more text here.\\r\\n\\r\\nIntrinsicly provide access to process-centric experiences via business benefits. Synergistically network interoperable internal or \\\"organic\\\" sources for standards compliant experiences. Credibly predominate 24\\/365 products for superior initiatives.\\r\\n\\r\\nDynamically optimize 24\\/7 leadership skills rather than distinctive web-readiness. Proactively parallel task intuitive platforms before timely action items. Quickly enhance exceptional schemas before highly efficient sources. \\r\\n\",\"teaser\":\"Test body. Adding some more text here.\\r\\n\\r\\nIntrinsicly provide access to process-centric experiences via business benefits. Synergistically network interoperable internal or \\\"organic\\\" sources for standards compliant experiences. Credibly predominate 24\\/365 products for superior initiatives.\\r\\n\\r\\nDynamically optimize 24\\/7 leadership skills rather than distinctive web-readiness. Proactively parallel task intuitive platforms before timely action items. Quickly enhance exceptional schemas before highly efficient sources. \\r\\n\",\"log\":\"\",\"revision_timestamp\":\"1287462879\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285374480\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"2\":{\"tid\":\"2\",\"vid\":\"1\",\"name\":\"Category 2\",\"description\":\"\",\"weight\":\"0\"}}}]}";
                 will(returnValue(json));
             }
         });
@@ -179,28 +168,16 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testGetNode() throws Exception {
+        setConnectExpectations();
         context.checking(new Expectations() {
             {
-                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
-                }.getRawType();
-                //noinspection unchecked
-                one(mockJsonRequestManager)
-                        .post(
-                                with(equal(siteUrl + "/services/json")),
-                                with(equal("system.connect")),
-                                (Map<String, Object>) with(aNull(type)),
-                                with(equal(true))
-                        );
-                String json = "{\"#error\":false,\"#data\":\"\"}";
-                will(returnValue(json));
-
                 one(mockJsonRequestManager).postSigned(
                         with(equal(siteUrl + "/services/json")),
                         with(equal("node.get")),
                         with(IsMapContaining.hasEntry("nid", (Object) 1)),
                         with(equal(true))
                 );
-                json = "{\"#error\":false,\"#data\":{\"nid\":\"3\",\"type\":\"page\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285472651\",\"changed\":\"1287462859\",\"comment\":\"0\",\"promote\":\"0\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"3\",\"revision_uid\":\"1\",\"title\":\"More Content\",\"body\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.Assertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\",\"teaser\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\",\"log\":\"\",\"revision_timestamp\":\"1287462859\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285472651\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"1\":{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\"}}}}";
+                String json = "{\"#error\":false,\"#data\":{\"nid\":\"3\",\"type\":\"page\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285472651\",\"changed\":\"1287462859\",\"comment\":\"0\",\"promote\":\"0\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"3\",\"revision_uid\":\"1\",\"title\":\"More Content\",\"body\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.Assertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\",\"teaser\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\",\"log\":\"\",\"revision_timestamp\":\"1287462859\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285472651\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"1\":{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\"}}}}";
                 will(returnValue(json));
             }
         });
@@ -210,22 +187,16 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testGetComment() throws Exception {
+        setConnectExpectations();
         context.checking(new Expectations() {
             {
-                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
-                }.getRawType();
-                //noinspection unchecked
-                one(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
-                String json = "{\"#error\":false,\"#data\":\"\"}";
-                will(returnValue(json));
-
                 one(mockJsonRequestManager).postSigned(
                         with(equal(siteUrl + "/services/json")),
                         with(equal("comment.load")),
                         with(IsMapContaining.hasEntry("cid", (Object) 2)),
                         with(equal(true))
                 );
-                json = "{\"#error\":false,\"#data\":{\"cid\":\"2\",\"pid\":\"0\",\"nid\":\"1\",\"uid\":\"1\",\"subject\":\"Test comment\",\"comment\":\"test\",\"hostname\":\"127.0.0.1\",\"timestamp\":\"1289589218\",\"status\":\"0\",\"format\":\"1\",\"thread\":\"01/\",\"name\":\"admin\",\"mail\":\"\",\"homepage\":\"\"}}";
+                String json = "{\"#error\":false,\"#data\":{\"cid\":\"2\",\"pid\":\"0\",\"nid\":\"1\",\"uid\":\"1\",\"subject\":\"Test comment\",\"comment\":\"test\",\"hostname\":\"127.0.0.1\",\"timestamp\":\"1289589218\",\"status\":\"0\",\"format\":\"1\",\"thread\":\"01/\",\"name\":\"admin\",\"mail\":\"\",\"homepage\":\"\"}}";
                 will(returnValue(json));
             }
         });
@@ -240,15 +211,9 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testLogin() throws Exception {
-
+        setConnectExpectations();
         context.checking(new Expectations() {
             {
-                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
-                }.getRawType();
-                //noinspection unchecked
-                one(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
-                String json = "{\"#error\":false,\"#data\":\"\"}";
-                will(returnValue(json));
                 one(mockJsonRequestManager).postSigned(
                         with(
                                 equal(siteUrl + "/services/json")
@@ -264,7 +229,7 @@ public class DrupalSiteContextImplTest {
                         ),
                         with(equal(true))
                 );
-                json = "{\"#error\":false,\"#data\":{\"sessid\":\"e7443fe315fc200c2370bfe7f1be2040\",\"user\":{\"uid\":\"1\",\"name\":\"admin\",\"pass\":\"3e47b75000b0924b6c9ba5759a7cf15d\",\"mail\":\"aaron@workhabit.com\",\"mode\":\"0\",\"sort\":\"0\",\"threshold\":\"0\",\"theme\":\"\",\"signature\":\"\",\"signature_format\":\"0\",\"created\":\"1285372909\",\"access\":\"1288039409\",\"login\":1288043068,\"status\":\"1\",\"timezone\":null,\"language\":\"\",\"picture\":\"\",\"init\":\"aaron@workhabit.com\",\"data\":\"a:0:{}\",\"roles\":{\"2\":\"authenticated user\"}}}}";
+                String json = "{\"#error\":false,\"#data\":{\"sessid\":\"e7443fe315fc200c2370bfe7f1be2040\",\"user\":{\"uid\":\"1\",\"name\":\"admin\",\"pass\":\"3e47b75000b0924b6c9ba5759a7cf15d\",\"mail\":\"aaron@workhabit.com\",\"mode\":\"0\",\"sort\":\"0\",\"threshold\":\"0\",\"theme\":\"\",\"signature\":\"\",\"signature_format\":\"0\",\"created\":\"1285372909\",\"access\":\"1288039409\",\"login\":1288043068,\"status\":\"1\",\"timezone\":null,\"language\":\"\",\"picture\":\"\",\"init\":\"aaron@workhabit.com\",\"data\":\"a:0:{}\",\"roles\":{\"2\":\"authenticated user\"}}}}";
                 will(returnValue(json));
             }
         });
@@ -274,6 +239,7 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testGetTermView() throws Exception {
+        setConnectExpectations();
         context.checking(new Expectations() {
             {
                 String json = "{\"#error\": false, \"#data\": []}";
@@ -291,16 +257,10 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testGetCategoryList() throws Exception {
+        setConnectExpectations();
         context.checking(new Expectations() {
             {
-                Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
-                }.getRawType();
-                //noinspection unchecked
-                one(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
-                String json = "{\"#error\":false,\"#data\":\"\"}";
-                will(returnValue(json));
-
-                json = "{\"#error\": false, \"#data\": []}";
+                String json = "{\"#error\": false, \"#data\": []}";
                 one(mockJsonRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("taxonomy.dictionary")),
@@ -314,14 +274,48 @@ public class DrupalSiteContextImplTest {
     }
 
     @Test
-    public void testGetComments() {
-
+    public void testGetComments() throws Exception {
+        setConnectExpectations();
+        context.checking(new Expectations() {
+            {
+                String json = "{\"#error\": false, \"#data\": []}";
+                one(mockJsonRequestManager).postSigned(
+                        with(equal("http://ad.hourglassone.com/services/json")),
+                        with(equal("comment.loadNodeComments")),
+                        with(IsMapContaining.hasEntry("nid", (Object) 1)),
+                        with(equal(true))
+                );
+                will(returnValue(json));
+            }
+        });
+        drupalSiteContext.getComments(1);
     }
 
     @Test
     public void testGetFile() {
 
     }
+
+    @Test
+    public void testSaveFile() throws Exception {
+        setConnectExpectations();
+        context.checking(new Expectations() {
+            {
+                one(mockJsonRequestManager).postSigned(
+                        with(equal("http://ad.hourglassone.com/services/json")),
+                        with(equal("file.save")),
+                        with(IsMapContaining.hasEntry("file", (Object) "{\"file\":\"dGVzdCBmaWxlIGRhdGE\\u003d\",\"filepath\":\"foo.txt\",\"filename\":\"foo.txt\"}")),
+                        with(equal(false))
+                );
+                String json = "{\"#error\":false,\"#data\":1}";
+                will(returnValue(json));
+            }
+        });
+        String filename = "foo.txt";
+        String filedata = "test file data";
+        drupalSiteContext.saveFile(filedata.getBytes(), filename);
+    }
+
     @After
     public void tearDown() {
         context.assertIsSatisfied();
