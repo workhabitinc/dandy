@@ -304,7 +304,7 @@ public class DrupalSiteContextImplTest {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
                 one(mockJsonRequestManager).postSigned(
-                  with(equal("http://ad.hourglassone.com/services/json")),
+                        with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("file.getDirectoryPath")),
                         (Map<String, Object>) with(aNonNull(type)),
                         with(equal(true))
