@@ -6,11 +6,11 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.workhabit.drupal.api.entity.DrupalField;
+import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -37,7 +37,39 @@ public class DrupalJsonObjectSerializer<T> {
 
     public T unserialize(String json) throws DrupalFetchException, JSONException {
         JSONObject dataObject = extractDataObject(json);
-        return gson.fromJson(dataObject.toString(), clazz);
+        T t = gson.fromJson(dataObject.toString(), clazz);
+        if (clazz == DrupalNode.class) {
+            // special handling for cck fields. TODO: refactor this into an interceptor pattern.
+            Iterator keys = dataObject.keys();
+            ArrayList<DrupalField> fields = new ArrayList<DrupalField>();
+            while (keys.hasNext()) {
+                String name = (String) keys.next();
+                if (name.startsWith("field_")) {
+                    // process cck field
+                    //
+                    DrupalField field = new DrupalField();
+                    ArrayList<HashMap<String, String>> values = new ArrayList<HashMap<String, String>>();
+                    JSONArray cckFieldArray = dataObject.getJSONArray(name);
+                    for (int i = 0; i < cckFieldArray.length(); i++) {
+                        JSONObject o = cckFieldArray.getJSONObject(i);
+                        field.setName(name);
+                        Iterator objectKeys = o.keys();
+                        HashMap<String, String> valueMap = new HashMap<String, String>();
+                        while (objectKeys.hasNext()) {
+                            String next = (String) objectKeys.next();
+                            valueMap.put(next, o.getString(next));
+                        }
+                        values.add(valueMap);
+                    }
+                    field.setValues(values);
+                    fields.add(field);
+                }
+
+            }
+            DrupalNode n = (DrupalNode) t;
+            n.setFields(fields);
+        }
+        return t;
     }
 
     private JSONObject extractDataObject(String json) throws JSONException, DrupalFetchException {

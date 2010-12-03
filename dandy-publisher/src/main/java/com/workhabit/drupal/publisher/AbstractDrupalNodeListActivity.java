@@ -22,14 +22,26 @@ public abstract class AbstractDrupalNodeListActivity extends AbstractDandyListAc
     protected String viewArguments;
     protected String viewName;
 
+    protected void setViewName(String viewName) {
+        this.viewName = viewName;
+    }
+
+    protected void setViewArguments(String viewArguments) {
+        this.viewArguments = viewArguments;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         drupalSiteContext = DandyApplication.getDrupalSiteContext();
 
         try {
-            viewName = getIntent().getStringExtra("viewName");
-            viewArguments = getIntent().getStringExtra("viewArguments");
+            if (viewName == null || "".equals(viewName)) {
+                viewName = getIntent().getStringExtra("viewName");
+            }
+            if (viewArguments == null) {
+                viewArguments = getIntent().getStringExtra("viewArguments");
+            }
             // fetch list of recent drupal nodes
             //
             List<DrupalNode> nodes = doGetNodes(viewArguments, this.viewName);

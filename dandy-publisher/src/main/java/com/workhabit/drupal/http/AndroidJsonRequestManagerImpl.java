@@ -5,6 +5,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -55,6 +56,12 @@ public abstract class AndroidJsonRequestManagerImpl implements JsonRequestManage
         }
         return sw.toString();
 
+    }
+
+    public InputStream get(String path) throws IOException {
+        HttpGet get = new HttpGet(path);
+        HttpResponse response = client.execute(get);
+        return response.getEntity().getContent();
     }
 
     protected abstract List<NameValuePair> processParameters(String method, Map<String, Object> data, boolean escapeInput);

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.CommonsHttpClientJsonRequestManager;
 import org.workhabit.drupal.api.entity.DrupalComment;
+import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
 import org.workhabit.drupal.api.site.impl.KeyRequestSigningInterceptorImpl;
@@ -36,5 +37,10 @@ public class LocalDrupalSiteContextImplTest {
         comment.setUid(0);
         //comment.setUid(1);
         drupalSiteContext.saveComment(comment);
+    }
+
+    @Test
+    public void testGetNode() throws DrupalFetchException {
+        DrupalNode node = drupalSiteContext.getNode(4);
     }
 }

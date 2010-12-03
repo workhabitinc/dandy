@@ -2,12 +2,15 @@ package org.workhabit.drupal.api;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
 import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -49,6 +52,12 @@ public class CommonsHttpClientJsonRequestManager implements JsonRequestManager {
             requestSigningInterceptor.sign(path, method, data);
         }
         return post(path, method, data, escapeInput);
+    }
+
+    public InputStream get(String path) throws IOException {
+        HttpMethod getMethod = new GetMethod(path);
+        client.executeMethod(getMethod);
+        return getMethod.getResponseBodyAsStream();
     }
 
     public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {

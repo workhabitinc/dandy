@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
-import org.workhabit.drupal.api.site.*;
+import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
@@ -18,6 +18,7 @@ import org.workhabit.drupal.api.site.support.Base64;
 import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -62,31 +63,28 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
      * call system.connect on the current instance.  This is required for key authentication to work properly.
      */
     public void connect() throws DrupalFetchException {
-        if (!isConnected) {
-            try {
-                String result = jsonRequestManager.post(servicePath, "system.connect", null, true);
-                JSONObject object = new JSONObject(result);
-                if ("true".equals(object.getString("#error"))) {
-                    throw new DrupalFetchException(object);
-                }
-                if (object.has("#data")) {
-                    try {
-                        JSONObject data = object.getJSONObject("#data");
-                        if (data != null) {
-                            String sessid = data.getString("sessid");
-                            if (sessid != null) {
-                                setSession(sessid);
-                            }
-
-                        }
-                    } catch (Exception e) {
-                        // no sessid returned
-                    }
-                }
-            } catch (Exception e) {
-                throw new DrupalFetchException(e);
+        try {
+            String result = jsonRequestManager.post(servicePath, "system.connect", null, true);
+            JSONObject object = new JSONObject(result);
+            if ("true".equals(object.getString("#error"))) {
+                throw new DrupalFetchException(object);
             }
-            isConnected = true;
+            if (object.has("#data")) {
+                try {
+                    JSONObject data = object.getJSONObject("#data");
+                    if (data != null) {
+                        String sessid = data.getString("sessid");
+                        if (sessid != null) {
+                            setSession(sessid);
+                        }
+
+                    }
+                } catch (Exception e) {
+                    // no sessid returned
+                }
+            }
+        } catch (Exception e) {
+            throw new DrupalFetchException(e);
         }
     }
 
@@ -136,11 +134,11 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                     {
-     *                       '#error': boolean
-     *                       '#data': 'json string containing the result or error string if #error is true.'
-     *                     }
-     *                     </pre>
+     *                                         {
+     *                                           '#error': boolean
+     *                                           '#data': 'json string containing the result or error string if #error is true.'
+     *                                         }
+     *                                         </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -333,7 +331,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     }
 
     private String getFileDirectoryPath() throws DrupalFetchException {
-        Map<String, Object> data =new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<String, Object>();
         try {
             String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_GETDIRECTORYPATH, data, true);
             JSONObject objectResult = new JSONObject(result);
@@ -354,6 +352,11 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         connect();
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("nid", nid);
+        // TODO: Parameterize these
+        data.put("count", 0);
+        data.put("start", 0);
+
+        data.put("sessid", session);
         try {
             String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_LOADNODECOMMENTS, data, true);
             JSONObject objectResult = new JSONObject(result);
@@ -369,6 +372,10 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
         }
+    }
+
+    public InputStream getFileStream(String filepath) throws IOException {
+        return jsonRequestManager.get(drupalSiteUrl + "/" + filepath);
     }
 
     public List<DrupalNode> getNodeView(String viewName, String viewArguments) throws DrupalFetchException {

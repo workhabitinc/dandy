@@ -1,6 +1,7 @@
 package org.workhabit.drupal.http;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -13,4 +14,6 @@ public interface JsonRequestManager {
     public String post(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException;
 
     public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException, NoSuchAlgorithmException, InvalidKeyException;
+
+    public InputStream get(String path) throws IOException;
 }

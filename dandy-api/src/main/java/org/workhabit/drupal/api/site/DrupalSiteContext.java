@@ -8,6 +8,8 @@ import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -41,4 +43,6 @@ public interface DrupalSiteContext {
     int saveFile(byte[] bytes, String fileName) throws DrupalFetchException;
 
     List<DrupalComment> getComments(int nid) throws DrupalFetchException;
+
+    InputStream getFileStream(String filepath) throws IOException;
 }

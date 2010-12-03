@@ -12,8 +12,8 @@ import javax.naming.ldap.Rdn;
 public class DrupalHeadlineNodeListActivity extends DrupalNodeListViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        viewName = "andrupal_recent";
-        viewArguments = "";
+        setViewName("andrupal_recent");
+        setViewArguments("");
 
         super.onCreate(savedInstanceState);
         Button b = (Button) findViewById(R.id.button_headlines);
