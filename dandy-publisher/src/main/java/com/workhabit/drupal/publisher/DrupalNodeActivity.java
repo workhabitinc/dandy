@@ -1,13 +1,18 @@
 package com.workhabit.drupal.publisher;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.*;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.j256.ormlite.android.AndroidConnectionSource;
@@ -17,12 +22,16 @@ import com.workhabit.drupal.publisher.support.ReadItLaterDatabaseHelper;
 import org.workhabit.dandy.dao.GenericDao;
 import org.workhabit.dandy.dao.impl.DaoFactory;
 import org.workhabit.drupal.api.entity.DrupalComment;
+import org.workhabit.drupal.api.entity.DrupalField;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.ReadItLater;
-import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
+import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -95,12 +104,73 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
             lastNode = node;
             TextView titleView = (TextView) findViewById(R.id.nodeTitle);
             TextView bodyView = (TextView) findViewById(R.id.nodeBody);
+            /*if (node.getFields() != null) {
+                List<DrupalField> fields = node.getFields();
+                for (DrupalField drupalField : fields) {
+                    if ("field_title_image".equals(drupalField.getName())) {
+                        HashMap<String, String> imagedata = drupalField.getValues().get(0);
+                        String filepath = imagedata.get("filepath");
+                        InputStream fileStream = drupalSiteContext.getFileStream(filepath);
+                        Bitmap bitmap = BitmapFactory.decodeStream(fileStream);
+                        WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+                        int displayWidth = windowManager.getDefaultDisplay().getWidth();
+                        // get ratio of width/height for drawable
+                        Matrix m = new Matrix();
+                        float newWidth = displayWidth;
+                        float newHeight = bitmap.getHeight() / (bitmap.getWidth() / displayWidth);
+                        m.postScale(newWidth, newHeight);
+                        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, (int)newWidth, (int)newHeight, m, true);
+                        BitmapDrawable bitmapDrawable = new BitmapDrawable(resizedBitmap);
+                        titleView.setBackgroundDrawable(bitmapDrawable);
+                        titleView.setHeight((int) newHeight);
+
+                    }
+                }
+            } */
             titleView.setText(node.getTitle());
-            List<DrupalComment> comments = drupalSiteContext.getComments(node.getNid());
             String nodeContent = String.format("<p>%s</p>", node.getBody().replaceAll("\r\n", "\n").replaceAll("\n\n", "</p><p>"));
             bodyView.setText(Html.fromHtml(nodeContent));
+
+            if (node.getComment() != 0) {
+                // only show if comments are enabled for this node.
+                //
+                fetchAndDisplayComments(drupalSiteContext, node);
+            }
+
+
         } catch (DrupalFetchException e) {
             DrupalDialogHandler.showMessageDialog(this, e.getMessage());
         }
+    }
+
+    private void fetchAndDisplayComments(DrupalSiteContext drupalSiteContext, DrupalNode node) throws DrupalFetchException {
+        ListView lv = (ListView) findViewById(R.id.commentList);
+        List<DrupalComment> comments = drupalSiteContext.getComments(node.getNid());
+        ArrayAdapter<DrupalComment> commentArrayAdapter = new ArrayAdapter<DrupalComment>(getApplicationContext(), R.layout.commentrow, comments) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                DrupalComment drupalComment = this.getItem(position);
+                View v = convertView;
+                if (v == null) {
+                    v = getLayoutInflater().inflate(R.layout.commentrow, (ViewGroup) v);
+                }
+                if (drupalComment != null) {
+                    TextView commentSubjectView = (TextView) v.findViewById(R.id.commentSubject);
+                    String subject = drupalComment.getSubject();
+                    if (commentSubjectView != null && subject != null && !"".equals(subject)) {
+                        commentSubjectView.setText(subject);
+                    }
+                    TextView commentBodyView = (TextView) v.findViewById(R.id.commentBody);
+                    String commentBody = drupalComment.getComment();
+                    if (commentBodyView != null && commentBody != null && !"".equals(drupalComment.getComment())) {
+                        commentBodyView.setText(commentBody);
+                    }
+                }
+                return v;
+            }
+        };
+        lv.setAdapter(commentArrayAdapter);
+        commentArrayAdapter.notifyDataSetChanged();
     }
 }
