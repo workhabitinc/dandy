@@ -18,7 +18,6 @@ import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import com.workhabit.drupal.publisher.support.ReadItLaterDatabaseHelper;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.workhabit.dandy.dao.GenericDao;
 import org.workhabit.dandy.dao.impl.DaoFactory;
 import org.workhabit.drupal.api.entity.DrupalComment;
@@ -28,10 +27,9 @@ import org.workhabit.drupal.api.entity.ReadItLater;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
-import java.io.File;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -134,12 +132,40 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
                     for (DrupalField drupalField : fields) {
                         if ("field_title_image".equals(drupalField.getName())) {
                             try {
-                                HashMap<String, String> imagedata = drupalField.getValues().get(0);
                                 WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
                                 int displayWidth = wm.getDefaultDisplay().getWidth();
+
+                                HashMap<String, String> imagedata = drupalField.getValues().get(0);
                                 String fileDirectoryPath = drupalSiteContext.getFileDirectoryPath();
                                 String filepath = fileDirectoryPath + "/imagecache/w" + displayWidth + "/" + imagedata.get("filepath");
-                                InputStream fileStream = drupalSiteContext.getFileStream(filepath);
+
+                                MessageDigest digest = MessageDigest.getInstance("MD5");
+                                digest.update(filepath.getBytes());
+                                byte messageDigest[] = digest.digest();
+                                StringBuffer hash = new StringBuffer();
+                                for (int i = 0; i < messageDigest.length; i++) {
+                                    hash.append(Integer.toHexString(0xFF & messageDigest[i]));
+                                }
+                                File f = new File(getCacheDir() + File.separator + hash.toString());
+
+                                InputStream fileStream;
+                                if (f.exists()) {
+                                    fileStream = new FileInputStream(f);
+                                } else {
+                                    fileStream = drupalSiteContext.getFileStream(filepath);
+                                    byte[] buf = new byte[1024];
+                                    // persist the file locally
+                                    f.createNewFile();
+                                    FileOutputStream outStream = new FileOutputStream(f);
+
+                                    int len;
+                                    while ((len = fileStream.read(buf)) > 0) {
+                                        outStream.write(buf, 0, len);
+                                    }
+                                    fileStream.close();
+                                    outStream.close();
+                                    fileStream = new FileInputStream(f);
+                                }
 
                                 Bitmap bitmap = BitmapFactory.decodeStream(new FlushedInputStream(fileStream));
                                 if (bitmap != null) {
@@ -150,11 +176,14 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
                                     BitmapDrawable bitmapDrawable = new BitmapDrawable(resizedBitmap);
                                     titleView.setBackgroundDrawable(bitmapDrawable);
                                     titleView.setHeight((int) newHeight);
+                                    titleView.invalidate();
                                 }
                             } catch (IOException e) {
                                 // do nothing
                             } catch (DrupalFetchException e) {
                                 DrupalDialogHandler.showMessageDialog(getParent(), e.getMessage());
+                            } catch (NoSuchAlgorithmException e) {
+                                // don't do anything
                             }
 
                         }
