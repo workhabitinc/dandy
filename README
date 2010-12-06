@@ -3,7 +3,11 @@ Version 0.2 of the Dandy toolkit
 Current Status:
 Working implementation of dandy-api for almost all fetch functionality (e.g. saves don't yet work).
 
-UPDATE 2010-Oct-25: The name will be changing.  To what, we're not sure, but stay tuned!
+UPDATE 2010-Dec-06: The new name for AnDrupal is Dandy.  Git repo data updated as well.  We also now
+have support for fetching individual comments, all comments for a node, as well as preliminary CCK support.  We've also
+added support on jsonRequestManager for passthru of file data (such as images) so that the publisher app can display
+images provided by cck imagefield.
+
 
 Build Instructions
 ------------------
@@ -47,6 +51,16 @@ To deploy to your virtual device:
 
 mvn android:deploy
 
-TODO: Implement save functionality
-TODO: Implement getComment functionality
-TODO: Work out UI side of things.
+TODO: Implement "read it later" functionality.
+
+This works in a test container, but for SQLite on android is throwing invalid constraint exceptions.
+
+TODO: new comment screen
+
+Functionality for save comment works in test container, needs to be implemented in UI for publisher.
+
+TODO: upload file
+
+Ability to attach an image to a node (this is of course pending the ability to actually post a node)
+
+TODO: support for Services 3.x branch and Drupal 7.

@@ -18,6 +18,7 @@ import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import com.workhabit.drupal.publisher.support.ReadItLaterDatabaseHelper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.workhabit.dandy.dao.GenericDao;
 import org.workhabit.dandy.dao.impl.DaoFactory;
 import org.workhabit.drupal.api.entity.DrupalComment;
@@ -27,6 +28,7 @@ import org.workhabit.drupal.api.entity.ReadItLater;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
+import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -138,7 +140,6 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
                                 String fileDirectoryPath = drupalSiteContext.getFileDirectoryPath();
                                 String filepath = fileDirectoryPath + "/imagecache/w" + displayWidth + "/" + imagedata.get("filepath");
                                 InputStream fileStream = drupalSiteContext.getFileStream(filepath);
-
 
                                 Bitmap bitmap = BitmapFactory.decodeStream(new FlushedInputStream(fileStream));
                                 if (bitmap != null) {
