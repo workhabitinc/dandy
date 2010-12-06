@@ -9,6 +9,9 @@ import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
 import org.workhabit.drupal.api.site.impl.KeyRequestSigningInterceptorImpl;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 11/12/10, 10:56 AM
@@ -42,5 +45,12 @@ public class LocalDrupalSiteContextImplTest {
     @Test
     public void testGetNode() throws DrupalFetchException {
         DrupalNode node = drupalSiteContext.getNode(4);
+    }
+
+    @Test
+    public void testGetFileDirectory() throws DrupalFetchException {
+        String fileDirectoryPath = drupalSiteContext.getFileDirectoryPath();
+        assertNotNull(fileDirectoryPath);
+        assertFalse("{\"#message\":\"Access denied\",\"#error\":true}".equals(fileDirectoryPath));
     }
 }

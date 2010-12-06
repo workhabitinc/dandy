@@ -35,6 +35,9 @@
                       android:layout_height="wrap_content"
                       android:layout_weight="5"
                       android:scrollbars="none"/>
+            <Button android:id="@+id/newCommentButton"
+                    android:layout_width="fill_parent" android:layout_height="6dip" android:text="@string/newComment"
+                    android:onClick="onNewCommentButtonClick"/>
         </LinearLayout>
     </ScrollView>
     <include android:id="@id/bottomNav" layout="@layout/bottomnav"/>

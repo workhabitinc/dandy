@@ -45,4 +45,6 @@ public interface DrupalSiteContext {
     List<DrupalComment> getComments(int nid) throws DrupalFetchException;
 
     InputStream getFileStream(String filepath) throws IOException;
+
+    String getFileDirectoryPath() throws DrupalFetchException;
 }

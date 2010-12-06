@@ -45,7 +45,6 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     private String session;
 
     private DrupalUser user;
-    private boolean isConnected;
     private String drupalSiteUrl;
     private String servicePath;
 
@@ -103,7 +102,6 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
                 throw new DrupalFetchException(object);
             }
             setSession(null);
-            isConnected = false;
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalLogoutException(e);
         } catch (IOException e) {
@@ -330,8 +328,10 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
     }
 
-    private String getFileDirectoryPath() throws DrupalFetchException {
+    public String getFileDirectoryPath() throws DrupalFetchException {
+        connect();
         Map<String, Object> data = new HashMap<String, Object>();
+        data.put("sessid", session);
         try {
             String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_GETDIRECTORYPATH, data, true);
             JSONObject objectResult = new JSONObject(result);

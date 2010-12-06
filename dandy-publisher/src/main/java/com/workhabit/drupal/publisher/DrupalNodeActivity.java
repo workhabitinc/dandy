@@ -1,11 +1,10 @@
 package com.workhabit.drupal.publisher;
 
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.*;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Html;
@@ -28,6 +27,7 @@ import org.workhabit.drupal.api.entity.ReadItLater;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -104,29 +104,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
             lastNode = node;
             TextView titleView = (TextView) findViewById(R.id.nodeTitle);
             TextView bodyView = (TextView) findViewById(R.id.nodeBody);
-            /*if (node.getFields() != null) {
-                List<DrupalField> fields = node.getFields();
-                for (DrupalField drupalField : fields) {
-                    if ("field_title_image".equals(drupalField.getName())) {
-                        HashMap<String, String> imagedata = drupalField.getValues().get(0);
-                        String filepath = imagedata.get("filepath");
-                        InputStream fileStream = drupalSiteContext.getFileStream(filepath);
-                        Bitmap bitmap = BitmapFactory.decodeStream(fileStream);
-                        WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-                        int displayWidth = windowManager.getDefaultDisplay().getWidth();
-                        // get ratio of width/height for drawable
-                        Matrix m = new Matrix();
-                        float newWidth = displayWidth;
-                        float newHeight = bitmap.getHeight() / (bitmap.getWidth() / displayWidth);
-                        m.postScale(newWidth, newHeight);
-                        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, (int)newWidth, (int)newHeight, m, true);
-                        BitmapDrawable bitmapDrawable = new BitmapDrawable(resizedBitmap);
-                        titleView.setBackgroundDrawable(bitmapDrawable);
-                        titleView.setHeight((int) newHeight);
-
-                    }
-                }
-            } */
+            fetchAndDisplayImage(drupalSiteContext, node, titleView);
             titleView.setText(node.getTitle());
             String nodeContent = String.format("<p>%s</p>", node.getBody().replaceAll("\r\n", "\n").replaceAll("\n\n", "</p><p>"));
             bodyView.setText(Html.fromHtml(nodeContent));
@@ -140,8 +118,52 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
 
         } catch (DrupalFetchException e) {
             DrupalDialogHandler.showMessageDialog(this, e.getMessage());
+        } catch (IOException e) {
+            DrupalDialogHandler.showMessageDialog(this, e.getMessage());
         }
     }
+
+    private void fetchAndDisplayImage(final DrupalSiteContext drupalSiteContext, final DrupalNode node, final TextView titleView) throws IOException {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                if (node.getFields() != null) {
+                    List<DrupalField> fields = node.getFields();
+                    for (DrupalField drupalField : fields) {
+                        if ("field_title_image".equals(drupalField.getName())) {
+                            try {
+                                HashMap<String, String> imagedata = drupalField.getValues().get(0);
+                                WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+                                int displayWidth = wm.getDefaultDisplay().getWidth();
+                                String fileDirectoryPath = drupalSiteContext.getFileDirectoryPath();
+                                String filepath = fileDirectoryPath + "/imagecache/w" + displayWidth + "/" + imagedata.get("filepath");
+                                InputStream fileStream = drupalSiteContext.getFileStream(filepath);
+
+
+                                Bitmap bitmap = BitmapFactory.decodeStream(new FlushedInputStream(fileStream));
+                                if (bitmap != null) {
+                                    // get ratio of width/height for drawable
+                                    float ratio = displayWidth / bitmap.getWidth();
+                                    float newHeight = bitmap.getHeight() * ratio;
+                                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, (int) displayWidth, (int) newHeight, false);
+                                    BitmapDrawable bitmapDrawable = new BitmapDrawable(resizedBitmap);
+                                    titleView.setBackgroundDrawable(bitmapDrawable);
+                                    titleView.setHeight((int) newHeight);
+                                }
+                            } catch (IOException e) {
+                                // do nothing
+                            } catch (DrupalFetchException e) {
+                                DrupalDialogHandler.showMessageDialog(getParent(), e.getMessage());
+                            }
+
+                        }
+                    }
+                }
+            }
+        };
+        t.start();
+    }
+
 
     private void fetchAndDisplayComments(DrupalSiteContext drupalSiteContext, DrupalNode node) throws DrupalFetchException {
         ListView lv = (ListView) findViewById(R.id.commentList);
@@ -173,4 +195,36 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
         lv.setAdapter(commentArrayAdapter);
         commentArrayAdapter.notifyDataSetChanged();
     }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void onNewCommentButtonClick(View v) {
+        Intent i = new Intent(getApplicationContext(), NewCommentActivity.class);
+        i.putExtra("nid", lastNode.getNid());
+        startActivity(i);
+    }
+
+    static class FlushedInputStream extends FilterInputStream {
+        public FlushedInputStream(InputStream inputStream) {
+            super(inputStream);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            long totalBytesSkipped = 0L;
+            while (totalBytesSkipped < n) {
+                long bytesSkipped = in.skip(n - totalBytesSkipped);
+                if (bytesSkipped == 0L) {
+                    int ibyte = read();
+                    if (ibyte < 0) {
+                        break;  // we reached EOF
+                    } else {
+                        bytesSkipped = 1; // we read one byte
+                    }
+                }
+                totalBytesSkipped += bytesSkipped;
+            }
+            return totalBytesSkipped;
+        }
+    }
+
 }

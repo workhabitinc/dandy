@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicHeader;
@@ -18,6 +19,7 @@ import org.apache.http.params.HttpParams;
 import org.workhabit.drupal.http.JsonRequestManager;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +63,7 @@ public abstract class AndroidJsonRequestManagerImpl implements JsonRequestManage
     public InputStream get(String path) throws IOException {
         HttpGet get = new HttpGet(path);
         HttpResponse response = client.execute(get);
-        return response.getEntity().getContent();
+        return new BufferedHttpEntity(response.getEntity()).getContent();
     }
 
     protected abstract List<NameValuePair> processParameters(String method, Map<String, Object> data, boolean escapeInput);

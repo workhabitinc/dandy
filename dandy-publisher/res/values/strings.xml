@@ -14,4 +14,5 @@
     <string name="main_no_items">No news items to display.</string>
     <string name="readItLater">Read it Later</string>
     <string name="headlines">Headlines</string>
+    <string name="newComment">New Comment</string>
 </resources>
