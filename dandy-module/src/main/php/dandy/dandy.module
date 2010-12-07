@@ -2,6 +2,21 @@
 
 include_once('dandy.features.inc');
 
+function dandy_menu() {
+    $items = array();
+    $items['dandy/apiversion'] = array(
+        'title' => '',
+        'page callback' => 'dandy_apiversion_page',
+        'access arguments' => array('access dandy api version'),
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function dandy_apiversion_page() {
+    print 2;
+}
+
 /**
  * implementation of hook_service
  */
