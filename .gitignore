@@ -1,0 +1,8 @@
+/dandy-api/target/
+/dandy-dao/target/
+/dandy-module/target/
+/test.db:memory:
+/test.xml
+/dandy-parent.iws
+/dandy-publisher/target/
+/dandy-module/dandy-module.iml
