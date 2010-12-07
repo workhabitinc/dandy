@@ -57,11 +57,13 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext {
     }
 
     public List<DrupalNode> getNodeView(String viewName) throws DrupalFetchException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: implement
+        return null;
     }
 
     public List<DrupalNode> getNodeView(String viewName, String viewArguments) throws DrupalFetchException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: implement
+        return null;
     }
 
     public DrupalNode getNode(int nid) throws DrupalFetchException {
@@ -79,42 +81,58 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext {
     }
 
     public DrupalComment getComment(int cid) throws DrupalFetchException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String path = String.format("%s/%s/comment/%d.json", siteUrl, SERVICES_ENDPOINT, cid);
+        try {
+            String result = requestManager.getString(path);
+            DrupalJsonObjectSerializer<DrupalComment> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalComment.class);
+            return serializer.unserialize(result);
+        } catch (IOException e) {
+            throw new DrupalFetchException(e);
+        } catch (JSONException e) {
+            throw new DrupalFetchException(e);
+        }
     }
 
     public void saveComment(DrupalComment comment) throws DrupalFetchException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //TODO: implement
     }
 
     public DrupalUser login(String username, String password) throws DrupalLoginException, DrupalFetchException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        //TODO: implement
+        return null;
     }
 
     public List<DrupalTaxonomyTerm> getTermView(String s) throws DrupalFetchException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: implement
+        return null;
     }
 
     public List<DrupalTaxonomyTerm> getCategoryList() throws DrupalFetchException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: implement
+        return null;
     }
 
     public void registerNewUser(String username, String password, String email) {
-
+        // TODO: implement
     }
 
     public int saveFile(byte[] bytes, String fileName) throws DrupalFetchException {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: implement
+        return 0;
     }
 
     public List<DrupalComment> getComments(int nid) throws DrupalFetchException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: implement
+        return null;
     }
 
     public InputStream getFileStream(String filepath) throws IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: implement
+        return null;
     }
 
     public String getFileDirectoryPath() throws DrupalFetchException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: implement
+        return null;
     }
 }
