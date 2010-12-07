@@ -6,8 +6,8 @@ import org.workhabit.drupal.api.CommonsHttpClientDrupalServicesRequestManager;
 import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
-import org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
-import org.workhabit.drupal.api.site.impl.KeyRequestSigningInterceptorImpl;
+import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
+import org.workhabit.drupal.api.site.impl.v2.KeyRequestSigningInterceptorImpl;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
  * Date: 11/12/10, 10:56 AM
  */
 public class LocalDrupalSiteContextImplTest {
-    private DrupalSiteContextImpl drupalSiteContext;
+    private DrupalSiteContextV2Impl drupalSiteContext;
 
     @Before
     public void setUp() {
@@ -27,7 +27,7 @@ public class LocalDrupalSiteContextImplTest {
         requestSigningInterceptor.setPrivateKey("9e47c52fae3c36baff404f7072e46547");
         manager.setRequestSigningInterceptor(requestSigningInterceptor);
 
-        drupalSiteContext = new DrupalSiteContextImpl("http://ad.hourglassone.com");
+        drupalSiteContext = new DrupalSiteContextV2Impl("http://ad.hourglassone.com");
         drupalSiteContext.setDrupalServicesRequestManager(manager);
     }
 

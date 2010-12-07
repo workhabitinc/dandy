@@ -3,8 +3,8 @@ package com.workhabit.drupal.publisher;
 import android.app.Application;
 import com.workhabit.drupal.http.AndroidDrupalServicesRequestManagerImpl;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
-import org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
-import org.workhabit.drupal.api.site.impl.KeyRequestSigningInterceptorImpl;
+import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
+import org.workhabit.drupal.api.site.impl.v2.KeyRequestSigningInterceptorImpl;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -16,7 +16,7 @@ public class DandyApplication extends Application {
     private static String privateKey;
     private static String drupalDomain;
 
-    private static DrupalSiteContextImpl drupalSiteContext;
+    private static DrupalSiteContextV2Impl drupalSiteContext;
 
     @Override
     public void onCreate() {
@@ -33,7 +33,7 @@ public class DandyApplication extends Application {
      */
     public static DrupalSiteContext getDrupalSiteContext() {
         if (drupalSiteContext == null) {
-            drupalSiteContext = new DrupalSiteContextImpl(drupalSiteUrl);
+            drupalSiteContext = new DrupalSiteContextV2Impl(drupalSiteUrl);
             AndroidDrupalServicesRequestManagerImpl requestManager = new AndroidDrupalServicesRequestManagerImpl();
 
             // set the request interceptor to handle signing based on drupal's key authentication

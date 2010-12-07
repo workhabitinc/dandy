@@ -12,6 +12,7 @@ import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
+import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ import static org.junit.Assert.fail;
  * Date: Oct 25, 2010, 1:43:22 PM
  */
 public class DrupalSiteContextImplTest {
-    private DrupalSiteContextImpl drupalSiteContext;
+    private DrupalSiteContextV2Impl drupalSiteContext;
     private DrupalServicesRequestManager mockDrupalServicesRequestManager;
     private Mockery context;
     private String siteUrl;
@@ -36,7 +37,7 @@ public class DrupalSiteContextImplTest {
     @Before
     public void setUp() throws Exception {
         siteUrl = "http://ad.hourglassone.com";
-        drupalSiteContext = new DrupalSiteContextImpl(siteUrl);
+        drupalSiteContext = new DrupalSiteContextV2Impl(siteUrl);
         context = new Mockery();
         mockDrupalServicesRequestManager = context.mock(DrupalServicesRequestManager.class);
         drupalSiteContext.setDrupalServicesRequestManager(mockDrupalServicesRequestManager);

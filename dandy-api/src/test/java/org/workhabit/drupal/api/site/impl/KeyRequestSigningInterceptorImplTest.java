@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.site.CalendarFactory;
 import org.workhabit.drupal.api.site.NonceFactory;
+import org.workhabit.drupal.api.site.impl.v2.KeyRequestSigningInterceptorImpl;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

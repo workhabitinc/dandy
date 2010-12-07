@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.site.impl;
+package org.workhabit.drupal.api.site.impl.v2;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -29,7 +29,7 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 12:21:03 PM
  */
-public class DrupalSiteContextImpl implements DrupalSiteContext {
+public class DrupalSiteContextV2Impl implements DrupalSiteContext {
 
     private static final String JSON_SERVICE_PATH = "/services/json";
     private static final String SERVICE_NAME_COMMENT_LOAD = "comment.load";
@@ -53,7 +53,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
      *
      * @param drupalSiteUrl site url to connect to
      */
-    public DrupalSiteContextImpl(String drupalSiteUrl) {
+    public DrupalSiteContextV2Impl(String drupalSiteUrl) {
         this.drupalSiteUrl = drupalSiteUrl;
         this.servicePath = new StringBuilder().append(drupalSiteUrl).append(JSON_SERVICE_PATH).toString();
     }

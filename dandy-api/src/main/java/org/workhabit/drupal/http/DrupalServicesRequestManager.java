@@ -15,7 +15,7 @@ public interface DrupalServicesRequestManager {
      * Make a request to the remote site without signing.
      * @param path path, including http:// to the remote request (excludes query string)
      * @param method the method required by Drupal to execute on services (e.g. node.get). See constants on
-     * {@link org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl} for examples of available methods.
+     * {@link org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl} for examples of available methods.
      *
      * @param data map of key value pairs corresponding to query string parameters
      * @param escapeInput true if the method's query string parameters should be quoted.
@@ -31,7 +31,7 @@ public interface DrupalServicesRequestManager {
      * make a POSt request to the remote site after signing the request.
      * @param path path, including http:// to the remote request (excludes query string)
      * @param method the method required by Drupal to execute on services (e.g. node.get). See constants on
-     * {@link org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl} for examples of available methods.
+     * {@link org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl} for examples of available methods.
      *
      * @param data map of key/value pairs corresponding to query string parameters.
      *

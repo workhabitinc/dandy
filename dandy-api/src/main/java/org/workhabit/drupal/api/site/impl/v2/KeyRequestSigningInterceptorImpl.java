@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.site.impl;
+package org.workhabit.drupal.api.site.impl.v2;
 
 import org.workhabit.drupal.api.site.CalendarFactory;
 import org.workhabit.drupal.api.site.support.DefaultCalendarFactoryImpl;
