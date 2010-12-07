@@ -35,10 +35,16 @@ public class DandyApplication extends Application {
         if (drupalSiteContext == null) {
             drupalSiteContext = new DrupalSiteContextImpl(drupalSiteUrl);
             AndroidDrupalServicesRequestManagerImpl requestManager = new AndroidDrupalServicesRequestManagerImpl();
+
+            // set the request interceptor to handle signing based on drupal's key authentication
+            //
             KeyRequestSigningInterceptorImpl requestSigningInterceptor = new KeyRequestSigningInterceptorImpl();
             requestSigningInterceptor.setDrupalDomain(drupalDomain);
             requestSigningInterceptor.setPrivateKey(privateKey);
             requestManager.setRequestSigningInterceptor(requestSigningInterceptor);
+
+            // set the android request manager on the context
+            //
             drupalSiteContext.setDrupalServicesRequestManager(requestManager);
         }
         return drupalSiteContext;

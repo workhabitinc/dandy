@@ -1,0 +1,41 @@
+<?php
+
+include_once('dandy.features.inc');
+
+/**
+ * implementation of hook_service
+ */
+function dandy_service() {
+  return array(
+    array(
+      '#method' => 'file.getDirectoryPath',
+      '#callback' => 'dandy_file_getdirectorypath',
+      '#access arguments' => array('access file directory path from remote'),
+      '#file' => array('file' => 'service.inc', 'module' => 'dandy'),
+      '#args' => array(),
+      '#return' => 'string',
+      '#help' => 'Return the path of the files directory',
+    ),
+    // get dictionary of taxonomy terms
+    array(
+      '#method' => 'taxonomy.dictionary',
+      '#callback' => 'dandy_taxonomy_dictionary',
+      '#access arguments' => array('access taxonomy from remote'),
+      '#file' => array('file' => 'service.inc', 'module' => 'dandy'),
+      '#args' => array(
+        array(
+          '#name' => 'vid',
+          '#type' => 'int',
+          '#optional' => TRUE,
+          '#description' => t('The VID to search on. Optional.'),
+        ),
+      ),
+      '#return' => 'array',
+      '#help' => 'Returns a list of taxonomy terms, optionally for the given vocabulary, with a count of published nodes in each.',
+    ),
+  );
+}
+
+function dandy_perm() {
+  return array('access file directory path from remote');
+}
