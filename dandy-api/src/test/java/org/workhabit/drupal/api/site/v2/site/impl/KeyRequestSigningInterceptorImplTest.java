@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.site.impl;
+package org.workhabit.drupal.api.site.v2.site.impl;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;

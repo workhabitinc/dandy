@@ -83,6 +83,18 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         return new BufferedHttpEntity(response.getEntity()).getContent();
     }
 
+    public String getString(String path) throws IOException {
+        InputStream contentInputStream = get(path);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
+        StringWriter sw = new StringWriter();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sw.write(line);
+            sw.write("\n");
+        }
+        return sw.toString();
+    }
+
     protected List<NameValuePair> processParameters(String method, Map<String, Object> data, boolean escapeInput) {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         NameValuePair pair = new BasicNameValuePair("method", "\"" + method + "\"");

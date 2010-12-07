@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.site.local;
+package org.workhabit.drupal.api.site.v2.site.local;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 11/12/10, 10:56 AM
  */
-public class LocalDrupalSiteContextImplTest {
+public class LocalDrupalSiteContextV2ImplTest {
     private DrupalSiteContextV2Impl drupalSiteContext;
 
     @Before

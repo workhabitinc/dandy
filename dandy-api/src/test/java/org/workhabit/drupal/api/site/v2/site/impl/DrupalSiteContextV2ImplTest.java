@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.site.impl;
+package org.workhabit.drupal.api.site.v2.site.impl;
 
 import com.google.gson.reflect.TypeToken;
 import org.hamcrest.collection.IsMapContaining;
@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 25, 2010, 1:43:22 PM
  */
-public class DrupalSiteContextImplTest {
+public class DrupalSiteContextV2ImplTest {
     private DrupalSiteContextV2Impl drupalSiteContext;
     private DrupalServicesRequestManager mockDrupalServicesRequestManager;
     private Mockery context;

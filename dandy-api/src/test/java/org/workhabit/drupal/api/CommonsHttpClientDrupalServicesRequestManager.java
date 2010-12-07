@@ -9,8 +9,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -58,6 +57,18 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
         HttpMethod getMethod = new GetMethod(path);
         client.executeMethod(getMethod);
         return getMethod.getResponseBodyAsStream();
+    }
+
+    public String getString(String path) throws IOException {
+        InputStream contentInputStream = get(path);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
+        StringWriter sw = new StringWriter();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sw.write(line);
+            sw.write("\n");
+        }
+        return sw.toString();
     }
 
     public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {

@@ -9,7 +9,7 @@ Drupal Dandy module now included in github.  This includes a couple of views (vi
 are used by the default Dandy-Publisher reference implementation.
 
 Issue discovered when serializing nodes that aren't assigned to a taxonomy.  This is an issue where Drupal serializes
-the taxonomy field as an empty array when no taxonomy exists, but as an object when they do.
+the taxonomy field as an empty array when no taxonomy exists, but as an object when they do. Fixed.
 
 UPDATE 2010-Dec-06:
 

@@ -54,4 +54,6 @@ public interface DrupalServicesRequestManager {
      * @throws IOException if there was a problem parsing the response.
      */
     public InputStream get(String path) throws IOException;
+
+    public String getString(String path) throws IOException;
 }
