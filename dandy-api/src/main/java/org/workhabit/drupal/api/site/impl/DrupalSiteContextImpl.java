@@ -15,7 +15,7 @@ import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.support.Base64;
-import org.workhabit.drupal.http.JsonRequestManager;
+import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +40,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     private static final String SERVICE_NAME_FILE_SAVE = "file.save";
     private static final String SERVICE_NAME_FILE_GETDIRECTORYPATH = "file.getDirectoryPath";
     private static final String SERVICE_NAME_COMMENT_LOADNODECOMMENTS = "comment.loadNodeComments";
-    private JsonRequestManager jsonRequestManager;
+    private DrupalServicesRequestManager drupalServicesRequestManager;
 
     private String session;
 
@@ -63,7 +63,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
      */
     public void connect() throws DrupalFetchException {
         try {
-            String result = jsonRequestManager.post(servicePath, "system.connect", null, true);
+            String result = drupalServicesRequestManager.post(servicePath, "system.connect", null, true);
             JSONObject object = new JSONObject(result);
             if ("true".equals(object.getString("#error"))) {
                 throw new DrupalFetchException(object);
@@ -96,7 +96,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     public void logout() throws DrupalLogoutException {
         try {
             connect();
-            String result = jsonRequestManager.postSigned(servicePath, "user.logout", null, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, "user.logout", null, true);
             JSONObject object = new JSONObject(result);
             if ("true".equals(object.getString("#error"))) {
                 throw new DrupalFetchException(object);
@@ -161,7 +161,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         data.put("nid", nid);
         data.put("sessid", session);
         try {
-            String result = jsonRequestManager.postSigned(servicePath, "node.get", data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, "node.get", data, true);
             DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -185,7 +185,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
 
         try {
-            String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_LOAD, data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_LOAD, data, true);
             DrupalJsonObjectSerializer<DrupalComment> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalComment.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -225,7 +225,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
 
         try {
-            String response = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_SAVE, data, false);
+            String response = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_SAVE, data, false);
             System.out.println(response);
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalSaveException(e);
@@ -251,7 +251,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
 
         try {
-            String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_USER_LOGIN, data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_USER_LOGIN, data, true);
             return processLoginResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -267,7 +267,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         }
 
         try {
-            String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_VIEWS_GET, data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_VIEWS_GET, data, true);
             return processGetTermViewResult(result);
         } catch (Exception e) {
             throw new DrupalFetchException(e);
@@ -283,7 +283,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
 
         data.put("vid", 1);
         try {
-            String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_TAXONOMY_DICTIONARY, data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_TAXONOMY_DICTIONARY, data, true);
             return processGetTermViewResult(result);
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
@@ -313,7 +313,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
             file.setFilepath(String.format("%s/%s", filePath, fileName));
             DrupalJsonObjectSerializer<DrupalFile> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
             data.put("file", serializer.serialize(file));
-            String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_SAVE, data, false);
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_SAVE, data, false);
             JSONObject object = new JSONObject(result);
             // TODO: handle error case
             return object.getInt("#data");
@@ -333,7 +333,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("sessid", session);
         try {
-            String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_GETDIRECTORYPATH, data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_GETDIRECTORYPATH, data, true);
             JSONObject objectResult = new JSONObject(result);
             assertNoErrors(objectResult);
             return objectResult.getString("#data");
@@ -358,7 +358,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
 
         data.put("sessid", session);
         try {
-            String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_LOADNODECOMMENTS, data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_LOADNODECOMMENTS, data, true);
             JSONObject objectResult = new JSONObject(result);
             assertNoErrors(objectResult);
             DrupalJsonObjectSerializer<DrupalComment> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalComment.class);
@@ -375,7 +375,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
     }
 
     public InputStream getFileStream(String filepath) throws IOException {
-        return jsonRequestManager.get(drupalSiteUrl + "/" + filepath);
+        return drupalServicesRequestManager.get(drupalSiteUrl + "/" + filepath);
     }
 
     public List<DrupalNode> getNodeView(String viewName, String viewArguments) throws DrupalFetchException {
@@ -389,7 +389,7 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
             data.put("sessid", session);
         }
         try {
-            String result = jsonRequestManager.postSigned(servicePath, SERVICE_NAME_VIEWS_GET, data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_VIEWS_GET, data, true);
             DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
             return serializer.unserializeList(result);
         } catch (Exception e) {
@@ -416,8 +416,8 @@ public class DrupalSiteContextImpl implements DrupalSiteContext {
         this.session = session;
     }
 
-    public void setJsonRequestManager(JsonRequestManager jsonRequestManager) {
-        this.jsonRequestManager = jsonRequestManager;
+    public void setDrupalServicesRequestManager(DrupalServicesRequestManager drupalServicesRequestManager) {
+        this.drupalServicesRequestManager = drupalServicesRequestManager;
     }
 
 }

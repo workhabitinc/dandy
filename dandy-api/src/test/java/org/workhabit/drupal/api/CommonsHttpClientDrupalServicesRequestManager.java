@@ -7,7 +7,7 @@ import org.apache.commons.httpclient.SimpleHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
-import org.workhabit.drupal.http.JsonRequestManager;
+import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,11 +20,11 @@ import java.util.Map;
  * Date: Oct 22, 2010, 10:20:31 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class CommonsHttpClientJsonRequestManager implements JsonRequestManager {
+public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServicesRequestManager {
     HttpClient client;
     private RequestSigningInterceptor requestSigningInterceptor;
 
-    public CommonsHttpClientJsonRequestManager() {
+    public CommonsHttpClientDrupalServicesRequestManager() {
         client = new HttpClient();
         client.setHttpConnectionManager(new SimpleHttpConnectionManager());
     }

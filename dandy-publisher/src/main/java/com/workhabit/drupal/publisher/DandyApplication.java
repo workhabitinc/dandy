@@ -1,8 +1,7 @@
 package com.workhabit.drupal.publisher;
 
 import android.app.Application;
-import com.workhabit.drupal.http.DrupalJsonRequestManager;
-import com.workhabit.drupal.publisher.R;
+import com.workhabit.drupal.http.AndroidDrupalServicesRequestManagerImpl;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextImpl;
 import org.workhabit.drupal.api.site.impl.KeyRequestSigningInterceptorImpl;
@@ -35,12 +34,12 @@ public class DandyApplication extends Application {
     public static DrupalSiteContext getDrupalSiteContext() {
         if (drupalSiteContext == null) {
             drupalSiteContext = new DrupalSiteContextImpl(drupalSiteUrl);
-            DrupalJsonRequestManager requestManager = new DrupalJsonRequestManager();
+            AndroidDrupalServicesRequestManagerImpl requestManager = new AndroidDrupalServicesRequestManagerImpl();
             KeyRequestSigningInterceptorImpl requestSigningInterceptor = new KeyRequestSigningInterceptorImpl();
             requestSigningInterceptor.setDrupalDomain(drupalDomain);
             requestSigningInterceptor.setPrivateKey(privateKey);
             requestManager.setRequestSigningInterceptor(requestSigningInterceptor);
-            drupalSiteContext.setJsonRequestManager(requestManager);
+            drupalSiteContext.setDrupalServicesRequestManager(requestManager);
         }
         return drupalSiteContext;
     }

@@ -5,7 +5,7 @@ Working implementation of dandy-api for almost all fetch functionality (e.g. sav
 
 UPDATE 2010-Dec-06: The new name for AnDrupal is Dandy.  Git repo data updated as well.  We also now
 have support for fetching individual comments, all comments for a node, as well as preliminary CCK support.  We've also
-added support on jsonRequestManager for passthru of file data (such as images) so that the publisher app can display
+added support on drupalServicesRequestManager for passthru of file data (such as images) so that the publisher app can display
 images provided by cck imagefield.
 
 

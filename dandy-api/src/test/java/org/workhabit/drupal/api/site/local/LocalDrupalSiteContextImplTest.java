@@ -2,7 +2,7 @@ package org.workhabit.drupal.api.site.local;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.workhabit.drupal.api.CommonsHttpClientJsonRequestManager;
+import org.workhabit.drupal.api.CommonsHttpClientDrupalServicesRequestManager;
 import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
@@ -21,14 +21,14 @@ public class LocalDrupalSiteContextImplTest {
 
     @Before
     public void setUp() {
-        CommonsHttpClientJsonRequestManager manager = new CommonsHttpClientJsonRequestManager();
+        CommonsHttpClientDrupalServicesRequestManager manager = new CommonsHttpClientDrupalServicesRequestManager();
         KeyRequestSigningInterceptorImpl requestSigningInterceptor = new KeyRequestSigningInterceptorImpl();
         requestSigningInterceptor.setDrupalDomain("workhabit.com");
         requestSigningInterceptor.setPrivateKey("9e47c52fae3c36baff404f7072e46547");
         manager.setRequestSigningInterceptor(requestSigningInterceptor);
 
         drupalSiteContext = new DrupalSiteContextImpl("http://ad.hourglassone.com");
-        drupalSiteContext.setJsonRequestManager(manager);
+        drupalSiteContext.setDrupalServicesRequestManager(manager);
     }
 
     @Test

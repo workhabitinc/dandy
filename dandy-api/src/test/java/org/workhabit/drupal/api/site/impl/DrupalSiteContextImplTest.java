@@ -12,7 +12,7 @@ import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
-import org.workhabit.drupal.http.JsonRequestManager;
+import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -29,7 +29,7 @@ import static org.junit.Assert.fail;
  */
 public class DrupalSiteContextImplTest {
     private DrupalSiteContextImpl drupalSiteContext;
-    private JsonRequestManager mockJsonRequestManager;
+    private DrupalServicesRequestManager mockDrupalServicesRequestManager;
     private Mockery context;
     private String siteUrl;
 
@@ -38,8 +38,8 @@ public class DrupalSiteContextImplTest {
         siteUrl = "http://ad.hourglassone.com";
         drupalSiteContext = new DrupalSiteContextImpl(siteUrl);
         context = new Mockery();
-        mockJsonRequestManager = context.mock(JsonRequestManager.class);
-        drupalSiteContext.setJsonRequestManager(mockJsonRequestManager);
+        mockDrupalServicesRequestManager = context.mock(DrupalServicesRequestManager.class);
+        drupalSiteContext.setDrupalServicesRequestManager(mockDrupalServicesRequestManager);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class DrupalSiteContextImplTest {
                 }.getRawType();
                 //noinspection unchecked
                 String json = "{\"#error\":false,\"#data\":\"\"}";
-                atLeast(1).of(mockJsonRequestManager)
+                atLeast(1).of(mockDrupalServicesRequestManager)
                         .post(
                                 with(equal(siteUrl + "/services/json")),
                                 with(equal("system.connect")),
@@ -84,7 +84,7 @@ public class DrupalSiteContextImplTest {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
                 //noinspection unchecked
-                one(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                one(mockDrupalServicesRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
                 String json = "{\"#error\":true,\"#data\":\"Error Message\"}";
                 will(returnValue(json));
             }
@@ -98,11 +98,11 @@ public class DrupalSiteContextImplTest {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
                 //noinspection unchecked
-                one(mockJsonRequestManager).postSigned(with(equal(siteUrl + "/services/json")), with(equal("user.logout")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                one(mockDrupalServicesRequestManager).postSigned(with(equal(siteUrl + "/services/json")), with(equal("user.logout")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
                 String json = "{\"#error\":false,\"#data\":\"\"}";
                 will(returnValue(json));
                 //noinspection unchecked
-                one(mockJsonRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                one(mockDrupalServicesRequestManager).post(with(equal(siteUrl + "/services/json")), with(equal("system.connect")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
                 json = "{\"#error\":false,\"#data\":\"\"}";
                 will(returnValue(json));
             }
@@ -117,7 +117,7 @@ public class DrupalSiteContextImplTest {
             {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
-                atLeast(1).of(mockJsonRequestManager).postSigned(with(equal(siteUrl + "/services/json")), with(equal("user.logout")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                atLeast(1).of(mockDrupalServicesRequestManager).postSigned(with(equal(siteUrl + "/services/json")), with(equal("user.logout")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
                 will(
                         onConsecutiveCalls(
                                 throwException(new NoSuchAlgorithmException()),
@@ -139,7 +139,7 @@ public class DrupalSiteContextImplTest {
 
     @Test
     public void testGetNodeView() throws Exception {
-        /*CommonsHttpClientJsonRequestManager manager = new CommonsHttpClientJsonRequestManager();
+        /*CommonsHttpClientDrupalServicesRequestManager manager = new CommonsHttpClientDrupalServicesRequestManager();
         KeyRequestSigningInterceptorImpl requestSigningInterceptor = new KeyRequestSigningInterceptorImpl();
         requestSigningInterceptor.setDrupalDomain("workhabit.com");
         requestSigningInterceptor.setPrivateKey("9e47c52fae3c36baff404f7072e46547");
@@ -152,7 +152,7 @@ public class DrupalSiteContextImplTest {
         setConnectExpectations();
         context.checking(new Expectations() {
             {
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(equal(siteUrl + "/services/json")),
                         with(equal("views.get")),
                         with(IsMapContaining.hasEntry("view_name", (Object) "andrupal_recent")),
@@ -171,7 +171,7 @@ public class DrupalSiteContextImplTest {
         setConnectExpectations();
         context.checking(new Expectations() {
             {
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(equal(siteUrl + "/services/json")),
                         with(equal("node.get")),
                         with(IsMapContaining.hasEntry("nid", (Object) 1)),
@@ -190,7 +190,7 @@ public class DrupalSiteContextImplTest {
         setConnectExpectations();
         context.checking(new Expectations() {
             {
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(equal(siteUrl + "/services/json")),
                         with(equal("comment.load")),
                         with(IsMapContaining.hasEntry("cid", (Object) 2)),
@@ -214,7 +214,7 @@ public class DrupalSiteContextImplTest {
         setConnectExpectations();
         context.checking(new Expectations() {
             {
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(
                                 equal(siteUrl + "/services/json")
                         ),
@@ -243,7 +243,7 @@ public class DrupalSiteContextImplTest {
         context.checking(new Expectations() {
             {
                 String json = "{\"#error\": false, \"#data\": []}";
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("views.get")),
                         with(IsMapContaining.hasEntry("view_name", (Object) "andrupal_categories")),
@@ -261,7 +261,7 @@ public class DrupalSiteContextImplTest {
         context.checking(new Expectations() {
             {
                 String json = "{\"#error\": false, \"#data\": []}";
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("taxonomy.dictionary")),
                         with(IsMapContaining.hasEntry("vid", (Object) 1)),
@@ -279,7 +279,7 @@ public class DrupalSiteContextImplTest {
         context.checking(new Expectations() {
             {
                 String json = "{\"#error\": false, \"#data\": []}";
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("comment.loadNodeComments")),
                         with(IsMapContaining.hasEntry("nid", (Object) 1)),
@@ -303,7 +303,7 @@ public class DrupalSiteContextImplTest {
             {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("file.getDirectoryPath")),
                         (Map<String, Object>) with(aNonNull(type)),
@@ -311,7 +311,7 @@ public class DrupalSiteContextImplTest {
                 );
                 String json = "{\"#error\":false,\"#data\":\"sites/default/files\"}";
                 will(returnValue(json));
-                one(mockJsonRequestManager).postSigned(
+                one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("file.save")),
                         with(IsMapContaining.hasEntry("file", (Object) "{\"file\":\"dGVzdCBmaWxlIGRhdGE\\u003d\",\"filepath\":\"sites/default/files/foo.txt\",\"filename\":\"foo.txt\"}")),
