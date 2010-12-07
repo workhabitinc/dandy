@@ -3,10 +3,17 @@ Version 0.3 of the Dandy toolkit
 Current Status:
 Working implementation of dandy-api for almost all fetch functionality (e.g. saves don't yet work).
 
-UPDATE 2010-Dec-07: Drupal Dandy module now included in github.  This includes a couple of views (via features) that
+UPDATE 2010-Dec-07:
+
+Drupal Dandy module now included in github.  This includes a couple of views (via features) that
 are used by the default Dandy-Publisher reference implementation.
 
-UPDATE 2010-Dec-06: The new name for AnDrupal is Dandy.  Git repo data updated as well.  We also now
+Issue discovered when serializing nodes that aren't assigned to a taxonomy.  This is an issue where Drupal serializes
+the taxonomy field as an empty array when no taxonomy exists, but as an object when they do.
+
+UPDATE 2010-Dec-06:
+
+The new name for AnDrupal is Dandy.  Git repo data updated as well.  We also now
 have support for fetching individual comments, all comments for a node, as well as preliminary CCK support.  We've also
 added support on drupalServicesRequestManager for passthru of file data (such as images) so that the publisher app can display
 images provided by cck imagefield.
