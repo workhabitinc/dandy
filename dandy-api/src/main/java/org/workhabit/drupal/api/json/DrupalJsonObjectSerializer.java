@@ -29,7 +29,10 @@ public class DrupalJsonObjectSerializer<T> {
         builder.setExclusionStrategies(new ExclusionStrategy() {
 
             public boolean shouldSkipField(FieldAttributes f) {
-                return "taxonomy".equals(f.getName());
+                if ("taxonomy".equals(f.getName())) {
+                    return true;
+                }
+                return false;
             }
 
             public boolean shouldSkipClass(Class<?> clazz) {
@@ -79,7 +82,7 @@ public class DrupalJsonObjectSerializer<T> {
                     if (taxonomy instanceof JSONArray) {
                         // empty
                     } else {
-                        JSONObject taxonomyObject = new JSONObject();
+                        JSONObject taxonomyObject = (JSONObject) taxonomy;
                         Iterator iterator = taxonomyObject.keys();
                         DrupalJsonObjectSerializer<DrupalTaxonomyTerm> taxonomyTermDrupalJsonObjectSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalTaxonomyTerm.class);
                         while (iterator.hasNext()) {

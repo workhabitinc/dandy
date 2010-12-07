@@ -312,6 +312,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             file.setFilename(fileName);
             file.setFilepath(String.format("%s/%s", filePath, fileName));
             DrupalJsonObjectSerializer<DrupalFile> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
+
             data.put("file", serializer.serialize(file));
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_SAVE, data, false);
             JSONObject object = new JSONObject(result);

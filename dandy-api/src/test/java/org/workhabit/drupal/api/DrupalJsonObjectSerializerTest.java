@@ -1,5 +1,7 @@
 package org.workhabit.drupal.api;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import org.json.JSONException;
 import org.junit.Test;
 import org.workhabit.drupal.api.entity.DrupalNode;
@@ -69,6 +71,7 @@ public class DrupalJsonObjectSerializerTest {
                 "       }" +
                 "    }" +
                 "}}";
+
         DrupalNode node = serializer.unserialize(json);
         assertNotNull(node);
         assertNotNull(node.getNid());

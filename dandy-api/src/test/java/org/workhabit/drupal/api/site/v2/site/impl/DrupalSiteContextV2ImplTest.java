@@ -313,7 +313,7 @@ public class DrupalSiteContextV2ImplTest {
                 one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("file.save")),
-                        with(IsMapContaining.hasEntry("file", (Object) "{\"file\":\"dGVzdCBmaWxlIGRhdGE\\u003d\",\"filepath\":\"sites/default/files/foo.txt\",\"filename\":\"foo.txt\"}")),
+                        with(IsMapContaining.hasEntry("file", (Object) "{\"file\":\"dGVzdCBmaWxlIGRhdGE\\u003d\",\"fid\":0,\"filepath\":\"sites/default/files/foo.txt\",\"filename\":\"foo.txt\"}")),
                         with(equal(false))
                 );
                 json = "{\"#error\":false,\"#data\":1}";
