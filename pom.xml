@@ -13,6 +13,7 @@
         <module>dandy-api</module>
         <module>dandy-dao</module>
         <module>dandy-publisher</module>
+        <module>dandy-module</module>
     </modules>
 
     <properties>
