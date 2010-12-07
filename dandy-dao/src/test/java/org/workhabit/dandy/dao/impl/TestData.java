@@ -7,7 +7,7 @@ import org.junit.Ignore;
  * Date: Oct 27, 2010, 2:52:58 PM
  */
 @Ignore
-public class TestData {
+class TestData {
     public static int getTestInt() {
         return (int) Math.floor(Math.random() * 100000);
     }

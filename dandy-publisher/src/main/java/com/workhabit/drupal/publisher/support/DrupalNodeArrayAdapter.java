@@ -19,8 +19,8 @@ import java.util.List;
  * Date: Sep 27, 2010, 6:04:08 PM
  */
 public class DrupalNodeArrayAdapter extends ArrayAdapter<DrupalNode> {
-    private List<DrupalNode> nodes;
-    protected LayoutInflater layoutInflater;
+    private final List<DrupalNode> nodes;
+    private final LayoutInflater layoutInflater;
 
     public DrupalNodeArrayAdapter(Context context, int textViewResourceId, List<DrupalNode> objects) {
         super(context, textViewResourceId, objects);

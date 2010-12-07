@@ -8,7 +8,7 @@ import org.json.JSONObject;
  * Date: Sep 24, 2010, 8:27:56 PM
  */
 public class DrupalLoginException extends Exception {
-    private JSONObject objectResult;
+    private final JSONObject objectResult;
     private String message;
 
     public DrupalLoginException(JSONObject objectResult, String siteUrl) {

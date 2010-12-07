@@ -34,7 +34,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"WeakerAccess"})
 public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRequestManager {
-    private HttpClient client;
+    private final HttpClient client;
     private RequestSigningInterceptor requestSigningInterceptor;
 
     public AndroidDrupalServicesRequestManagerImpl() {

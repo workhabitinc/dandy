@@ -253,15 +253,66 @@
   <component name="ProjectDictionaryState">
     <dictionary name="acs">
       <words>
+        <w>baff</w>
+        <w>booleans</w>
         <w>bottomnav</w>
+        <w>buttonlist</w>
         <w>cachefilename</w>
+        <w>cobertura</w>
+        <w>dbcp</w>
+        <w>decodabet</w>
         <w>deserializing</w>
+        <w>dimen</w>
+        <w>dont</w>
+        <w>ebcdic</w>
+        <w>edec</w>
+        <w>encodings</w>
+        <w>fcaf</w>
         <w>filedata</w>
         <w>filepath</w>
+        <w>filesize</w>
         <w>getdirectorypath</w>
+        <w>gunzip</w>
+        <w>gunzipped</w>
+        <w>gzipped</w>
+        <w>gzipping</w>
+        <w>hardcode</w>
+        <w>imagecache</w>
+        <w>imagefield</w>
+        <w>intrinsicly</w>
+        <w>javadocs</w>
+        <w>jayway</w>
+        <w>jdbc</w>
+        <w>jpeg</w>
+        <w>kellerman</w>
         <w>laters</w>
         <w>lifecycle</w>
+        <w>linefeeds</w>
         <w>loadnodecomments</w>
+        <w>mybytes</w>
+        <w>netdelay</w>
+        <w>netfast</w>
+        <w>netspeed</w>
+        <w>ormlite</w>
+        <w>oversized</w>
+        <w>possiblity</w>
+        <w>potx</w>
+        <w>presetname</w>
+        <w>readitlater</w>
+        <w>readlater</w>
+        <w>resize</w>
+        <w>resultset</w>
+        <w>sqlite</w>
+        <w>synergistically</w>
+        <w>tailers</w>
+        <w>testpass</w>
+        <w>textfield</w>
+        <w>tids</w>
+        <w>tnid</w>
+        <w>translatables</w>
+        <w>urlsafe</w>
+        <w>xerces</w>
+        <w>xerial</w>
       </words>
     </dictionary>
   </component>

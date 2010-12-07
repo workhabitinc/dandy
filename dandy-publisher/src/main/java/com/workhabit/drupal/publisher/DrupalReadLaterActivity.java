@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class DrupalReadLaterActivity extends AbstractDrupalNodeListActivity {
     private GenericDao<ReadItLater> readLaterDao;
-    GenericDao<DrupalNode> drupalNodeDao;
+    private GenericDao<DrupalNode> drupalNodeDao;
     private static boolean initialized = false;
 
     @Override

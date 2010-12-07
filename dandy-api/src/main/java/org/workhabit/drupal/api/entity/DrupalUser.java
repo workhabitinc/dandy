@@ -63,6 +63,7 @@ public class DrupalUser implements DrupalEntity {
         return Integer.toString(uid);
     }
 
+    @SuppressWarnings({"SameReturnValue"})
     public String getIdFieldName() {
         return "uid";
     }

@@ -67,6 +67,7 @@ public class DrupalSiteContextV2ImplTest {
                 }.getRawType();
                 //noinspection unchecked
                 String json = "{\"#error\":false,\"#data\":\"\"}";
+                //noinspection unchecked
                 atLeast(1).of(mockDrupalServicesRequestManager)
                         .post(
                                 with(equal(siteUrl + "/services/json")),
@@ -118,7 +119,13 @@ public class DrupalSiteContextV2ImplTest {
             {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
-                atLeast(1).of(mockDrupalServicesRequestManager).postSigned(with(equal(siteUrl + "/services/json")), with(equal("user.logout")), (Map<String, Object>) with(aNull(type)), with(equal(true)));
+                //noinspection unchecked
+                atLeast(1).of(mockDrupalServicesRequestManager).postSigned(
+                        with(equal(siteUrl + "/services/json")),
+                        with(equal("user.logout")),
+                        (Map<String, Object>) with(aNull(type)),
+                        with(equal(true))
+                );
                 will(
                         onConsecutiveCalls(
                                 throwException(new NoSuchAlgorithmException()),
@@ -206,11 +213,6 @@ public class DrupalSiteContextV2ImplTest {
     }
 
     @Test
-    public void testSaveComment() throws Exception {
-
-    }
-
-    @Test
     public void testLogin() throws Exception {
         setConnectExpectations();
         context.checking(new Expectations() {
@@ -293,17 +295,13 @@ public class DrupalSiteContextV2ImplTest {
     }
 
     @Test
-    public void testGetFile() {
-        // TODO: implement
-    }
-
-    @Test
     public void testSaveFile() throws Exception {
         setConnectExpectations();
         context.checking(new Expectations() {
             {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
+                //noinspection unchecked
                 one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
                         with(equal("file.getDirectoryPath")),

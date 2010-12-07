@@ -45,8 +45,8 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private String session;
 
     private DrupalUser user;
-    private String drupalSiteUrl;
-    private String servicePath;
+    private final String drupalSiteUrl;
+    private final String servicePath;
 
     /**
      * Constructor takes an authentication token to use for the lifecycle of requests for this instance
@@ -296,9 +296,9 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         }
     }
 
-    public DrupalUser registerNewUser(String username, String password, String email) {
+    public void registerNewUser(String username, String password, String email) {
         // TODO: Implement
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     public int saveFile(byte[] bytes, String fileName) throws DrupalFetchException {
@@ -412,7 +412,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         return user;
     }
 
-    public void setSession(String session) {
+    void setSession(String session) {
         this.session = session;
     }
 

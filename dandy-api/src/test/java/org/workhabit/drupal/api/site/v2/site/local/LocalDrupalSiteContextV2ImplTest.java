@@ -45,6 +45,7 @@ public class LocalDrupalSiteContextV2ImplTest {
     @Test
     public void testGetNode() throws DrupalFetchException {
         DrupalNode node = drupalSiteContext.getNode(4);
+        assertNotNull(node);
     }
 
     @Test

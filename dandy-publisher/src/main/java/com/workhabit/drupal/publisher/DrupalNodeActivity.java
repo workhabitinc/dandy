@@ -143,8 +143,8 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
                                 digest.update(filepath.getBytes());
                                 byte messageDigest[] = digest.digest();
                                 StringBuffer hash = new StringBuffer();
-                                for (int i = 0; i < messageDigest.length; i++) {
-                                    hash.append(Integer.toHexString(0xFF & messageDigest[i]));
+                                for (byte aMessageDigest : messageDigest) {
+                                    hash.append(Integer.toHexString(0xFF & aMessageDigest));
                                 }
                                 File f = new File(getCacheDir() + File.separator + hash.toString());
 
@@ -155,16 +155,18 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
                                     fileStream = drupalSiteContext.getFileStream(filepath);
                                     byte[] buf = new byte[1024];
                                     // persist the file locally
-                                    f.createNewFile();
-                                    FileOutputStream outStream = new FileOutputStream(f);
+                                    boolean newFile = f.createNewFile();
+                                    if (newFile) {
+                                        FileOutputStream outStream = new FileOutputStream(f);
 
-                                    int len;
-                                    while ((len = fileStream.read(buf)) > 0) {
-                                        outStream.write(buf, 0, len);
+                                        int len;
+                                        while ((len = fileStream.read(buf)) > 0) {
+                                            outStream.write(buf, 0, len);
+                                        }
+                                        fileStream.close();
+                                        outStream.close();
+                                        fileStream = new FileInputStream(f);
                                     }
-                                    fileStream.close();
-                                    outStream.close();
-                                    fileStream = new FileInputStream(f);
                                 }
 
                                 Bitmap bitmap = BitmapFactory.decodeStream(new FlushedInputStream(fileStream));
@@ -172,7 +174,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
                                     // get ratio of width/height for drawable
                                     float ratio = displayWidth / bitmap.getWidth();
                                     float newHeight = bitmap.getHeight() * ratio;
-                                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, (int) displayWidth, (int) newHeight, false);
+                                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, displayWidth, (int) newHeight, false);
                                     BitmapDrawable bitmapDrawable = new BitmapDrawable(resizedBitmap);
                                     titleView.setBackgroundDrawable(bitmapDrawable);
                                     titleView.setHeight((int) newHeight);

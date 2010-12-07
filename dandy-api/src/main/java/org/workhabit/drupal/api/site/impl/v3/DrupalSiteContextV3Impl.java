@@ -24,9 +24,9 @@ import java.util.Map;
  * Date: 12/7/10, 10:45 AM
  */
 public class DrupalSiteContextV3Impl implements DrupalSiteContext {
-    public static final String SERVICES_ENDPOINT = "services/dandy";
+    private static final String SERVICES_ENDPOINT = "services/dandy";
     private DrupalServicesRequestManager requestManager;
-    private String siteUrl;
+    private final String siteUrl;
 
     public DrupalSiteContextV3Impl(String url) {
         this.siteUrl = url;
@@ -98,8 +98,8 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public DrupalUser registerNewUser(String username, String password, String email) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public void registerNewUser(String username, String password, String email) {
+
     }
 
     public int saveFile(byte[] bytes, String fileName) throws DrupalFetchException {

@@ -4,9 +4,9 @@ package org.workhabit.drupal.api.entity;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 11/30/10, 10:57 AM
  */
-public class DrupalFile {
+public class DrupalFile implements DrupalEntity {
     private String file;
-    private String fid;
+    private int fid;
     private String filepath;
     private String filename;
 
@@ -18,11 +18,11 @@ public class DrupalFile {
         this.file = file;
     }
 
-    public String getFid() {
+    public int getFid() {
         return fid;
     }
 
-    public void setFid(String fid) {
+    public void setFid(int fid) {
         this.fid = fid;
     }
 
@@ -40,5 +40,9 @@ public class DrupalFile {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public String getId() {
+        return String.valueOf(fid);
     }
 }

@@ -16,8 +16,8 @@ import java.util.*;
  * Date: Oct 22, 2010, 10:51:49 AM
  */
 public class DrupalJsonObjectSerializer<T> {
-    private Class<T> clazz;
-    private Gson gson;
+    private final Class<T> clazz;
+    private final Gson gson;
 
     DrupalJsonObjectSerializer(Class<T> clazz) {
         this.clazz = clazz;

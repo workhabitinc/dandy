@@ -16,7 +16,7 @@ public class DaoFactory {
     private DaoFactory() {
         // no constructor, static object factory.
     }
-    private static Map<Class, GenericDao> daoMap = new HashMap<Class, GenericDao>();
+    private static final Map<Class, GenericDao> daoMap = new HashMap<Class, GenericDao>();
 
     public static <T extends DrupalEntity> GenericDao<T> getInstanceForClass(ConnectionSource connectionSource, Class<T> clazz) throws SQLException {
         if (!daoMap.containsKey(clazz)) {

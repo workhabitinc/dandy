@@ -7,8 +7,8 @@ import java.security.Key;
  * Date: 11/17/10, 2:47 PM
  */
 public class ModifiableKey implements Key {
-    private Key unmodifiableKey;
-    private byte[] encoded;
+    private final Key unmodifiableKey;
+    private final byte[] encoded;
 
     public ModifiableKey(Key unmodifiableKey) {
         this.encoded = unmodifiableKey.getEncoded();

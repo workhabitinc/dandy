@@ -11,7 +11,7 @@ import org.workhabit.drupal.api.annotations.IdFieldName;
 @SuppressWarnings({"UnusedDeclaration"})
 @DatabaseTable(tableName = "DrupalComment")
 @IdFieldName("cid")
-public class DrupalComment {
+public class DrupalComment implements DrupalEntity {
     @DatabaseField(canBeNull = false)
     private int nid;
     @DatabaseField(canBeNull = false)
@@ -61,5 +61,9 @@ public class DrupalComment {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getId() {
+        return String.valueOf(cid);
     }
 }

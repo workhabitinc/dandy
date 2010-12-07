@@ -18,9 +18,9 @@ import java.util.ArrayList;
  */
 @SuppressWarnings({"SameParameterValue"})
 public class DrupalTaxonomyAdapter extends ArrayAdapter<DrupalTaxonomyTerm> {
-    private ArrayList<DrupalTaxonomyTerm> terms;
+    private final ArrayList<DrupalTaxonomyTerm> terms;
 
-    protected LayoutInflater layoutInflater;
+    private final LayoutInflater layoutInflater;
 
     public DrupalTaxonomyAdapter(Context context, int textViewResourceId, ArrayList<DrupalTaxonomyTerm> objects) {
         super(context, textViewResourceId, objects);
