@@ -70,10 +70,11 @@ public class LocalDrupalSiteContextV2ImplTest {
         term.setTid(1);
         term.setName("Term1");
         taxonomy.put(1, term);
-        node.setTaxonomy(taxonomy);
+        //node.setTaxonomy(taxonomy);
         node.setType("page");
         node.setFormat(1);
         node.setBody("foo");
+        node.setUid(1);
         int nid = drupalSiteContext.saveNode(node);
         assertNotNull(nid);
 

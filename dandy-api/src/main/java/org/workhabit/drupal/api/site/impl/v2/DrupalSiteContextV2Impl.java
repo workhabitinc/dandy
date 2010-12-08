@@ -1,12 +1,10 @@
 package org.workhabit.drupal.api.site.impl.v2;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.workhabit.drupal.api.entity.*;
+import org.workhabit.drupal.api.json.BooleanAdapter;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
@@ -133,11 +131,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                                                             {
-     *                                                               '#error': boolean
-     *                                                               '#data': 'json string containing the result or error string if #error is true.'
-     *                                                             }
-     *                                                             </pre>
+     *                                                                                 {
+     *                                                                                   '#error': boolean
+     *                                                                                   '#data': 'json string containing the result or error string if #error is true.'
+     *                                                                                 }
+     *                                                                                 </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -414,13 +412,31 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         return user;
     }
 
-    public int saveNode(DrupalNode node) throws DrupalSaveException {
+    public int saveNode(final DrupalNode node) throws DrupalSaveException {
         try {
             connect();
-            DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
-            String json = serializer.serialize(node);
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(boolean.class, new BooleanAdapter());
+            ExclusionStrategy strategy = new ExclusionStrategy() {
+                public boolean shouldSkipField(FieldAttributes f) {
+                    if ("nid".equals(f.getName())) {
+                        if (node.getNid() == 0) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+            };
+
+            builder.setExclusionStrategies(strategy);
+            builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
+            Gson gson = builder.create();
             Map<String, Object> data = new HashMap<String, Object>();
-            data.put("node", json);
+            data.put("node", gson.toJson(node));
             data.put("sessid", session);
 
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_NODE_SAVE, data, false);

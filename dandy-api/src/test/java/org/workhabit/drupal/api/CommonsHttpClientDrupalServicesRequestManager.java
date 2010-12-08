@@ -33,10 +33,18 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
         postMethod.setParameter("method", "\"" + method + "\"");
         if (data != null) {
             for (Map.Entry<String, Object> entry : data.entrySet()) {
-                if (escapeInput) {
-                    postMethod.setParameter(entry.getKey(), "\"" + entry.getValue() + "\"");
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                if (escapeInput
+                        || "nonce".equals(key)
+                        || "hash".equals(key)
+                        || "domain_time_stamp".equals(key)
+                        || "domain_name".equals(key)
+                        || "sessid".equals(key)
+                        ) {
+                    postMethod.setParameter(key, "\"" + value + "\"");
                 } else {
-                    postMethod.setParameter(entry.getKey(), "" + entry.getValue());
+                    postMethod.setParameter(key, "" + value);
                 }
             }
         }
