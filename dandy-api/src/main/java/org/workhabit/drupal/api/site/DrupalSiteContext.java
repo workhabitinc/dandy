@@ -7,6 +7,7 @@ import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
+import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,4 +48,6 @@ public interface DrupalSiteContext {
     InputStream getFileStream(String filepath) throws IOException;
 
     String getFileDirectoryPath() throws DrupalFetchException;
+
+    int saveNode(DrupalNode node) throws DrupalSaveException;
 }

@@ -11,6 +11,7 @@ import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
+import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
@@ -134,5 +135,10 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext {
     public String getFileDirectoryPath() throws DrupalFetchException {
         // TODO: implement
         return null;
+    }
+
+    public int saveNode(DrupalNode node) throws DrupalSaveException {
+        // TODO: implement
+        return 0;
     }
 }

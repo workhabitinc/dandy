@@ -21,6 +21,8 @@ public class DrupalNode implements DrupalEntity {
     @DatabaseField(canBeNull = false)
     private int uid;
     @DatabaseField(canBeNull = false)
+    private String type;
+    @DatabaseField(canBeNull = false)
     private boolean status;
     @DatabaseField(canBeNull = false)
     private String title;
@@ -256,5 +258,13 @@ public class DrupalNode implements DrupalEntity {
 
     public String getId() {
         return Integer.toString(getNid());
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

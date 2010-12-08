@@ -5,12 +5,17 @@ import org.junit.Test;
 import org.workhabit.drupal.api.CommonsHttpClientDrupalServicesRequestManager;
 import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
+import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
 import org.workhabit.drupal.api.site.impl.v2.KeyRequestSigningInterceptorImpl;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -53,5 +58,24 @@ public class LocalDrupalSiteContextV2ImplTest {
         String fileDirectoryPath = drupalSiteContext.getFileDirectoryPath();
         assertNotNull(fileDirectoryPath);
         assertFalse("{\"#message\":\"Access denied\",\"#error\":true}".equals(fileDirectoryPath));
+        assertTrue("sites/default/files".equals(fileDirectoryPath));
+    }
+
+    @Test
+    public void testSaveNode() throws DrupalSaveException {
+        DrupalNode node = new DrupalNode();
+        node.setTitle("foo");
+        HashMap<Integer, DrupalTaxonomyTerm> taxonomy = new HashMap<Integer, DrupalTaxonomyTerm>();
+        DrupalTaxonomyTerm term = new DrupalTaxonomyTerm();
+        term.setTid(1);
+        term.setName("Term1");
+        taxonomy.put(1, term);
+        node.setTaxonomy(taxonomy);
+        node.setType("page");
+        node.setFormat(1);
+        node.setBody("foo");
+        int nid = drupalSiteContext.saveNode(node);
+        assertNotNull(nid);
+
     }
 }

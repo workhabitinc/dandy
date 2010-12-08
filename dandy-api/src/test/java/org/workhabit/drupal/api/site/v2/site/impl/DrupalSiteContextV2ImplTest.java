@@ -9,15 +9,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
+import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.allOf;
@@ -324,6 +327,8 @@ public class DrupalSiteContextV2ImplTest {
         String filedata = "test file data";
         drupalSiteContext.saveFile(filedata.getBytes(), filename);
     }
+
+
 
     @After
     public void tearDown() {

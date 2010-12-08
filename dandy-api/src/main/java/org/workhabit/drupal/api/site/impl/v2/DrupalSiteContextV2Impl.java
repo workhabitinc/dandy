@@ -40,6 +40,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private static final String SERVICE_NAME_FILE_SAVE = "file.save";
     private static final String SERVICE_NAME_FILE_GETDIRECTORYPATH = "file.getDirectoryPath";
     private static final String SERVICE_NAME_COMMENT_LOADNODECOMMENTS = "comment.loadNodeComments";
+    private static final String SERVICE_NAME_NODE_SAVE = "node.save";
     private DrupalServicesRequestManager drupalServicesRequestManager;
 
     private String session;
@@ -132,11 +133,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                                         {
-     *                                           '#error': boolean
-     *                                           '#data': 'json string containing the result or error string if #error is true.'
-     *                                         }
-     *                                         </pre>
+     *                                                             {
+     *                                                               '#error': boolean
+     *                                                               '#data': 'json string containing the result or error string if #error is true.'
+     *                                                             }
+     *                                                             </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -413,6 +414,32 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         return user;
     }
 
+    public int saveNode(DrupalNode node) throws DrupalSaveException {
+        try {
+            connect();
+            DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
+            String json = serializer.serialize(node);
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("node", json);
+            data.put("sessid", session);
+
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_NODE_SAVE, data, false);
+            JSONObject objectResult = new JSONObject(result);
+            assertNoErrors(objectResult);
+            return objectResult.getInt("#data");
+        } catch (IOException e) {
+            throw new DrupalSaveException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new DrupalSaveException(e);
+        } catch (InvalidKeyException e) {
+            throw new DrupalSaveException(e);
+        } catch (DrupalFetchException e) {
+            throw new DrupalSaveException(e);
+        } catch (JSONException e) {
+            throw new DrupalSaveException(e);
+        }
+    }
+
     void setSession(String session) {
         this.session = session;
     }
@@ -420,5 +447,4 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     public void setDrupalServicesRequestManager(DrupalServicesRequestManager drupalServicesRequestManager) {
         this.drupalServicesRequestManager = drupalServicesRequestManager;
     }
-
 }
