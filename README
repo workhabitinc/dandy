@@ -25,12 +25,13 @@ Build Instructions
 Step 1: Download the Android SDK
 Download it from http://developer.android.com/sdk/index.html.
 
-For the purposes of this install, we assume it was extracted at /opt/android-sdk
+For the purposes of this install, we assume it was extracted at /opt/android-sdk.  This installation has
+been tested against version 2.1 of the Android SDK.
 
 In your ~/.bashrc, add the following two lines:
 
 export ANDROID_HOME=/opt/android-sdk
-export PATH="$PATH:$ANDROID_HOME/bin"
+export PATH="$PATH:$ANDROID_HOME/tools"
 
 To activate this change, run:
 
@@ -44,7 +45,7 @@ Add it to your path by modifying .bashrc so the above lines read:
 
 export ANDROID_HOME=/opt/android-sdk
 export M2_HOME=/opt/maven
-export PATH="$PATH:$ANDROID_HOME/bin:$M2_HOME/bin"
+export PATH="$PATH:$ANDROID_HOME/tools:$M2_HOME/bin"
 
 Step 3: Build the project
 
@@ -60,6 +61,43 @@ mvn install
 To deploy to your virtual device:
 
 mvn android:deploy
+
+Using with IntelliJ IDEA
+------------------------
+
+Make sure you are using at least IDEA 10.0, as it contains bug fixes that allow IDEA and Maven to
+coexist on android projects.
+
+Maven will generate the R.java file if you run through mvn install.  If you haven't, IDEA will complain about it.
+You can also run mvn generate-sources in the dandy-publisher project to generate this file.
+
+Module configuration:
+dandy-api -
+
+Source Folders:
+src/main/java
+
+Test source folders:
+src/test/java
+
+Excluded Folders:
+target
+
+dandy-publisher - Configure the following paths:
+
+Source Folders:
+src/main/java
+target/generated-sources/r
+
+Excluded Folders:
+target/android-classes
+target/classes
+target/generated-sources/combined-resources
+target/generated-sources/extracted-dependencies
+target/maven-archiver
+
+
+
 
 TODO: Implement "read it later" functionality.
 
