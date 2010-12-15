@@ -7,3 +7,7 @@
 *.iml
 *.ipr
 *.iws
+/andrupal-parent.iml
+/dandy-api/dandy-api.iml
+/dandy-dao/dandy-dao.iml
+/dandy-publisher/dandy-publisher.iml
