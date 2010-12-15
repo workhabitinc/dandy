@@ -11,6 +11,10 @@ public class DrupalFetchException extends Exception {
     private JSONObject objectResult;
     private String message;
 
+    public DrupalFetchException(String message) {
+        this.message = message;
+    }
+
     public DrupalFetchException(JSONObject objectResult) {
 
         this.objectResult = objectResult;

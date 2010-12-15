@@ -113,8 +113,9 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext {
         return null;
     }
 
-    public void registerNewUser(String username, String password, String email) {
+    public int registerNewUser(String username, String password, String email) {
         // TODO: implement
+        return 0;
     }
 
     public int saveFile(byte[] bytes, String fileName) throws DrupalFetchException {

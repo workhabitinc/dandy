@@ -20,51 +20,70 @@ public class DrupalUser implements DrupalEntity {
     private Date access;
     private Date created;
     private Date login;
-
-    public DrupalUser(JSONObject objectResult, String siteUrl) throws DrupalLoginException {
-        try {
-            uid = objectResult.getInt("uid");
-            name = objectResult.getString("name");
-            mail = objectResult.getString("mail");
-            access = new Date(objectResult.getLong("access"));
-            created = new Date(objectResult.getLong("created"));
-            login = new Date(objectResult.getLong("login"));
-
-        } catch (JSONException e) {
-            throw new DrupalLoginException(objectResult, siteUrl);
-        }
-    }
+    private String password;
 
     public int getUid() {
         return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getMail() {
         return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public Date getAccess() {
         return access;
     }
 
+    public void setAccess(Date access) {
+        this.access = access;
+    }
+
     public Date getCreated() {
         return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     public Date getLogin() {
         return login;
     }
 
-    public String getId() {
-        return Integer.toString(uid);
+    public void setLogin(Date login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @SuppressWarnings({"SameReturnValue"})
     public String getIdFieldName() {
         return "uid";
+    }
+
+    public String getId() {
+        return String.valueOf(getUid());
     }
 }

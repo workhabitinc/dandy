@@ -70,7 +70,7 @@ public class LocalDrupalSiteContextV2ImplTest {
         term.setTid(1);
         term.setName("Term1");
         taxonomy.put(1, term);
-        //node.setTaxonomy(taxonomy);
+        node.setTaxonomy(taxonomy);
         node.setType("page");
         node.setFormat(1);
         node.setBody("foo");
@@ -79,4 +79,11 @@ public class LocalDrupalSiteContextV2ImplTest {
         assertNotNull(nid);
 
     }
+
+    /*@Test
+    public void testRegisterNewUser() throws DrupalSaveException {
+        int i = drupalSiteContext.registerNewUser("test", "test123", "test@test.com");
+        assertFalse(i == 0);
+
+    }*/
 }

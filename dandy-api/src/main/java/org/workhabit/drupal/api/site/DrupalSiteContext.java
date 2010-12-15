@@ -39,7 +39,7 @@ public interface DrupalSiteContext {
 
     List<DrupalTaxonomyTerm> getCategoryList() throws DrupalFetchException;
 
-    void registerNewUser(String username, String password, String email);
+    int registerNewUser(String username, String password, String email) throws DrupalSaveException;
 
     int saveFile(byte[] bytes, String fileName) throws DrupalFetchException;
 

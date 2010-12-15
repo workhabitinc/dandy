@@ -39,10 +39,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private static final String SERVICE_NAME_FILE_GETDIRECTORYPATH = "file.getDirectoryPath";
     private static final String SERVICE_NAME_COMMENT_LOADNODECOMMENTS = "comment.loadNodeComments";
     private static final String SERVICE_NAME_NODE_SAVE = "node.save";
+    private static final String SERVICE_NAME_CREATE_NEW_USER = "user.save";
+
     private DrupalServicesRequestManager drupalServicesRequestManager;
 
     private String session;
-
     private DrupalUser user;
     private final String drupalSiteUrl;
     private final String servicePath;
@@ -131,11 +132,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                                                                                 {
-     *                                                                                   '#error': boolean
-     *                                                                                   '#data': 'json string containing the result or error string if #error is true.'
-     *                                                                                 }
-     *                                                                                 </pre>
+     *                                                                                                                         {
+     *                                                                                                                           '#error': boolean
+     *                                                                                                                           '#data': 'json string containing the result or error string if #error is true.'
+     *                                                                                                                         }
+     *                                                                                                                         </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -143,6 +144,19 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     protected void assertNoErrors(JSONObject objectResult) throws JSONException, DrupalFetchException {
         if (objectResult.has("#error") && objectResult.getBoolean("#error")) {
             throw new DrupalFetchException(objectResult);
+        }
+        // there's another case where #error is false, but #data contains an #error and message
+        if (objectResult.has("#data")) {
+            Object data = objectResult.get("#data");
+            if (data instanceof JSONObject) {
+                JSONObject dataObject = (JSONObject) data;
+                if (dataObject.has("#error") && dataObject.getBoolean("#error")) {
+                    if (dataObject.has("#message")) {
+                        String error = dataObject.getString("#message");
+                        throw new DrupalFetchException(error);
+                    }
+                }
+            }
         }
     }
 
@@ -295,9 +309,52 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         }
     }
 
-    public void registerNewUser(String username, String password, String email) {
-        // TODO: Implement
+    public int registerNewUser(String username, String password, String email) throws DrupalSaveException {
+        try {
+            connect();
+            Map<String, Object> data = new HashMap<String, Object>();
+            final DrupalUser user = new DrupalUser();
+            user.setName(username);
+            user.setPassword(password);
+            user.setMail(email);
 
+            GsonBuilder builder = new GsonBuilder();
+            ExclusionStrategy strategy = new ExclusionStrategy() {
+                public boolean shouldSkipField(FieldAttributes f) {
+                    if ("uid".equals(f.getName())) {
+                    if (user.getUid() == 0) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        };
+        builder.setExclusionStrategies(strategy);
+        Gson gson = builder.create();
+        String jsonUser = gson.toJson(user);
+
+            data.put("account", jsonUser);
+            data.put("sessid", session);
+
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_CREATE_NEW_USER, data, false);
+            JSONObject object = new JSONObject(result);
+            assertNoErrors(object);
+            return object.getInt("#data");
+        } catch (JSONException e) {
+            throw new DrupalSaveException(e);
+        } catch (DrupalFetchException e) {
+            throw new DrupalSaveException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new DrupalSaveException(e);
+        } catch (InvalidKeyException e) {
+            throw new DrupalSaveException(e);
+        } catch (IOException e) {
+            throw new DrupalSaveException(e);
+        }
     }
 
     public int saveFile(byte[] bytes, String fileName) throws DrupalFetchException {
@@ -408,7 +465,8 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
 
         JSONObject dataObject = objectResult.getJSONObject("#data");
         setSession(dataObject.getString("sessid"));
-        user = new DrupalUser(dataObject.getJSONObject("user"), drupalSiteUrl);
+        DrupalJsonObjectSerializer<DrupalUser> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalUser.class);
+        user = serializer.unserialize(dataObject.getJSONObject("user").toString());
         return user;
     }
 
