@@ -1,4 +1,4 @@
-package com.workhabit.drupal.http;
+package org.workhabit.drupal.http;
 
 import android.util.Log;
 import org.apache.http.Header;

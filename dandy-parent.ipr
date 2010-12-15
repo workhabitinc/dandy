@@ -323,6 +323,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/dandy-android/dandy-android.iml" filepath="$PROJECT_DIR$/dandy-android/dandy-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/dandy-api/dandy-api.iml" filepath="$PROJECT_DIR$/dandy-api/dandy-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/dandy-dao/dandy-dao.iml" filepath="$PROJECT_DIR$/dandy-dao/dandy-dao.iml" />
       <module fileurl="file://$PROJECT_DIR$/dandy-module/dandy-module.iml" filepath="$PROJECT_DIR$/dandy-module/dandy-module.iml" />

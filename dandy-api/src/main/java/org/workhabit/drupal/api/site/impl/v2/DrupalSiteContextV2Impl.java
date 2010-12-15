@@ -174,7 +174,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         data.put("nid", nid);
         data.put("sessid", session);
         try {
-            String result = drupalServicesRequestManager.postSigned(servicePath, "node.getStream", data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, "node.get", data, true);
             DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -364,7 +364,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             String filePath = getFileDirectoryPath();
             Map<String, Object> data = new HashMap<String, Object>();
             DrupalFile file = new DrupalFile();
-            file.setFile(Base64.encodeToString(bytes, Base64.DEFAULT));
+            file.setFile(Base64.encodeToString(bytes, Base64.NO_WRAP));
             file.setFilename(fileName);
             file.setFilepath(String.format("%s/%s", filePath, fileName));
             DrupalJsonObjectSerializer<DrupalFile> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);

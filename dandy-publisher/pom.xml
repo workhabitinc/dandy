@@ -54,6 +54,11 @@
         </dependency>
         <dependency>
             <groupId>org.workhabit.dandy</groupId>
+            <artifactId>dandy-android</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.workhabit.dandy</groupId>
             <artifactId>dandy-dao</artifactId>
             <version>1.0</version>
         </dependency>
