@@ -11,3 +11,4 @@
 /dandy-api/dandy-api.iml
 /dandy-dao/dandy-dao.iml
 /dandy-publisher/dandy-publisher.iml
+/dandy-dao/test.db:memory:
