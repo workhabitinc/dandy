@@ -1,10 +1,10 @@
 package com.workhabit.drupal.publisher;
 
 import android.app.Application;
-import com.workhabit.drupal.http.AndroidDrupalServicesRequestManagerImpl;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
 import org.workhabit.drupal.api.site.impl.v2.KeyRequestSigningInterceptorImpl;
+import org.workhabit.drupal.http.AndroidDrupalServicesRequestManagerImpl;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs

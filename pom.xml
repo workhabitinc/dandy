@@ -17,6 +17,21 @@
         <module>dandy-module</module>
     </modules>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.url>http://nexus.workhabit.com/dandy</project.url>
@@ -33,17 +48,17 @@
 
 
     <scm>
-        <url>http://github.com/workhabitinc/andrupal</url>
-        <developerConnection>scm:git:git://github.com/workhabitinc/andrupal.git</developerConnection>
-        <connection>scm:git:git://github.com/workhabitinc/andrupal.git</connection>
+        <url>http://github.com/workhabitinc/dandy</url>
+        <developerConnection>scm:git:git://github.com/workhabitinc/dandy.git</developerConnection>
+        <connection>scm:git:git://github.com/workhabitinc/dandy.git</connection>
     </scm>
 
     <distributionManagement>
-        <downloadUrl>http://nexus.workhabit.com/andrupal</downloadUrl>
+        <downloadUrl>http://nexus.workhabit.com/dandy</downloadUrl>
         <site>
             <id>nexus-site.workhabit.com</id>
             <name>nexus.workhabit.com</name>
-            <url>scp://nexus.workhabit.com/var/www/nexus/htdocs/andrupal</url>
+            <url>scp://nexus.workhabit.com/var/www/nexus/htdocs/dandy</url>
         </site>
         <repository>
             <id>nexus.workhabit.com</id>

@@ -12,6 +12,8 @@
 
     <groupId>org.workhabit.dandy</groupId>
     <artifactId>dandy-android</artifactId>
+    <name>Dandy Android API</name>
+    <description>Android specific extensions to dandy-api</description>
     <version>1.0</version>
 
     <dependencies>

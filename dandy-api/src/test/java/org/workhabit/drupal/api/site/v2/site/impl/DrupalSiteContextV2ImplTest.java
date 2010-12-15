@@ -157,7 +157,7 @@ public class DrupalSiteContextV2ImplTest {
         manager.setRequestSigningInterceptor(requestSigningInterceptor);
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", "andrupal_recent");
-        String json = manager.post("http://ad.hourglassone.com/services/json", "views.getStream", data);
+        String json = manager.post("http://ad.hourglassone.com/services/json", "views.get", data);
         System.out.println(json);
                                       */
         setConnectExpectations();
@@ -165,7 +165,7 @@ public class DrupalSiteContextV2ImplTest {
             {
                 one(mockDrupalServicesRequestManager).postSigned(
                         with(equal(siteUrl + "/services/json")),
-                        with(equal("views.getStream")),
+                        with(equal("views.get")),
                         with(IsMapContaining.hasEntry("view_name", (Object) "andrupal_recent")),
                         with(equal(true))
                 );
@@ -184,7 +184,7 @@ public class DrupalSiteContextV2ImplTest {
             {
                 one(mockDrupalServicesRequestManager).postSigned(
                         with(equal(siteUrl + "/services/json")),
-                        with(equal("node.getStream")),
+                        with(equal("node.get")),
                         with(IsMapContaining.hasEntry("nid", (Object) 1)),
                         with(equal(true))
                 );
@@ -251,7 +251,7 @@ public class DrupalSiteContextV2ImplTest {
                 String json = "{\"#error\": false, \"#data\": []}";
                 one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
-                        with(equal("views.getStream")),
+                        with(equal("views.get")),
                         with(IsMapContaining.hasEntry("view_name", (Object) "andrupal_categories")),
                         with(equal(true))
                 );
