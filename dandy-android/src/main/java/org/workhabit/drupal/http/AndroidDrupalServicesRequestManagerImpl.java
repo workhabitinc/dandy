@@ -32,7 +32,7 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Oct 5, 2010, 6:50:54 PM
  */
-@SuppressWarnings({"WeakerAccess"})
+@SuppressWarnings({"WeakerAccess", "UnusedDeclaration"})
 public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRequestManager {
     private final HttpClient client;
     private RequestSigningInterceptor requestSigningInterceptor;
