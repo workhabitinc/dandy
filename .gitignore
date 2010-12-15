@@ -1,8 +1,9 @@
 /dandy-api/target/
 /dandy-dao/target/
 /dandy-module/target/
+/dandy-android/target/
 /test.db:memory:
-/test.xml
-/dandy-parent.iws
 /dandy-publisher/target/
-/dandy-module/dandy-module.iml
+*.iml
+*.ipr
+*.iws
