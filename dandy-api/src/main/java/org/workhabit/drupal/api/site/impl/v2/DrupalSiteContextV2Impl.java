@@ -364,7 +364,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             String filePath = getFileDirectoryPath();
             Map<String, Object> data = new HashMap<String, Object>();
             DrupalFile file = new DrupalFile();
-            file.setFile(Base64.encodeBytes(bytes));
+            file.setFile(Base64.encodeToString(bytes, Base64.DEFAULT));
             file.setFilename(fileName);
             file.setFilepath(String.format("%s/%s", filePath, fileName));
             DrupalJsonObjectSerializer<DrupalFile> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
