@@ -77,14 +77,14 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
 
     }
 
-    public InputStream get(String path) throws IOException {
+    public InputStream getStream(String path) throws IOException {
         HttpGet get = new HttpGet(path);
         HttpResponse response = client.execute(get);
         return new BufferedHttpEntity(response.getEntity()).getContent();
     }
 
     public String getString(String path) throws IOException {
-        InputStream contentInputStream = get(path);
+        InputStream contentInputStream = getStream(path);
         BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
         StringWriter sw = new StringWriter();
         String line;

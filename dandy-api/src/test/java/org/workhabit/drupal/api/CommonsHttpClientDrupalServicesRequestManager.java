@@ -61,14 +61,14 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
         return post(path, method, data, escapeInput);
     }
 
-    public InputStream get(String path) throws IOException {
+    public InputStream getStream(String path) throws IOException {
         HttpMethod getMethod = new GetMethod(path);
         client.executeMethod(getMethod);
         return getMethod.getResponseBodyAsStream();
     }
 
     public String getString(String path) throws IOException {
-        InputStream contentInputStream = get(path);
+        InputStream contentInputStream = getStream(path);
         BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
         StringWriter sw = new StringWriter();
         String line;

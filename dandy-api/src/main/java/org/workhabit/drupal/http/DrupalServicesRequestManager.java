@@ -14,7 +14,7 @@ public interface DrupalServicesRequestManager {
     /**
      * Make a request to the remote site without signing.
      * @param path path, including http:// to the remote request (excludes query string)
-     * @param method the method required by Drupal to execute on services (e.g. node.get). See constants on
+     * @param method the method required by Drupal to execute on services (e.g. node.getStream). See constants on
      * {@link org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl} for examples of available methods.
      *
      * @param data map of key value pairs corresponding to query string parameters
@@ -30,7 +30,7 @@ public interface DrupalServicesRequestManager {
     /**
      * make a POSt request to the remote site after signing the request.
      * @param path path, including http:// to the remote request (excludes query string)
-     * @param method the method required by Drupal to execute on services (e.g. node.get). See constants on
+     * @param method the method required by Drupal to execute on services (e.g. node.getStream). See constants on
      * {@link org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl} for examples of available methods.
      *
      * @param data map of key/value pairs corresponding to query string parameters.
@@ -53,7 +53,7 @@ public interface DrupalServicesRequestManager {
      *
      * @throws IOException if there was a problem parsing the response.
      */
-    public InputStream get(String path) throws IOException;
+    public InputStream getStream(String path) throws IOException;
 
     public String getString(String path) throws IOException;
 }

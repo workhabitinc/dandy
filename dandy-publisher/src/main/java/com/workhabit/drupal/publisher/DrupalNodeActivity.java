@@ -171,7 +171,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity {
 
                                 Bitmap bitmap = BitmapFactory.decodeStream(new FlushedInputStream(fileStream));
                                 if (bitmap != null) {
-                                    // get ratio of width/height for drawable
+                                    // getStream ratio of width/height for drawable
                                     float ratio = displayWidth / bitmap.getWidth();
                                     float newHeight = bitmap.getHeight() * ratio;
                                     Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, displayWidth, (int) newHeight, false);

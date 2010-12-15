@@ -33,7 +33,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private static final String SERVICE_NAME_COMMENT_LOAD = "comment.load";
     private static final String SERVICE_NAME_COMMENT_SAVE = "comment.save";
     private static final String SERVICE_NAME_USER_LOGIN = "user.login";
-    private static final String SERVICE_NAME_VIEWS_GET = "views.get";
+    private static final String SERVICE_NAME_VIEWS_GET = "views.getStream";
     private static final String SERVICE_NAME_TAXONOMY_DICTIONARY = "taxonomy.dictionary";
     private static final String SERVICE_NAME_FILE_SAVE = "file.save";
     private static final String SERVICE_NAME_FILE_GETDIRECTORYPATH = "file.getDirectoryPath";
@@ -174,7 +174,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         data.put("nid", nid);
         data.put("sessid", session);
         try {
-            String result = drupalServicesRequestManager.postSigned(servicePath, "node.get", data, true);
+            String result = drupalServicesRequestManager.postSigned(servicePath, "node.getStream", data, true);
             DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -432,7 +432,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     }
 
     public InputStream getFileStream(String filepath) throws IOException {
-        return drupalServicesRequestManager.get(drupalSiteUrl + "/" + filepath);
+        return drupalServicesRequestManager.getStream(drupalSiteUrl + "/" + filepath);
     }
 
     public List<DrupalNode> getNodeView(String viewName, String viewArguments) throws DrupalFetchException {

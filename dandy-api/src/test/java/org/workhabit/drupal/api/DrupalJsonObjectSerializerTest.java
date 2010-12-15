@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class DrupalJsonObjectSerializerTest {
     /**
-     * Test the json returned by a call to node.get with argument nid=1
+     * Test the json returned by a call to node.getStream with argument nid=1
      *
      * @throws Exception on error
      */
@@ -100,7 +100,7 @@ public class DrupalJsonObjectSerializerTest {
     }
 
     /**
-     * Test unserialize of a list of nodes from a call to views.get with view_name="andrupal_recent"
+     * Test unserialize of a list of nodes from a call to views.getStream with view_name="andrupal_recent"
      *
      * @throws Exception on error
      */
