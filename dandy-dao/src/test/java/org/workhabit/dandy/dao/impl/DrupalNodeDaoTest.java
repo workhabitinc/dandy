@@ -194,6 +194,7 @@ public class DrupalNodeDaoTest {
         node.setName(name);
         node.setCreated(now);
         node.setChanged(now);
+        node.setType(TestData.getTestText());
         return node;
     }
 
