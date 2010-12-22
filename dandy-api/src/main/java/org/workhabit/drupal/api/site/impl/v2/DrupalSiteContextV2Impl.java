@@ -40,11 +40,13 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private static final String SERVICE_NAME_COMMENT_LOADNODECOMMENTS = "comment.loadNodeComments";
     private static final String SERVICE_NAME_NODE_SAVE = "node.save";
     private static final String SERVICE_NAME_CREATE_NEW_USER = "user.save";
+    private static final String SERVICE_NAME_USER_GET = "user.get";
     private static final String SERVICE_NAME_NODE_GET = "node.get";
 
     private DrupalServicesRequestManager drupalServicesRequestManager;
 
     private String session;
+
     private DrupalUser user;
     private final String drupalSiteUrl;
     private final String servicePath;
@@ -57,6 +59,10 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     public DrupalSiteContextV2Impl(String drupalSiteUrl) {
         this.drupalSiteUrl = drupalSiteUrl;
         this.servicePath = new StringBuilder().append(drupalSiteUrl).append(JSON_SERVICE_PATH).toString();
+    }
+
+    public DrupalUser getCurrentUser() {
+        return user;
     }
 
     /**
@@ -133,11 +139,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                                                                                                                         {
-     *                                                                                                                           '#error': boolean
-     *                                                                                                                           '#data': 'json string containing the result or error string if #error is true.'
-     *                                                                                                                         }
-     *                                                                                                                         </pre>
+     *                                                                                                                                                                 {
+     *                                                                                                                                                                   '#error': boolean
+     *                                                                                                                                                                   '#data': 'json string containing the result or error string if #error is true.'
+     *                                                                                                                                                                 }
+     *                                                                                                                                                                 </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -323,20 +329,20 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             ExclusionStrategy strategy = new ExclusionStrategy() {
                 public boolean shouldSkipField(FieldAttributes f) {
                     if ("uid".equals(f.getName())) {
-                    if (user.getUid() == 0) {
-                        return true;
+                        if (user.getUid() == 0) {
+                            return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
-            }
 
-            public boolean shouldSkipClass(Class<?> clazz) {
-                return false;
-            }
-        };
-        builder.setExclusionStrategies(strategy);
-        Gson gson = builder.create();
-        String jsonUser = gson.toJson(user);
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+            };
+            builder.setExclusionStrategies(strategy);
+            Gson gson = builder.create();
+            String jsonUser = gson.toJson(user);
 
             data.put("account", jsonUser);
             data.put("sessid", session);
@@ -437,6 +443,10 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     }
 
     public List<DrupalNode> getNodeView(String viewName, String viewArguments) throws DrupalFetchException {
+        return getNodeView(viewName, viewArguments, -1, -1);
+    }
+
+    public List<DrupalNode> getNodeView(String viewName, String viewArguments, int offset, int limit) throws DrupalFetchException {
         connect();
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", viewName);
@@ -445,6 +455,10 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         }
         if (session != null && !"".equals(session)) {
             data.put("sessid", session);
+        }
+        if (offset > 0 && limit > 0) {
+            data.put("limit", limit);
+            data.put("offset", offset);
         }
         try {
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_VIEWS_GET, data, true);
@@ -512,6 +526,34 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             throw new DrupalSaveException(e);
         } catch (JSONException e) {
             throw new DrupalSaveException(e);
+        }
+    }
+
+    public DrupalUser getUser(int uid) throws DrupalFetchException {
+        try {
+            connect();
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("uid", uid);
+            if (session != null) {
+                data.put("sessid", session);
+            }
+            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_USER_GET, data, false);
+            JSONObject objectResult = new JSONObject(result);
+            assertNoErrors(objectResult);
+
+            JSONObject dataObject = objectResult.getJSONObject("#data");
+            setSession(dataObject.getString("sessid"));
+            DrupalJsonObjectSerializer<DrupalUser> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalUser.class);
+            user = serializer.unserialize(dataObject.getJSONObject("user").toString());
+            return user;
+        } catch (IOException e) {
+            throw new DrupalFetchException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new DrupalFetchException(e);
+        } catch (InvalidKeyException e) {
+            throw new DrupalFetchException(e);
+        } catch (JSONException e) {
+            throw new DrupalFetchException(e);
         }
     }
 
