@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.json.BooleanAdapter;
+import org.workhabit.drupal.api.json.DrupalFieldAdapter;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private DrupalUser user;
     private final String drupalSiteUrl;
     private final String servicePath;
+    private DrupalFieldAdapter drupalFieldAdapter;
 
     /**
      * Constructor takes an authentication token to use for the lifecycle of requests for this instance
@@ -139,11 +142,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                                                                                                                                                                 {
-     *                                                                                                                                                                   '#error': boolean
-     *                                                                                                                                                                   '#data': 'json string containing the result or error string if #error is true.'
-     *                                                                                                                                                                 }
-     *                                                                                                                                                                 </pre>
+     *                                                                                                                                                                                     {
+     *                                                                                                                                                                                       '#error': boolean
+     *                                                                                                                                                                                       '#data': 'json string containing the result or error string if #error is true.'
+     *                                                                                                                                                                                     }
+     *                                                                                                                                                                                     </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -377,6 +380,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             DrupalJsonObjectSerializer<DrupalFile> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
 
             data.put("file", serializer.serialize(file));
+            data.put("sessid", session);
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_SAVE, data, false);
             JSONObject object = new JSONObject(result);
             // TODO: handle error case
@@ -497,6 +501,9 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
                             return true;
                         }
                     }
+                    if ("fields".equals(f.getName())) {
+                        return true;
+                    }
                     return false;
                 }
 
@@ -504,12 +511,26 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
                     return false;
                 }
             };
-
             builder.setExclusionStrategies(strategy);
             builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
             Gson gson = builder.create();
             Map<String, Object> data = new HashMap<String, Object>();
-            data.put("node", gson.toJson(node));
+            JsonObject jsonNode = (JsonObject) gson.toJsonTree(node);
+            for (DrupalField drupalField : node.getFields()) {
+                String name = drupalField.getName();
+                JsonObject fieldObject = new JsonObject();
+                ArrayList<HashMap<String, String>> values = drupalField.getValues();
+                for (int i = 0; i < values.size(); i++) {
+                    HashMap<String, String> map = values.get(i);
+                    JsonObject valueObject = new JsonObject();
+                    for (Map.Entry<String, String> entry : map.entrySet()) {
+                        valueObject.addProperty(entry.getKey(), entry.getValue());
+                    }
+                    fieldObject.add(String.valueOf(i), valueObject);
+                }
+                jsonNode.add(String.format("field_%s", name), fieldObject);
+            }
+            data.put("node", jsonNode.toString());
             data.put("sessid", session);
 
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_NODE_SAVE, data, false);

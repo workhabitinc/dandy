@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.CommonsHttpClientDrupalServicesRequestManager;
 import org.workhabit.drupal.api.entity.DrupalComment;
+import org.workhabit.drupal.api.entity.DrupalField;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
@@ -11,11 +12,13 @@ import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
 import org.workhabit.drupal.api.site.impl.v2.KeyRequestSigningInterceptorImpl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -80,6 +83,41 @@ public class LocalDrupalSiteContextV2ImplTest {
 
     }
 
+    @Test
+    public void testSaveNodeWithFile() throws DrupalFetchException, IOException {
+        DrupalNode node = new DrupalNode();
+        node.setTitle("foo");
+        node.setType("page");
+        node.setFormat(1);
+        node.setBody("foo");
+        node.setUid(1);
+        ArrayList<DrupalField> fields = new ArrayList<DrupalField>();
+        DrupalField field = new DrupalField();
+        field.setName("title_image");
+        ArrayList<HashMap<String, String>> values = new ArrayList<HashMap<String, String>>();
+        StringBuilder sb = new StringBuilder();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("testimage.jpg");
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[16384];
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            os.write(data);
+        }
+        inputStream.close();
+        // Ensure all the bytes have been read in
+
+        int fid = drupalSiteContext.saveFile(os.toByteArray(), "testimage.jpg");
+        HashMap<String, String> value = new HashMap<String, String>();
+        value.put("fid", String.valueOf(fid));
+        values.add(value);
+        field.setValues(values);
+        fields.add(field);
+        node.setFields(fields);
+        int nid = drupalSiteContext.saveNode(node);
+        assertFalse(nid == 0);
+    }
     /*@Test
     public void testRegisterNewUser() throws DrupalSaveException {
         int i = drupalSiteContext.registerNewUser("test", "test123", "test@test.com");

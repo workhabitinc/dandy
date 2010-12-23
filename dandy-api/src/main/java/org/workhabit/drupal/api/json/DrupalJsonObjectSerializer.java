@@ -29,7 +29,8 @@ public class DrupalJsonObjectSerializer<T> {
         builder.setExclusionStrategies(new ExclusionStrategy() {
 
             public boolean shouldSkipField(FieldAttributes f) {
-                if ("taxonomy".equals(f.getName())) {
+                if ("taxonomy".equals(f.getName())
+                        || "fields".equals(f.getName())) {
                     return true;
                 }
                 return false;
