@@ -87,6 +87,7 @@ public interface DrupalSiteContext {
      */
     void saveComment(DrupalComment comment) throws DrupalFetchException;
 
+
     /**
      * Logs in a user by username and password (invokes the drupal Service user.login)
      * @param username the user's username
@@ -141,6 +142,16 @@ public interface DrupalSiteContext {
      * @throws DrupalFetchException if there's an error processing the request.
      */
     List<DrupalComment> getComments(int nid) throws DrupalFetchException;
+
+    /**
+     * Return a list of comments for the given node ID.  Start and count can be specified to page the results.
+     * @param nid the ID of the node comments to return.
+     * @param start the start offset
+     * @param count number of results to return
+     * @return a list of comments
+     * @throws DrupalFetchException if there's an error processing the request.
+     */
+    List<DrupalComment> getComments(int nid, int start, int count) throws DrupalFetchException;
 
     /**
      * Returns an inputstream to the specified file

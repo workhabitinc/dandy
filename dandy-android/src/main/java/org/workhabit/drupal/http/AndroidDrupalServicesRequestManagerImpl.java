@@ -25,6 +25,7 @@ import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,9 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
      * @throws InvalidKeyException
      */
     public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws NoSuchAlgorithmException, IOException, InvalidKeyException {
+        if (data == null) {
+            data = new HashMap<String, Object>();
+        }
         if (requestSigningInterceptor != null) {
             requestSigningInterceptor.sign(path, method, data);
         }

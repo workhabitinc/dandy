@@ -416,13 +416,13 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         }
     }
 
-    public List<DrupalComment> getComments(int nid) throws DrupalFetchException {
+    public List<DrupalComment> getComments(int nid, int start, int count) throws DrupalFetchException {
         connect();
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("nid", nid);
         // TODO: Parameterize these
-        data.put("count", 0);
-        data.put("start", 0);
+        data.put("count", count);
+        data.put("start", start);
 
         data.put("sessid", session);
         try {
@@ -440,6 +440,9 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
         }
+    }
+    public List<DrupalComment> getComments(int nid) throws DrupalFetchException {
+         return getComments(nid, 0, 0);
     }
 
     public InputStream getFileStream(String filepath) throws IOException {
@@ -516,19 +519,22 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             Gson gson = builder.create();
             Map<String, Object> data = new HashMap<String, Object>();
             JsonObject jsonNode = (JsonObject) gson.toJsonTree(node);
-            for (DrupalField drupalField : node.getFields()) {
-                String name = drupalField.getName();
-                JsonObject fieldObject = new JsonObject();
-                ArrayList<HashMap<String, String>> values = drupalField.getValues();
-                for (int i = 0; i < values.size(); i++) {
-                    HashMap<String, String> map = values.get(i);
-                    JsonObject valueObject = new JsonObject();
-                    for (Map.Entry<String, String> entry : map.entrySet()) {
-                        valueObject.addProperty(entry.getKey(), entry.getValue());
+            ArrayList<DrupalField> fields = node.getFields();
+            if (fields != null) {
+                for (DrupalField drupalField : fields) {
+                    String name = drupalField.getName();
+                    JsonObject fieldObject = new JsonObject();
+                    ArrayList<HashMap<String, String>> values = drupalField.getValues();
+                    for (int i = 0; i < values.size(); i++) {
+                        HashMap<String, String> map = values.get(i);
+                        JsonObject valueObject = new JsonObject();
+                        for (Map.Entry<String, String> entry : map.entrySet()) {
+                            valueObject.addProperty(entry.getKey(), entry.getValue());
+                        }
+                        fieldObject.add(String.valueOf(i), valueObject);
                     }
-                    fieldObject.add(String.valueOf(i), valueObject);
+                    jsonNode.add(String.format("field_%s", name), fieldObject);
                 }
-                jsonNode.add(String.format("field_%s", name), fieldObject);
             }
             data.put("node", jsonNode.toString());
             data.put("sessid", session);

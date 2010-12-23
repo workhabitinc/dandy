@@ -12,6 +12,7 @@ import org.workhabit.drupal.http.DrupalServicesRequestManager;
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -55,6 +56,9 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
     }
 
     public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+        if (data == null) {
+            data = new HashMap<String, Object>();
+        }
         if (requestSigningInterceptor != null) {
             requestSigningInterceptor.sign(path, method, data);
         }
