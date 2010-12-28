@@ -383,7 +383,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             data.put("sessid", session);
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_SAVE, data, false);
             JSONObject object = new JSONObject(result);
-            // TODO: handle error case
+            assertNoErrors(object);
             return object.getInt("#data");
         } catch (IOException e) {
             throw new DrupalFetchException(e);
