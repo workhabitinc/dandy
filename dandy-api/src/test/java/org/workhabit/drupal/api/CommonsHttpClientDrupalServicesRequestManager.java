@@ -1,18 +1,18 @@
 package org.workhabit.drupal.api;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
+import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +23,7 @@ import java.util.Map;
 public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServicesRequestManager {
     HttpClient client;
     private RequestSigningInterceptor requestSigningInterceptor;
+    private List<GenericCookie> cookies;
 
     public CommonsHttpClientDrupalServicesRequestManager() {
         client = new HttpClient();
@@ -52,6 +53,21 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
         Header contentTypeHeader = new Header("Content-Type", "application/x-www-form-urlencoded");
         postMethod.setRequestHeader(contentTypeHeader);
         client.executeMethod(postMethod);
+        Cookie[] clientCookies = client.getState().getCookies();
+
+        cookies = new ArrayList<GenericCookie>();
+        for (Cookie cookie : clientCookies) {
+            GenericCookie siteCookie = new GenericCookie();
+            siteCookie.setComment(cookie.getComment());
+            siteCookie.setDomain(cookie.getDomain());
+            siteCookie.setExpiryDate(cookie.getExpiryDate());
+            siteCookie.setName(cookie.getName());
+            siteCookie.setPath(cookie.getPath());
+            siteCookie.setSecure(cookie.getSecure());
+            siteCookie.setVersion(cookie.getVersion());
+            siteCookie.setValue(cookie.getValue());
+            cookies.add(siteCookie);
+        }
         return postMethod.getResponseBodyAsString();
     }
 
@@ -81,6 +97,10 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
             sw.write("\n");
         }
         return sw.toString();
+    }
+
+    public List<GenericCookie> getCookies() {
+        return cookies;
     }
 
     public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {

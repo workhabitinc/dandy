@@ -87,9 +87,9 @@ public class LocalDrupalSiteContextV2ImplTest {
     public void testSaveNodeWithFile() throws DrupalFetchException, IOException {
         DrupalNode node = new DrupalNode();
         node.setTitle("foo");
-        node.setType("page");
+        node.setType("driver_post");
         node.setFormat(1);
-        node.setBody("foo");
+        node.setBody("whatever");
         node.setUid(1);
         ArrayList<DrupalField> fields = new ArrayList<DrupalField>();
         DrupalField field = new DrupalField();

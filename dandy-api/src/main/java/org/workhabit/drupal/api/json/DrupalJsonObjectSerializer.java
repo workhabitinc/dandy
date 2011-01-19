@@ -44,8 +44,33 @@ public class DrupalJsonObjectSerializer<T> {
         gson = builder.create();
     }
 
-    public String serialize(T object) {
-        return gson.toJson(object);
+    public String serialize(T object) throws JSONException {
+        String json = gson.toJson(object);
+        if (object.getClass() == DrupalNode.class) {
+            DrupalNode n = (DrupalNode) object;
+            ArrayList<DrupalField> fields = n.getFields();
+            if (fields != null && fields.size() > 0) {
+                // process any fields
+                //
+                JSONObject jsonObject = new JSONObject(json);
+                for (DrupalField drupalField : fields) {
+                    String name = drupalField.getName();
+                    JSONObject jsonField = new JSONObject();
+                    ArrayList<HashMap<String, String>> values = drupalField.getValues();
+                    for (int i = 0; i < values.size(); i++) {
+                        JSONObject jsonValue = new JSONObject();
+                        HashMap<String, String> value = values.get(i);
+                        for (Map.Entry<String, String> entry : value.entrySet()) {
+                            jsonValue.put(entry.getKey(), entry.getValue());
+                        }
+                        jsonField.put(String.valueOf(i), jsonValue);
+                    }
+                    jsonObject.put(name, jsonField);
+                }
+                json = jsonObject.toString();
+            }
+        }
+        return json;
     }
 
     public T unserialize(String json) throws DrupalFetchException, JSONException {
@@ -65,6 +90,9 @@ public class DrupalJsonObjectSerializer<T> {
                     ArrayList<HashMap<String, String>> values = new ArrayList<HashMap<String, String>>();
                     JSONArray cckFieldArray = dataObject.getJSONArray(name);
                     for (int i = 0; i < cckFieldArray.length(); i++) {
+                        if (cckFieldArray.isNull(i)) {
+                            continue;
+                        }
                         JSONObject o = cckFieldArray.getJSONObject(i);
                         field.setName(name);
                         Iterator objectKeys = o.keys();

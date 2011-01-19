@@ -8,6 +8,7 @@ import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
+import org.workhabit.drupal.api.site.support.GenericCookie;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,7 +86,7 @@ public interface DrupalSiteContext {
      *
      * @throws DrupalFetchException if there's an error saving the comment.
      */
-    void saveComment(DrupalComment comment) throws DrupalFetchException;
+    int saveComment(DrupalComment comment) throws DrupalFetchException;
 
 
     /**
@@ -184,4 +185,6 @@ public interface DrupalSiteContext {
      * @throws DrupalFetchException if there's a problem with the request.
      */
     DrupalUser getUser(int uid) throws DrupalFetchException;
+
+    List<GenericCookie> getCurrentUserCookie();
 }

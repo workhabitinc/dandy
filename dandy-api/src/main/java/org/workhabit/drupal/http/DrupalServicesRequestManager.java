@@ -1,9 +1,12 @@
 package org.workhabit.drupal.http;
 
+import org.workhabit.drupal.api.site.support.GenericCookie;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,4 +59,6 @@ public interface DrupalServicesRequestManager {
     public InputStream getStream(String path) throws IOException;
 
     public String getString(String path) throws IOException;
+
+    List<GenericCookie> getCookies();
 }

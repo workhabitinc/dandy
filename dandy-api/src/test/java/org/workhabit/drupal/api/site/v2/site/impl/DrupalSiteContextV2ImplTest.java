@@ -9,18 +9,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
-import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
-import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.allOf;
@@ -235,8 +232,13 @@ public class DrupalSiteContextV2ImplTest {
                         ),
                         with(equal(true))
                 );
+
                 String json = "{\"#error\":false,\"#data\":{\"sessid\":\"e7443fe315fc200c2370bfe7f1be2040\",\"user\":{\"uid\":\"1\",\"name\":\"admin\",\"pass\":\"3e47b75000b0924b6c9ba5759a7cf15d\",\"mail\":\"aaron@workhabit.com\",\"mode\":\"0\",\"sort\":\"0\",\"threshold\":\"0\",\"theme\":\"\",\"signature\":\"\",\"signature_format\":\"0\",\"created\":\"1285372909\",\"access\":\"1288039409\",\"login\":1288043068,\"status\":\"1\",\"timezone\":null,\"language\":\"\",\"picture\":\"\",\"init\":\"aaron@workhabit.com\",\"data\":\"a:0:{}\",\"roles\":{\"2\":\"authenticated user\"}}}}";
                 will(returnValue(json));
+
+                one(mockDrupalServicesRequestManager).getCookies();
+                will(returnValue(null));
+
             }
         });
         DrupalUser drupalUser = drupalSiteContext.login("test", "testpass");
@@ -327,7 +329,6 @@ public class DrupalSiteContextV2ImplTest {
         String filedata = "test file data";
         drupalSiteContext.saveFile(filedata.getBytes(), filename);
     }
-
 
 
     @After

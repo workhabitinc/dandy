@@ -14,6 +14,7 @@ import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.support.Base64;
+import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private DrupalUser user;
     private final String drupalSiteUrl;
     private final String servicePath;
-    private DrupalFieldAdapter drupalFieldAdapter;
+    private List<GenericCookie> cookies;
 
     /**
      * Constructor takes an authentication token to use for the lifecycle of requests for this instance
@@ -112,6 +113,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
                 throw new DrupalFetchException(object);
             }
             setSession(null);
+            cookies = null;
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalLogoutException(e);
         } catch (IOException e) {
@@ -185,6 +187,8 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         data.put("sessid", session);
         try {
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_NODE_GET, data, true);
+            JSONObject object = new JSONObject(result);
+            assertNoErrors(object);
             DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
             return serializer.unserialize(result);
         } catch (Exception e) {
@@ -216,7 +220,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         }
     }
 
-    public void saveComment(final DrupalComment comment) throws DrupalFetchException {
+    public int saveComment(final DrupalComment comment) throws DrupalFetchException {
         connect();
         GsonBuilder builder = new GsonBuilder();
         ExclusionStrategy strategy = new ExclusionStrategy() {
@@ -249,12 +253,16 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
 
         try {
             String response = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_SAVE, data, false);
-            System.out.println(response);
+            JSONObject jsonObject = new JSONObject(response);
+            assertNoErrors(jsonObject);
+            return jsonObject.getInt("#data");
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalSaveException(e);
         } catch (IOException e) {
             throw new DrupalSaveException(e);
         } catch (InvalidKeyException e) {
+            throw new DrupalSaveException(e);
+        } catch (JSONException e) {
             throw new DrupalSaveException(e);
         }
 
@@ -458,7 +466,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", viewName);
         if (viewArguments != null) {
-            data.put("args", viewArguments);
+            data.put("args[]", viewArguments);
         }
         if (session != null && !"".equals(session)) {
             data.put("sessid", session);
@@ -489,6 +497,8 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         setSession(dataObject.getString("sessid"));
         DrupalJsonObjectSerializer<DrupalUser> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalUser.class);
         user = serializer.unserialize(dataObject.getJSONObject("user").toString());
+
+        cookies = drupalServicesRequestManager.getCookies();
         return user;
     }
 
@@ -533,7 +543,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
                         }
                         fieldObject.add(String.valueOf(i), valueObject);
                     }
-                    jsonNode.add(String.format("field_%s", name), fieldObject);
+                    jsonNode.add(String.format("%s", name), fieldObject);
                 }
             }
             data.put("node", jsonNode.toString());
@@ -582,6 +592,10 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
         }
+    }
+
+    public List<GenericCookie> getCurrentUserCookie() {
+        return cookies;
     }
 
     void setSession(String session) {

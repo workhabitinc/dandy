@@ -4,21 +4,28 @@ import android.util.Log;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
+import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.*;
@@ -37,6 +44,8 @@ import java.util.Map;
 public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRequestManager {
     private final HttpClient client;
     private RequestSigningInterceptor requestSigningInterceptor;
+    private ArrayList<GenericCookie> cookies;
+    private BasicCookieStore cookieStore;
 
     public AndroidDrupalServicesRequestManagerImpl() {
         HttpParams params = new BasicHttpParams();
@@ -44,6 +53,9 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
         schemeRegistry.register(new Scheme("https", PlainSocketFactory.getSocketFactory(), 443));
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+        cookieStore = new BasicCookieStore();
+        HttpContext context = new BasicHttpContext();
+        context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
         client = new DefaultHttpClient(cm, params);
     }
 
@@ -109,6 +121,20 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         httpPost.setEntity(new UrlEncodedFormEntity(parameters));
         HttpResponse response = client.execute(httpPost);
         InputStream contentInputStream = response.getEntity().getContent();
+        cookies = new ArrayList<GenericCookie>();
+        List<Cookie> cookieList = cookieStore.getCookies();
+        for (Cookie cookie : cookieList) {
+            GenericCookie siteCookie = new GenericCookie();
+            siteCookie.setComment(cookie.getComment());
+            siteCookie.setDomain(cookie.getDomain());
+            siteCookie.setExpiryDate(cookie.getExpiryDate());
+            siteCookie.setName(cookie.getName());
+            siteCookie.setPath(cookie.getPath());
+            siteCookie.setSecure(cookie.isSecure());
+            siteCookie.setVersion(cookie.getVersion());
+            siteCookie.setValue(cookie.getValue());
+            cookies.add(siteCookie);
+        }
         BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
         StringWriter sw = new StringWriter();
         String line;
@@ -152,6 +178,11 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
             sw.write("\n");
         }
         return sw.toString();
+    }
+
+    @Override
+    public List<GenericCookie> getCookies() {
+        return cookies;
     }
 
     /**
