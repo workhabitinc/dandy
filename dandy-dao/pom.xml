@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.workhabit.dandy</groupId>
     <artifactId>dandy-dao</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <name>Dandy DAO</name>
     <description>Provides helper classes for persisting drupal objects to SQLite Database</description>
 
     <parent>
         <groupId>org.workhabit.dandy</groupId>
         <artifactId>dandy-parent</artifactId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.workhabit.dandy</groupId>
             <artifactId>dandy-api</artifactId>
-            <version>1.0</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.j256.ormlite</groupId>
