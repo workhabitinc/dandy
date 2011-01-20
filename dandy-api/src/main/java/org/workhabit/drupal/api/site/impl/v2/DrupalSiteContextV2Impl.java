@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.json.BooleanAdapter;
-import org.workhabit.drupal.api.json.DrupalFieldAdapter;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
@@ -17,8 +16,13 @@ import org.workhabit.drupal.api.site.support.Base64;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -144,11 +148,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                                                                                                                                                                                     {
-     *                                                                                                                                                                                       '#error': boolean
-     *                                                                                                                                                                                       '#data': 'json string containing the result or error string if #error is true.'
-     *                                                                                                                                                                                     }
-     *                                                                                                                                                                                     </pre>
+     *                                                                                                                                                                                                                                                                                         {
+     *                                                                                                                                                                                                                                                                                           '#error': boolean
+     *                                                                                                                                                                                                                                                                                           '#data': 'json string containing the result or error string if #error is true.'
+     *                                                                                                                                                                                                                                                                                         }
+     *                                                                                                                                                                                                                                                                                         </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -375,35 +379,6 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         }
     }
 
-    public int saveFile(byte[] bytes, String fileName) throws DrupalFetchException {
-        connect();
-
-        try {
-            String filePath = getFileDirectoryPath();
-            Map<String, Object> data = new HashMap<String, Object>();
-            DrupalFile file = new DrupalFile();
-            file.setFile(Base64.encodeToString(bytes, Base64.NO_WRAP));
-            file.setFilename(fileName);
-            file.setFilepath(String.format("%s/%s", filePath, fileName));
-            DrupalJsonObjectSerializer<DrupalFile> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
-
-            data.put("file", serializer.serialize(file));
-            data.put("sessid", session);
-            String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_FILE_SAVE, data, false);
-            JSONObject object = new JSONObject(result);
-            assertNoErrors(object);
-            return object.getInt("#data");
-        } catch (IOException e) {
-            throw new DrupalFetchException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new DrupalFetchException(e);
-        } catch (InvalidKeyException e) {
-            throw new DrupalFetchException(e);
-        } catch (JSONException e) {
-            throw new DrupalFetchException(e);
-        }
-    }
-
     public String getFileDirectoryPath() throws DrupalFetchException {
         connect();
         Map<String, Object> data = new HashMap<String, Object>();
@@ -449,8 +424,9 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             throw new DrupalFetchException(e);
         }
     }
+
     public List<DrupalComment> getComments(int nid) throws DrupalFetchException {
-         return getComments(nid, 0, 0);
+        return getComments(nid, 0, 0);
     }
 
     public InputStream getFileStream(String filepath) throws IOException {
@@ -596,6 +572,90 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
 
     public List<GenericCookie> getCurrentUserCookie() {
         return cookies;
+    }
+
+    public String getFileUploadToken() throws DrupalFetchException {
+        try {
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("sessid", session);
+            String result = drupalServicesRequestManager.postSigned(servicePath, "file.getUploadToken", data, false);
+            JSONObject object = new JSONObject(result);
+            assertNoErrors(object);
+            return object.getString("#data");
+        } catch (IOException e) {
+            throw new DrupalFetchException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new DrupalFetchException(e);
+        } catch (InvalidKeyException e) {
+            throw new DrupalFetchException(e);
+        } catch (JSONException e) {
+            throw new DrupalFetchException(e);
+        }
+    }
+
+    public DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException {
+        try {
+            String boundary = "::::::::::::::::::::::::::::::::::";
+            URL url = new URL(drupalSiteUrl + "/dandy/fileupload/"+ token);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+            StringBuffer cookieString = new StringBuffer();
+            List<GenericCookie> currentUserCookie = getCurrentUserCookie();
+            for (GenericCookie genericCookie : currentUserCookie) {
+                cookieString.append(genericCookie.getName()).append("=").append(genericCookie.getValue()).append(";");
+            }
+            System.out.println(cookieString);
+            conn.setRequestProperty("Cookie", cookieString.toString());
+            conn.connect();
+            DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
+            outputStream.writeBytes("--");
+            outputStream.writeBytes(boundary);
+            outputStream.writeBytes("\n");
+            String contentDisposition = "Content-Disposition: form-data; name=\"files[upload]\"; filename=\"" + fileName + "\"";
+            String contentType = "Content-Type: application/octet-stream";
+            outputStream.writeBytes(contentDisposition);
+            outputStream.writeBytes("\n");
+            outputStream.writeBytes(contentType);
+            outputStream.writeBytes("\n");
+            outputStream.writeBytes("\n");
+            int nRead = 0;
+            byte[] data = new byte[16384];
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                outputStream.write(data);
+            }
+            outputStream.writeBytes("\n\n");
+            outputStream.writeBytes("--" + boundary + "--");
+            outputStream.flush();
+            outputStream.close();
+
+            InputStream is = conn.getInputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] bytes = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = is.read(bytes)) != -1) {
+                baos.write(bytes, 0, bytesRead);
+            }
+            byte[] bytesReceived = baos.toByteArray();
+            baos.close();
+            is.close();
+            String response = new String(baos.toByteArray());
+            if ("0".equals(response)) {
+                throw new DrupalSaveException(new Exception("Unable to save file."));
+            }
+            DrupalJsonObjectSerializer<DrupalFile> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
+            return serializer.unserialize(response);
+        } catch (MalformedURLException e) {
+            throw new DrupalSaveException(e);
+        } catch (IOException e) {
+            throw new DrupalSaveException(e);
+        } catch (JSONException e) {
+            throw new DrupalSaveException(e);
+        } catch (DrupalFetchException e) {
+            throw new DrupalSaveException(e);
+        }
     }
 
     void setSession(String session) {

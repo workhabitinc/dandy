@@ -3,10 +3,7 @@ package org.workhabit.drupal.api.site.v2.site.local;
 import org.junit.Before;
 import org.junit.Test;
 import org.workhabit.drupal.api.CommonsHttpClientDrupalServicesRequestManager;
-import org.workhabit.drupal.api.entity.DrupalComment;
-import org.workhabit.drupal.api.entity.DrupalField;
-import org.workhabit.drupal.api.entity.DrupalNode;
-import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
@@ -96,7 +93,8 @@ public class LocalDrupalSiteContextV2ImplTest {
         field.setName("title_image");
         ArrayList<HashMap<String, String>> values = new ArrayList<HashMap<String, String>>();
         StringBuilder sb = new StringBuilder();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("testimage.jpg");
+        String filename = "testimage.jpg";
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filename);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
@@ -108,9 +106,11 @@ public class LocalDrupalSiteContextV2ImplTest {
         inputStream.close();
         // Ensure all the bytes have been read in
 
-        int fid = drupalSiteContext.saveFile(os.toByteArray(), "testimage.jpg");
+        String token = drupalSiteContext.getFileUploadToken();
+        DrupalFile drupalFile = drupalSiteContext.saveFileStream(inputStream, filename, token);
+
         HashMap<String, String> value = new HashMap<String, String>();
-        value.put("fid", String.valueOf(fid));
+        value.put("fid", String.valueOf(drupalFile.getFid()));
         values.add(value);
         field.setValues(values);
         fields.add(field);
@@ -124,4 +124,5 @@ public class LocalDrupalSiteContextV2ImplTest {
         assertFalse(i == 0);
 
     }*/
+
 }

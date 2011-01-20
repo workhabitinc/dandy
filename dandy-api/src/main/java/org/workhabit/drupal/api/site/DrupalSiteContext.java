@@ -1,9 +1,6 @@
 package org.workhabit.drupal.api.site;
 
-import org.workhabit.drupal.api.entity.DrupalComment;
-import org.workhabit.drupal.api.entity.DrupalNode;
-import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
-import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
@@ -127,16 +124,6 @@ public interface DrupalSiteContext {
     int registerNewUser(String username, String password, String email) throws DrupalSaveException;
 
     /**
-     * Save a file to Drupal
-     *
-     * @param bytes a byte array of data in the file.
-     * @param fileName the name of the file to save as on the remote end.
-     * @return
-     * @throws DrupalFetchException
-     */
-    int saveFile(byte[] bytes, String fileName) throws DrupalFetchException;
-
-    /**
      * Return a list of comments for the give node ID
      * @param nid the ID of the node to return.
      * @return a list of comments
@@ -187,4 +174,7 @@ public interface DrupalSiteContext {
     DrupalUser getUser(int uid) throws DrupalFetchException;
 
     List<GenericCookie> getCurrentUserCookie();
+
+    String getFileUploadToken() throws DrupalFetchException;
+    DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException;
 }
