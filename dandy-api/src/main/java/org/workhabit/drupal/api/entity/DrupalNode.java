@@ -7,66 +7,40 @@ import org.workhabit.drupal.api.annotations.IdFieldName;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 12:25:05 PM
  */
-@SuppressWarnings({"UnusedDeclaration"})
-@DatabaseTable(tableName = "DrupalNode")
-@IdFieldName("nid")
 public class DrupalNode implements DrupalEntity {
-    @DatabaseField(id = true)
     private int nid;
-    @DatabaseField(canBeNull = false)
     private int uid;
-    @DatabaseField(canBeNull = false)
     private String type;
-    @DatabaseField(canBeNull = false)
     private boolean status;
-    @DatabaseField(canBeNull = false)
     private String title;
-    @DatabaseField(canBeNull = true)
     private int comment;
-    @DatabaseField(canBeNull = true)
     private Boolean promote;
-    @DatabaseField(canBeNull = true)
     private Boolean moderate;
-    @DatabaseField(canBeNull = true)
     private Boolean sticky;
-    @DatabaseField(canBeNull = true)
     private String body;
-    @DatabaseField(canBeNull = true)
     private String teaser;
-    @DatabaseField(canBeNull = true)
     private String log;
-    @DatabaseField(canBeNull = false)
     private Date revisionTimestamp;
-    @DatabaseField(canBeNull = false)
     private int format;
-    @DatabaseField(canBeNull = false)
     private String name;
-    @DatabaseField(canBeNull = true)
     private String picture;
-    @DatabaseField(canBeNull = true)
     private String data;
-    @DatabaseField(canBeNull = true)
     private Date lastCommentTimestamp;
-    @DatabaseField(canBeNull = true)
     private String lastCommentName;
-    @DatabaseField(canBeNull = false)
     private int commentCount;
 
     // no need to serialize taxonomy
-    @DatabaseField(canBeNull = true)
     private HashMap<Integer, DrupalTaxonomyTerm> taxonomy;
-    @DatabaseField(canBeNull = false)
     private Date created;
-    @DatabaseField(canBeNull = false)
     private Date changed;
 
-    @DatabaseField(canBeNull = true)
-    private ArrayList<DrupalField> fields;
+    private Map<String, DrupalField> fields;
 
     public DrupalNode() {
 
@@ -80,6 +54,7 @@ public class DrupalNode implements DrupalEntity {
         this.nid = nid;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public int getUid() {
         return uid;
     }
@@ -88,6 +63,7 @@ public class DrupalNode implements DrupalEntity {
         this.uid = uid;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public boolean isStatus() {
         return status;
     }
@@ -112,6 +88,7 @@ public class DrupalNode implements DrupalEntity {
         this.comment = comment;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public Boolean isPromote() {
         return promote;
     }
@@ -120,6 +97,7 @@ public class DrupalNode implements DrupalEntity {
         this.promote = promote;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public Boolean isModerate() {
         return moderate;
     }
@@ -128,6 +106,7 @@ public class DrupalNode implements DrupalEntity {
         this.moderate = moderate;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public Boolean isSticky() {
         return sticky;
     }
@@ -148,10 +127,12 @@ public class DrupalNode implements DrupalEntity {
         return teaser;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public void setTeaser(String teaser) {
         this.teaser = teaser;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public String getLog() {
         return log;
     }
@@ -168,6 +149,7 @@ public class DrupalNode implements DrupalEntity {
         this.revisionTimestamp = revisionTimestamp;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public int getFormat() {
         return format;
     }
@@ -184,6 +166,7 @@ public class DrupalNode implements DrupalEntity {
         this.name = name;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public String getPicture() {
         return picture;
     }
@@ -248,12 +231,42 @@ public class DrupalNode implements DrupalEntity {
         this.changed = changed;
     }
 
-    public ArrayList<DrupalField> getFields() {
+    public Map<String, DrupalField> getFields() {
         return fields;
     }
 
-    public void setFields(ArrayList<DrupalField> fields) {
+    public void setFields(Map<String, DrupalField> fields) {
         this.fields = fields;
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    public DrupalField getField(String fieldName) {
+        if (fields == null) {
+            return null;
+        }
+        if (!fields.containsKey(fieldName)) {
+            return null;
+        }
+        return fields.get(fieldName);
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void addField(String fieldName, HashMap<String, String> values) {
+        if (this.fields == null) {
+            this.fields = new HashMap<String, DrupalField>();
+        }
+        if (this.fields.containsKey(fieldName)) {
+            DrupalField field = fields.get(fieldName);
+            field.getValues().add(values);
+        } else {
+            DrupalField drupalField = new DrupalField();
+            drupalField.setName(fieldName);
+
+            ArrayList<HashMap<String, String>> valueList = new ArrayList<HashMap<String, String>>();
+            valueList.add(values);
+            drupalField.setValues(valueList);
+            this.fields.put(fieldName, drupalField);
+        }
     }
 
     public String getId() {
