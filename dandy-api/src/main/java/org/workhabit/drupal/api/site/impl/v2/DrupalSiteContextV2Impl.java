@@ -509,17 +509,17 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             Gson gson = builder.create();
             Map<String, Object> data = new HashMap<String, Object>();
             JsonObject jsonNode = (JsonObject) gson.toJsonTree(node);
-            ArrayList<DrupalField> fields = node.getFields();
+            Map<String, DrupalField> fields = node.getFields();
             if (fields != null) {
-                for (DrupalField drupalField : fields) {
-                    String name = drupalField.getName();
+                for (Map.Entry<String, DrupalField> entry : fields.entrySet()) {
+                    String name = entry.getKey();
                     JsonObject fieldObject = new JsonObject();
-                    ArrayList<HashMap<String, String>> values = drupalField.getValues();
+                    ArrayList<HashMap<String, String>> values = entry.getValue().getValues();
                     for (int i = 0; i < values.size(); i++) {
                         HashMap<String, String> map = values.get(i);
                         JsonObject valueObject = new JsonObject();
-                        for (Map.Entry<String, String> entry : map.entrySet()) {
-                            valueObject.addProperty(entry.getKey(), entry.getValue());
+                        for (Map.Entry<String, String> valueEntry : map.entrySet()) {
+                            valueObject.addProperty(valueEntry.getKey(), valueEntry.getValue());
                         }
                         fieldObject.add(String.valueOf(i), valueObject);
                     }

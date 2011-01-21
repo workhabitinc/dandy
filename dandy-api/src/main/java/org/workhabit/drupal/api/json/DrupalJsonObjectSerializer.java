@@ -48,15 +48,15 @@ public class DrupalJsonObjectSerializer<T> {
         String json = gson.toJson(object);
         if (object.getClass() == DrupalNode.class) {
             DrupalNode n = (DrupalNode) object;
-            ArrayList<DrupalField> fields = n.getFields();
-            if (fields != null && fields.size() > 0) {
+            Map<String, DrupalField> fieldMap = n.getFields();
+            if (fieldMap != null && fieldMap.size() > 0) {
                 // process any fields
                 //
                 JSONObject jsonObject = new JSONObject(json);
-                for (DrupalField drupalField : fields) {
-                    String name = drupalField.getName();
+                for (Map.Entry<String, DrupalField> drupalFields : fieldMap.entrySet()) {
+                    String name = drupalFields.getKey();
                     JSONObject jsonField = new JSONObject();
-                    ArrayList<HashMap<String, String>> values = drupalField.getValues();
+                    ArrayList<HashMap<String, String>> values = drupalFields.getValue().getValues();
                     for (int i = 0; i < values.size(); i++) {
                         JSONObject jsonValue = new JSONObject();
                         HashMap<String, String> value = values.get(i);
@@ -79,7 +79,7 @@ public class DrupalJsonObjectSerializer<T> {
         if (clazz == DrupalNode.class) {
             // special handling for cck fields. TODO: refactor this into an interceptor pattern.
             Iterator keys = dataObject.keys();
-            ArrayList<DrupalField> fields = new ArrayList<DrupalField>();
+            Map<String, DrupalField> fields = new HashMap<String, DrupalField>();
             HashMap<Integer, DrupalTaxonomyTerm> terms = new HashMap<Integer, DrupalTaxonomyTerm>();
             while (keys.hasNext()) {
                 String name = (String) keys.next();
@@ -104,7 +104,7 @@ public class DrupalJsonObjectSerializer<T> {
                         values.add(valueMap);
                     }
                     field.setValues(values);
-                    fields.add(field);
+                    fields.put(field.getName(), field);
                 } else if ("taxonomy".equals(name)) {
                     // handle serialization of Taxonomy differently than normal maps
                     Object taxonomy = dataObject.get("taxonomy");

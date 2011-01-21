@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -88,7 +89,7 @@ public class LocalDrupalSiteContextV2ImplTest {
         node.setFormat(1);
         node.setBody("whatever");
         node.setUid(1);
-        ArrayList<DrupalField> fields = new ArrayList<DrupalField>();
+        Map<String, DrupalField> fields = new HashMap<String, DrupalField>();
         DrupalField field = new DrupalField();
         field.setName("title_image");
         ArrayList<HashMap<String, String>> values = new ArrayList<HashMap<String, String>>();
@@ -113,7 +114,7 @@ public class LocalDrupalSiteContextV2ImplTest {
         value.put("fid", String.valueOf(drupalFile.getFid()));
         values.add(value);
         field.setValues(values);
-        fields.add(field);
+        fields.put(field.getName(), field);
         node.setFields(fields);
         int nid = drupalSiteContext.saveNode(node);
         assertFalse(nid == 0);
