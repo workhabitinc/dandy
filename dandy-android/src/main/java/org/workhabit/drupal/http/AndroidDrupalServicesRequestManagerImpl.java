@@ -46,6 +46,7 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
     private RequestSigningInterceptor requestSigningInterceptor;
     private ArrayList<GenericCookie> cookies;
     private BasicCookieStore cookieStore;
+    private HttpContext httpContext;
 
     public AndroidDrupalServicesRequestManagerImpl() {
         HttpParams params = new BasicHttpParams();
@@ -54,8 +55,8 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         schemeRegistry.register(new Scheme("https", PlainSocketFactory.getSocketFactory(), 443));
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
         cookieStore = new BasicCookieStore();
-        HttpContext context = new BasicHttpContext();
-        context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+        httpContext = new BasicHttpContext();
+        httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
         client = new DefaultHttpClient(cm, params);
     }
 
@@ -119,7 +120,7 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         Header contentTypeHeader = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
         httpPost.setHeader(contentTypeHeader);
         httpPost.setEntity(new UrlEncodedFormEntity(parameters));
-        HttpResponse response = client.execute(httpPost);
+        HttpResponse response = client.execute(httpPost, httpContext);
         InputStream contentInputStream = response.getEntity().getContent();
         cookies = new ArrayList<GenericCookie>();
         List<Cookie> cookieList = cookieStore.getCookies();
@@ -156,7 +157,7 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
      */
     public InputStream getStream(String path) throws IOException {
         HttpGet get = new HttpGet(path);
-        HttpResponse response = client.execute(get);
+        HttpResponse response = client.execute(get, httpContext);
         return new BufferedHttpEntity(response.getEntity()).getContent();
     }
 

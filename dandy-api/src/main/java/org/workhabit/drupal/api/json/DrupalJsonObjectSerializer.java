@@ -145,7 +145,7 @@ public class DrupalJsonObjectSerializer<T> {
         JSONArray jsonArray = extractDataArray(json);
         List<T> list = new ArrayList<T>();
         for (int i = 0; i < jsonArray.length(); i++) {
-            list.add(gson.fromJson(jsonArray.getJSONObject(i).toString(), clazz));
+            list.add(unserialize(jsonArray.getJSONObject(i).toString()));
         }
         return list;
     }

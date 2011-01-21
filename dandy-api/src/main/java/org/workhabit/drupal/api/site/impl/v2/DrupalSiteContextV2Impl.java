@@ -446,7 +446,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("view_name", viewName);
         if (viewArguments != null) {
-            data.put("args[]", viewArguments);
+            data.put("args", viewArguments);
         }
         if (session != null && !"".equals(session)) {
             data.put("sessid", session);
