@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import org.hamcrest.collection.IsMapContaining;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +14,13 @@ import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl;
+import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactory;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -33,14 +38,18 @@ public class DrupalSiteContextV2ImplTest {
     private DrupalServicesRequestManager mockDrupalServicesRequestManager;
     private Mockery context;
     private String siteUrl;
+    private HttpUrlConnectionFactory mockUrlConnectionFactory;
 
     @Before
     public void setUp() throws Exception {
         siteUrl = "http://ad.hourglassone.com";
         drupalSiteContext = new DrupalSiteContextV2Impl(siteUrl);
         context = new Mockery();
+        context.setImposteriser(ClassImposteriser.INSTANCE);
         mockDrupalServicesRequestManager = context.mock(DrupalServicesRequestManager.class);
         drupalSiteContext.setDrupalServicesRequestManager(mockDrupalServicesRequestManager);
+        mockUrlConnectionFactory = context.mock(HttpUrlConnectionFactory.class);
+        drupalSiteContext.setUrlConnectionFactory(mockUrlConnectionFactory);
     }
 
     @Test
@@ -66,7 +75,7 @@ public class DrupalSiteContextV2ImplTest {
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
                 //noinspection unchecked
-                String json = "{\"#error\":false,\"#data\":\"\"}";
+                String json = "{\"#error\":false,\"#data\": { \"sessid\": \"212222\"} }";
                 //noinspection unchecked
                 atLeast(1).of(mockDrupalServicesRequestManager)
                         .post(
@@ -300,34 +309,44 @@ public class DrupalSiteContextV2ImplTest {
     }
 
     @Test
-    public void testSaveFile() throws Exception {
+    public void testSaveFileStream() throws Exception {
         setConnectExpectations();
+        final HttpURLConnection mockUrlConnection = context.mock(HttpURLConnection.class);
         context.checking(new Expectations() {
             {
+
+                one(mockUrlConnectionFactory).getConnection("http://ad.hourglassone.com/dandy/fileupload/1121212");
+
+                will(returnValue(mockUrlConnection));
+
+                one(mockUrlConnection).connect();
+                one(mockUrlConnection).setRequestProperty("Content-Type", "multipart/form-data; boundary=::::::::::::::::::::::::::::::::::");
+                one(mockUrlConnection).setRequestProperty("Cookie", "");
+                one(mockUrlConnection).getOutputStream();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                will(returnValue(stream));
+                one(mockUrlConnection).getInputStream();
+                ByteArrayInputStream inputStream = new ByteArrayInputStream("{ \"filename\": \"testimage.jpg\", \"filepath\": \"sites/default/files/testimage_4.jpg\", \"filemime\": \"image/jpeg\", \"source\": \"upload\", \"destination\": \"sites/default/files/testimage_4.jpg\", \"filesize\": 32769, \"uid\": \"107\", \"status\": 0, \"timestamp\": 1295559121, \"fid\": \"67650\" }".getBytes());
+                will(returnValue(inputStream));
+                one(mockUrlConnection).disconnect();
+
                 Class<? super Map<String, Object>> type = new TypeToken<Map<String, Object>>() {
                 }.getRawType();
                 //noinspection unchecked
                 one(mockDrupalServicesRequestManager).postSigned(
                         with(equal("http://ad.hourglassone.com/services/json")),
-                        with(equal("file.getDirectoryPath")),
+                        with(equal("file.getUploadToken")),
                         (Map<String, Object>) with(aNonNull(type)),
-                        with(equal(true))
-                );
-                String json = "{\"#error\":false,\"#data\":\"sites/default/files\"}";
-                will(returnValue(json));
-                one(mockDrupalServicesRequestManager).postSigned(
-                        with(equal("http://ad.hourglassone.com/services/json")),
-                        with(equal("file.save")),
-                        with(IsMapContaining.hasEntry("file", (Object) "{\"file\":\"dGVzdCBmaWxlIGRhdGE\\u003d\",\"fid\":0,\"filepath\":\"sites/default/files/foo.txt\",\"filename\":\"foo.txt\"}")),
                         with(equal(false))
                 );
-                json = "{\"#error\":false,\"#data\":1}";
+                String json = "{\"#error\":false,\"#data\":\"1121212\"}";
                 will(returnValue(json));
             }
         });
         String filename = "foo.txt";
         String filedata = "test file data";
-        drupalSiteContext.saveFile(filedata.getBytes(), filename);
+        String token = drupalSiteContext.getFileUploadToken();
+        drupalSiteContext.saveFileStream(new ByteArrayInputStream(filedata.getBytes()), filename, token);
     }
 
 

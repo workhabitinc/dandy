@@ -12,17 +12,14 @@ import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
-import org.workhabit.drupal.api.site.support.Base64;
 import org.workhabit.drupal.api.site.support.GenericCookie;
+import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactory;
+import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactoryImpl;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -58,6 +55,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private final String drupalSiteUrl;
     private final String servicePath;
     private List<GenericCookie> cookies;
+    private HttpUrlConnectionFactory urlConnectionFactory;
 
     /**
      * Constructor takes an authentication token to use for the lifecycle of requests for this instance
@@ -65,8 +63,14 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param drupalSiteUrl site url to connect to
      */
     public DrupalSiteContextV2Impl(String drupalSiteUrl) {
+        urlConnectionFactory = new HttpUrlConnectionFactoryImpl();
         this.drupalSiteUrl = drupalSiteUrl;
         this.servicePath = new StringBuilder().append(drupalSiteUrl).append(JSON_SERVICE_PATH).toString();
+    }
+
+
+    public void setUrlConnectionFactory(HttpUrlConnectionFactory urlConnectionFactory) {
+        this.urlConnectionFactory = urlConnectionFactory;
     }
 
     public DrupalUser getCurrentUser() {
@@ -148,11 +152,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                                                                                                                                                                                                                                                                                         {
-     *                                                                                                                                                                                                                                                                                           '#error': boolean
-     *                                                                                                                                                                                                                                                                                           '#data': 'json string containing the result or error string if #error is true.'
-     *                                                                                                                                                                                                                                                                                         }
-     *                                                                                                                                                                                                                                                                                         </pre>
+     *                                                                                                                                                                                                                                                                                                                                                                         {
+     *                                                                                                                                                                                                                                                                                                                                                                           '#error': boolean
+     *                                                                                                                                                                                                                                                                                                                                                                           '#data': 'json string containing the result or error string if #error is true.'
+     *                                                                                                                                                                                                                                                                                                                                                                         }
+     *                                                                                                                                                                                                                                                                                                                                                                         </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -576,8 +580,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
 
     public String getFileUploadToken() throws DrupalFetchException {
         try {
+            connect();
             Map<String, Object> data = new HashMap<String, Object>();
-            data.put("sessid", session);
+            if (session != null) {
+                data.put("sessid", session);
+            }
             String result = drupalServicesRequestManager.postSigned(servicePath, "file.getUploadToken", data, false);
             JSONObject object = new JSONObject(result);
             assertNoErrors(object);
@@ -595,19 +602,17 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
 
     public DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException {
         try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String boundary = "::::::::::::::::::::::::::::::::::";
-            URL url = new URL(drupalSiteUrl + "/dandy/fileupload/"+ token);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            conn.setUseCaches(false);
+            HttpURLConnection conn = urlConnectionFactory.getConnection(drupalSiteUrl + "/dandy/fileupload/" + token);
             conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
             StringBuffer cookieString = new StringBuffer();
             List<GenericCookie> currentUserCookie = getCurrentUserCookie();
-            for (GenericCookie genericCookie : currentUserCookie) {
-                cookieString.append(genericCookie.getName()).append("=").append(genericCookie.getValue()).append(";");
+            if (currentUserCookie != null) {
+                for (GenericCookie genericCookie : currentUserCookie) {
+                    cookieString.append(genericCookie.getName()).append("=").append(genericCookie.getValue()).append(";");
+                }
             }
-            System.out.println(cookieString);
             conn.setRequestProperty("Cookie", cookieString.toString());
             conn.connect();
             DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
@@ -622,14 +627,16 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             outputStream.writeBytes("\n");
             outputStream.writeBytes("\n");
             int nRead = 0;
-            byte[] data = new byte[16384];
-            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-                outputStream.write(data);
+            char[] data = new char[16384];
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
+            // using buffered reader here to fix broken InputStream implementation on android.
+            while ((nRead = reader.read(data, 0, data.length)) != -1) {
+                bw.write(data);
             }
             outputStream.writeBytes("\n\n");
             outputStream.writeBytes("--" + boundary + "--");
             outputStream.flush();
-            outputStream.close();
+            bw.close();
 
             InputStream is = conn.getInputStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -642,6 +649,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             baos.close();
             is.close();
             String response = new String(baos.toByteArray());
+            conn.disconnect();
             if ("0".equals(response)) {
                 throw new DrupalSaveException(new Exception("Unable to save file."));
             }

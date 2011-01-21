@@ -149,7 +149,7 @@ public class DrupalJsonObjectSerializerTest {
      * TODO: This could use some cleanup and testing of individual string tokens
      */
     @Test
-    public void testSerializeDrupalNode() {
+    public void testSerializeDrupalNode() throws JSONException {
         DrupalNode node = new DrupalNode();
         node.setBody("Test Body");
         node.setChanged(new Date());
@@ -189,7 +189,7 @@ public class DrupalJsonObjectSerializerTest {
      * Test serialization of drupal Taxonomy Term.
      */
     @Test
-    public void testSerializeDrupalTaxonomyTerm() {
+    public void testSerializeDrupalTaxonomyTerm() throws JSONException {
         DrupalTaxonomyTerm term = new DrupalTaxonomyTerm();
         term.setVid(1);
         term.setTid(1);
