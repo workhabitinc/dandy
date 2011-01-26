@@ -61,4 +61,6 @@ public interface DrupalServicesRequestManager {
     public String getString(String path) throws IOException;
 
     List<GenericCookie> getCookies();
+
+    public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException;
 }

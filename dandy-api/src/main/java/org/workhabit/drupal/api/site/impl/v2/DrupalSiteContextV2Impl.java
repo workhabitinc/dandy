@@ -17,8 +17,8 @@ import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactory;
 import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactoryImpl;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -152,11 +152,11 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param objectResult the JSONObject to check for errors.  The structure of this object is generally:
      *                     <p/>
      *                     <pre>
-     *                                                                                                                                                                                                                                                                                                                                                                         {
-     *                                                                                                                                                                                                                                                                                                                                                                           '#error': boolean
-     *                                                                                                                                                                                                                                                                                                                                                                           '#data': 'json string containing the result or error string if #error is true.'
-     *                                                                                                                                                                                                                                                                                                                                                                         }
-     *                                                                                                                                                                                                                                                                                                                                                                         </pre>
+     *                                                                                                                                                                                                                                                                                                                                                                                             {
+     *                                                                                                                                                                                                                                                                                                                                                                                               '#error': boolean
+     *                                                                                                                                                                                                                                                                                                                                                                                               '#data': 'json string containing the result or error string if #error is true.'
+     *                                                                                                                                                                                                                                                                                                                                                                                             }
+     *                                                                                                                                                                                                                                                                                                                                                                                             </pre>
      * @throws JSONException        if there's an error deserializing the response.
      * @throws DrupalFetchException if an error occurred. The message of the exception contains the error.
      *                              See {@link org.workhabit.drupal.api.site.exceptions.DrupalFetchException#getMessage()}
@@ -254,7 +254,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         Gson gson = builder.create();
         String jsonComment = gson.toJson(comment);
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("comment", jsonComment);
+        data.put("comment", unicodeEscape(jsonComment));
         if (session != null && !"".equals(session)) {
             data.put("sessid", session);
         }
@@ -263,7 +263,15 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             String response = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_COMMENT_SAVE, data, false);
             JSONObject jsonObject = new JSONObject(response);
             assertNoErrors(jsonObject);
-            return jsonObject.getInt("#data");
+            if (jsonObject.has("#data") && !jsonObject.isNull("#data")) {
+                try {
+                    return jsonObject.getInt("#data");
+                } catch (JSONException e) {
+                    // probably wasn't an int.
+                    return jsonObject.getBoolean("#data") ? 1 : 0;
+                }
+            }
+            return 0;
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalSaveException(e);
         } catch (IOException e) {
@@ -363,7 +371,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             Gson gson = builder.create();
             String jsonUser = gson.toJson(user);
 
-            data.put("account", jsonUser);
+            data.put("account", unicodeEscape(jsonUser));
             data.put("sessid", session);
 
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_CREATE_NEW_USER, data, false);
@@ -526,7 +534,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
                     jsonNode.add(String.format("%s", name), fieldObject);
                 }
             }
-            data.put("node", jsonNode.toString());
+            data.put("node", unicodeEscape(jsonNode.toString()));
             data.put("sessid", session);
 
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_NODE_SAVE, data, false);
@@ -544,6 +552,28 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         } catch (JSONException e) {
             throw new DrupalSaveException(e);
         }
+    }
+
+    private static final char[] hexChar = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+    };
+
+
+    private String unicodeEscape(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if ((c >> 7) > 0) {
+                sb.append("\\u");
+                sb.append(hexChar[(c >> 12) & 0xF]); // append the hex character for the left-most 4-bits
+                sb.append(hexChar[(c >> 8) & 0xF]);  // hex for the second group of 4-bits from the left
+                sb.append(hexChar[(c >> 4) & 0xF]);  // hex for the third group
+                sb.append(hexChar[c & 0xF]);         // hex for the last group, e.g., the right most 4-bits
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     public DrupalUser getUser(int uid) throws DrupalFetchException {
@@ -602,54 +632,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
 
     public DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String boundary = "::::::::::::::::::::::::::::::::::";
-            HttpURLConnection conn = urlConnectionFactory.getConnection(drupalSiteUrl + "/dandy/fileupload/" + token);
-            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            StringBuffer cookieString = new StringBuffer();
-            List<GenericCookie> currentUserCookie = getCurrentUserCookie();
-            if (currentUserCookie != null) {
-                for (GenericCookie genericCookie : currentUserCookie) {
-                    cookieString.append(genericCookie.getName()).append("=").append(genericCookie.getValue()).append(";");
-                }
-            }
-            conn.setRequestProperty("Cookie", cookieString.toString());
-            conn.connect();
-            DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
-            outputStream.writeBytes("--");
-            outputStream.writeBytes(boundary);
-            outputStream.writeBytes("\n");
-            String contentDisposition = "Content-Disposition: form-data; name=\"files[upload]\"; filename=\"" + fileName + "\"";
-            String contentType = "Content-Type: application/octet-stream";
-            outputStream.writeBytes(contentDisposition);
-            outputStream.writeBytes("\n");
-            outputStream.writeBytes(contentType);
-            outputStream.writeBytes("\n");
-            outputStream.writeBytes("\n");
-            int nRead = 0;
-            char[] data = new char[16384];
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
-            // using buffered reader here to fix broken InputStream implementation on android.
-            while ((nRead = reader.read(data, 0, data.length)) != -1) {
-                bw.write(data);
-            }
-            outputStream.writeBytes("\n\n");
-            outputStream.writeBytes("--" + boundary + "--");
-            outputStream.flush();
-            bw.close();
-
-            InputStream is = conn.getInputStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] bytes = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = is.read(bytes)) != -1) {
-                baos.write(bytes, 0, bytesRead);
-            }
-            byte[] bytesReceived = baos.toByteArray();
-            baos.close();
-            is.close();
-            String response = new String(baos.toByteArray());
-            conn.disconnect();
+            String response = drupalServicesRequestManager.postFile(drupalSiteUrl + "/dandy/fileupload/" + token, "files[upload]", inputStream, fileName);
             if ("0".equals(response)) {
                 throw new DrupalSaveException(new Exception("Unable to save file."));
             }

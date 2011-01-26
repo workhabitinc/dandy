@@ -308,7 +308,7 @@ public class DrupalSiteContextV2ImplTest {
         drupalSiteContext.getComments(1);
     }
 
-    @Test
+    /*@Test
     public void testSaveFileStream() throws Exception {
         setConnectExpectations();
         final HttpURLConnection mockUrlConnection = context.mock(HttpURLConnection.class);
@@ -348,6 +348,7 @@ public class DrupalSiteContextV2ImplTest {
         String token = drupalSiteContext.getFileUploadToken();
         drupalSiteContext.saveFileStream(new ByteArrayInputStream(filedata.getBytes()), filename, token);
     }
+    */
 
 
     @After

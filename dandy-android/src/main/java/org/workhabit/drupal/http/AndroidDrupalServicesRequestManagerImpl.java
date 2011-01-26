@@ -15,6 +15,10 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.entity.mime.FormBodyPart;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -184,6 +188,24 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
     @Override
     public List<GenericCookie> getCookies() {
         return cookies;
+    }
+
+    @Override
+    public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException {
+        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        entity.addPart(new FormBodyPart(fieldName, new InputStreamBody(new BufferedInputStream(inputStream), fileName)));
+        HttpPost httpPost = new HttpPost(path);
+        httpPost.setEntity(entity);
+        HttpResponse response = client.execute(httpPost, httpContext);
+        InputStream contentInputStream = response.getEntity().getContent();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
+        StringWriter sw = new StringWriter();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sw.write(line);
+            sw.write("\n");
+        }
+        return sw.toString();
     }
 
     /**
