@@ -17,7 +17,7 @@ public class DrupalNode implements DrupalEntity {
     private int nid;
     private int uid;
     private String type;
-    private boolean status;
+    private Boolean status;
     private String title;
     private int comment;
     private Boolean promote;
