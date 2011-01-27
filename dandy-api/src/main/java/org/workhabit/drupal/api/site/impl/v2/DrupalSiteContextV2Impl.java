@@ -1,12 +1,14 @@
 package org.workhabit.drupal.api.site.impl.v2;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.json.BooleanAdapter;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
+import org.workhabit.drupal.api.json.UnixTimeDateAdapter;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
@@ -19,13 +21,11 @@ import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -465,6 +465,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         }
         try {
             String result = drupalServicesRequestManager.postSigned(servicePath, SERVICE_NAME_VIEWS_GET, data, true);
+            assertNoErrors(new JSONObject(result));
             DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
             return serializer.unserializeList(result);
         } catch (Exception e) {
@@ -494,6 +495,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         try {
             connect();
             GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(Date.class, new UnixTimeDateAdapter());
             builder.registerTypeAdapter(boolean.class, new BooleanAdapter());
             ExclusionStrategy strategy = new ExclusionStrategy() {
                 public boolean shouldSkipField(FieldAttributes f) {
@@ -518,6 +520,8 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
             Map<String, Object> data = new HashMap<String, Object>();
             JsonObject jsonNode = (JsonObject) gson.toJsonTree(node);
             Map<String, DrupalField> fields = node.getFields();
+            Type type = new TypeToken<Map<String, String>>() {
+                }.getType();
             if (fields != null) {
                 for (Map.Entry<String, DrupalField> entry : fields.entrySet()) {
                     String name = entry.getKey();
@@ -527,11 +531,16 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
                         HashMap<String, String> map = values.get(i);
                         JsonObject valueObject = new JsonObject();
                         for (Map.Entry<String, String> valueEntry : map.entrySet()) {
-                            valueObject.addProperty(valueEntry.getKey(), valueEntry.getValue());
+                            if (valueEntry.getValue().startsWith("{")) {
+                                Map<String, String> element = gson.fromJson(valueEntry.getValue(), type);
+                                valueObject.add(valueEntry.getKey(), gson.toJsonTree(element));
+                            } else {
+                                valueObject.addProperty(valueEntry.getKey(), valueEntry.getValue());
+                            }
                         }
                         fieldObject.add(String.valueOf(i), valueObject);
                     }
-                    jsonNode.add(String.format("%s", name), fieldObject);
+                    jsonNode.add(name, fieldObject);
                 }
             }
             data.put("node", unicodeEscape(jsonNode.toString()));

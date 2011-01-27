@@ -61,7 +61,13 @@ public class DrupalJsonObjectSerializer<T> {
                         JSONObject jsonValue = new JSONObject();
                         HashMap<String, String> value = values.get(i);
                         for (Map.Entry<String, String> entry : value.entrySet()) {
-                            jsonValue.put(entry.getKey(), entry.getValue());
+                            if (entry.getValue().startsWith("{")) {
+                                // it's an object, try to deserialize
+                                //
+                                jsonValue.put(entry.getKey(), new JSONObject(entry.getValue()));
+                            } else {
+                                jsonValue.put(entry.getKey(), entry.getValue());
+                            }
                         }
                         jsonField.put(String.valueOf(i), jsonValue);
                     }
