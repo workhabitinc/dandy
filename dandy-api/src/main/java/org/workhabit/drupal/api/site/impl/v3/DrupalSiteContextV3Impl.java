@@ -59,7 +59,14 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public void logout() throws DrupalLogoutException
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Map<String,Object> data = new HashMap<String, Object>();
+        try {
+            this.currentUser = null;
+            this.session = null;
+            requestManager.post(rootPath + "/user/logout.json", data);
+        } catch (IOException e) {
+            throw new DrupalLogoutException(e);
+        }
     }
 
     public List<DrupalNode> getNodeView(String viewName) throws DrupalFetchException
@@ -168,80 +175,96 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public int saveNode(final DrupalNode node) throws DrupalSaveException
     {
         try {
-            GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeAdapter(Date.class, new UnixTimeDateAdapter());
-            builder.registerTypeAdapter(boolean.class, new BooleanAdapter());
-            ExclusionStrategy strategy = new ExclusionStrategy()
-            {
-                public boolean shouldSkipField(FieldAttributes f)
-                {
-                    if ("nid".equals(f.getName())) {
-                        if (node.getNid() == 0) {
-                            return true;
-                        }
-                    }
-                    if ("fields".equals(f.getName())) {
-                        return true;
-                    }
-                    return false;
-                }
-
-                public boolean shouldSkipClass(Class<?> clazz)
-                {
-                    return false;
-                }
-            };
-            builder.setExclusionStrategies(strategy);
-            builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
-            Gson gson = builder.create();
-            JsonObject jsonNode = (JsonObject)gson.toJsonTree(node);
-            Map<String, DrupalField> fields = node.getFields();
-            Type type = new TypeToken<Map<String, String>>()
-            {
-            }.getType();
-            if (fields != null && fields.size() > 0) {
-                for (Map.Entry<String, DrupalField> entry : fields.entrySet()) {
-                    String name = entry.getKey();
-                    JsonObject fieldObject = new JsonObject();
-                    ArrayList<HashMap<String, String>> values = entry.getValue().getValues();
-                    for (int i = 0; i < values.size(); i++) {
-                        HashMap<String, String> map = values.get(i);
-                        JsonObject valueObject = new JsonObject();
-                        for (Map.Entry<String, String> valueEntry : map.entrySet()) {
-                            if (valueEntry.getValue().startsWith("{")) {
-                                Map<String, String> element = gson.fromJson(valueEntry.getValue(), type);
-                                valueObject.add(valueEntry.getKey(), gson.toJsonTree(element));
-                            }
-                            else {
-                                valueObject.addProperty(valueEntry.getKey(), valueEntry.getValue());
-                            }
-                        }
-                        fieldObject.add(String.valueOf(i), valueObject);
-                    }
-                    if (name != null) {
-                        jsonNode.add(name, fieldObject);
-                    }
-                }
-            }
-            String data = jsonNode.toString();
-            String response = requestManager.post(rootPath + "/node.json", data);
-            return Integer.parseInt(response);
+            JsonObject jsonNode = serializeNode(node);
+            JSONObject object = new JSONObject();
+            object.put("node", new JSONObject(jsonNode.toString()));
+            String response = requestManager.post(rootPath + "/node.json", object.toString());
+            JSONObject responseObject = new JSONObject(response);
+            return responseObject.getInt("nid");
         } catch (IOException e) {
+            throw new DrupalSaveException(e);
+        } catch (JSONException e) {
             throw new DrupalSaveException(e);
         }
     }
 
+    private JsonObject serializeNode(final DrupalNode node)
+    {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Date.class, new UnixTimeDateAdapter());
+        builder.registerTypeAdapter(boolean.class, new BooleanAdapter());
+        ExclusionStrategy strategy = new ExclusionStrategy()
+        {
+            public boolean shouldSkipField(FieldAttributes f)
+            {
+                if ("nid".equals(f.getName())) {
+                    // TODO: since we need access to the actual node object to make this check, this is set up as an inline declaration.  Need to figure out how to do this when constructing the serializer.
+                    if (node.getNid() == 0) {
+                        return true;
+                    }
+                }
+                return "fields".equals(f.getName());
+            }
+
+            public boolean shouldSkipClass(Class<?> clazz)
+            {
+                return false;
+            }
+        };
+        builder.setExclusionStrategies(strategy);
+        builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
+        Gson gson = builder.create();
+        JsonObject jsonNode = (JsonObject)gson.toJsonTree(node);
+        Map<String, DrupalField> fields = node.getFields();
+        Type type = new TypeToken<Map<String, String>>()
+        {
+        }.getType();
+        if (fields != null && fields.size() > 0) {
+            for (Map.Entry<String, DrupalField> entry : fields.entrySet()) {
+                String name = entry.getKey();
+                JsonObject fieldObject = new JsonObject();
+                ArrayList<HashMap<String, String>> values = entry.getValue().getValues();
+                for (int i = 0; i < values.size(); i++) {
+                    HashMap<String, String> map = values.get(i);
+                    JsonObject valueObject = new JsonObject();
+                    for (Map.Entry<String, String> valueEntry : map.entrySet()) {
+                        if (valueEntry.getValue().startsWith("{")) {
+                            Map<String, String> element = gson.fromJson(valueEntry.getValue(), type);
+                            valueObject.add(valueEntry.getKey(), gson.toJsonTree(element));
+                        }
+                        else {
+                            valueObject.addProperty(valueEntry.getKey(), valueEntry.getValue());
+                        }
+                    }
+                    fieldObject.add(String.valueOf(i), valueObject);
+                }
+                if (name != null) {
+                    jsonNode.add(name, fieldObject);
+                }
+            }
+        }
+        return jsonNode;
+    }
+
     public DrupalUser getUser(int uid) throws DrupalFetchException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            String response = requestManager.getString(rootPath + "/user/" + uid + ".json");
+            return userObjectSerializer.unserialize(response);
+        } catch (IOException e) {
+            throw new DrupalFetchException(e);
+        } catch (JSONException e) {
+            throw new DrupalFetchException(e);
+        }
     }
 
     public DrupalUser getCurrentUser() {
         return this.currentUser;
     }
+
     public List<GenericCookie> getCurrentUserCookie()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return requestManager.getCookies();
     }
 
     public String getFileUploadToken() throws DrupalFetchException
@@ -256,6 +279,8 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public void initializeSavedState(DrupalSiteContextInstanceState state)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.currentUser = state.getUser();
+        this.session = state.getSession();
+        this.requestManager.initializeSavedState(state);
     }
 }

@@ -9,10 +9,12 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 11/30/10, 12:26 PM
  */
-public class DrupalJsonObjectSerializerFactory {
+public class DrupalJsonObjectSerializerFactory
+{
     private static final Map<Class<? extends DrupalEntity>, DrupalJsonObjectSerializer> instances = new HashMap<Class<? extends DrupalEntity>, DrupalJsonObjectSerializer>();
 
-    public static <T extends DrupalEntity> DrupalJsonObjectSerializer<T> getInstance(Class<T> clazz) {
+    public static <T extends DrupalEntity> DrupalJsonObjectSerializer<T> getInstance(Class<T> clazz)
+    {
         if (!instances.containsKey(clazz)) {
             DrupalJsonObjectSerializer<T> serializer = new DrupalJsonObjectSerializer<T>(clazz);
             instances.put(clazz, serializer);
@@ -21,7 +23,8 @@ public class DrupalJsonObjectSerializerFactory {
         return instances.get(clazz);
     }
 
-    private DrupalJsonObjectSerializerFactory() {
+    private DrupalJsonObjectSerializerFactory()
+    {
         // not instantiable
     }
 }

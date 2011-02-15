@@ -15,4 +15,6 @@ public interface DrupalSiteContextInstanceState
     ArrayList<GenericCookie> getCookies();
 
     DrupalUser getUser();
+
+    String getSession();
 }

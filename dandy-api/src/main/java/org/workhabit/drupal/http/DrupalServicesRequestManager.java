@@ -33,6 +33,7 @@ public interface DrupalServicesRequestManager {
     public String post(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException;
     public String post(String path, String data) throws IOException;
     public String post(String path, Map<String, Object> data) throws IOException;
+    public String post(String path, Map<String, Object> data, String contentType) throws IOException;
 
     /**
      * make a POSt request to the remote site after signing the request.

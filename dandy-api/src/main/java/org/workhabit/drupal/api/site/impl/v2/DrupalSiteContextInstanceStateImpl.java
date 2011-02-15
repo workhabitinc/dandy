@@ -15,6 +15,7 @@ public class DrupalSiteContextInstanceStateImpl implements DrupalSiteContextInst
 {
     private ArrayList<GenericCookie> cookies;
     private DrupalUser user;
+    private String session;
 
     public void setCookies(ArrayList<GenericCookie> cookies)
     {
@@ -34,5 +35,15 @@ public class DrupalSiteContextInstanceStateImpl implements DrupalSiteContextInst
     public DrupalUser getUser()
     {
         return user;
+    }
+
+    public void setSession(String session)
+    {
+        this.session = session;
+    }
+
+    public String getSession()
+    {
+        return session;
     }
 }

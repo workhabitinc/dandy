@@ -71,17 +71,19 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
     {
         HttpPost post = new HttpPost(path);
         post.setHeader("Content-Type", "application/json");
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("data", data));
-        post.setEntity(new UrlEncodedFormEntity(parameters));
+        post.setEntity(new ByteArrayEntity(data.getBytes()));
         HttpResponse response = client.execute(post, httpContext);
         processCookies();
         return getResponseData(response);
     }
-
     public String post(String path, Map<String, Object> data) throws IOException {
+        return post(path, data, "application/x-www-form-urlencoded");
+    }
+
+    public String post(String path, Map<String, Object> data, String contentType) throws IOException {
+
         HttpPost post = new HttpPost(path);
-        post.setHeader("Content-Type", "application/x-www-form-urlencoded");
+        post.setHeader("Content-Type", contentType);
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             BasicNameValuePair pair = new BasicNameValuePair(entry.getKey(), (String)entry.getValue());

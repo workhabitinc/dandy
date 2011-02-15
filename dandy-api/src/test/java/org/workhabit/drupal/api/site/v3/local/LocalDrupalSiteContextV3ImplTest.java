@@ -21,11 +21,18 @@ public class LocalDrupalSiteContextV3ImplTest
     private DrupalSiteContextV3Impl context;
 
     @Before
-    public void setUp() {
+    public void setUp()
+    {
         context = new DrupalSiteContextV3Impl("http://se.local", "dandy");
         CommonsHttpClientDrupalServicesRequestManager requestManager = new CommonsHttpClientDrupalServicesRequestManager();
         context.setRequestManager(requestManager);
     }
+
+    /**
+     * Fetches a test node against se.local with anonymous user.
+     *
+     * @throws DrupalFetchException
+     */
     @Test
     public void testGetNode() throws DrupalFetchException
     {
@@ -34,23 +41,49 @@ public class LocalDrupalSiteContextV3ImplTest
     }
 
     @Test
-    public void testSaveNode() throws DrupalFetchException
+    public void testSaveNode() throws DrupalFetchException, DrupalLoginException, DrupalLogoutException
     {
-        DrupalNode node = context.getNode(1);
-        node.setNid(0);
-        // resave the existing node for testing
-        int nid = context.saveNode(node);
-        assertFalse(nid == 0);
+        try {
+            DrupalUser loggedInUser = authenticateTestUser();
+
+            DrupalNode node = context.getNode(1);
+            assertEquals(2, node.getUid());
+            node.setNid(0);
+            // resave the existing node for testing
+            int nid = context.saveNode(node);
+            assertFalse(nid == 0);
+        } finally {
+            context.logout();
+        }
+    }
+
+    @Test
+    public void testGetUser() throws DrupalFetchException, DrupalLoginException, DrupalLogoutException
+    {
+        try {
+            DrupalUser loggedInUser = authenticateTestUser();
+            DrupalUser user = context.getUser(2);
+            assertNotNull(user);
+            assertEquals(2, user.getUid());
+        } finally {
+            context.logout();
+        }
     }
 
     @Test
     public void testUserLogin() throws DrupalLoginException, DrupalFetchException, DrupalLogoutException
     {
-        DrupalUser user = context.login("testuser", "testpass");
-        assertNotNull(user);
+        DrupalUser loggedInUser = authenticateTestUser();
         DrupalUser currentUser = context.getCurrentUser();
-        assertEquals(user, currentUser);
+        assertEquals(loggedInUser, currentUser);
         context.logout();
         assertNull(context.getCurrentUser());
+    }
+
+    private DrupalUser authenticateTestUser() throws DrupalLoginException, DrupalFetchException
+    {
+        DrupalUser loggedInUser = context.login("testuser", "testpass");
+        assertNotNull(loggedInUser);
+        return loggedInUser;
     }
 }
