@@ -13,6 +13,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.mime.FormBodyPart;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -20,6 +21,7 @@ import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -27,6 +29,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
+import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
@@ -43,14 +46,16 @@ import java.util.Map;
  * Date: Oct 22, 2010, 10:20:31 PM
  */
 @SuppressWarnings({"UnusedDeclaration"})
-public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServicesRequestManager {
+public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServicesRequestManager
+{
     private final HttpClient client;
     private RequestSigningInterceptor requestSigningInterceptor;
     private ArrayList<GenericCookie> cookies;
     private BasicCookieStore cookieStore;
     private HttpContext httpContext;
 
-    public CommonsHttpClientDrupalServicesRequestManager() {
+    public CommonsHttpClientDrupalServicesRequestManager()
+    {
         HttpParams params = new BasicHttpParams();
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
@@ -62,7 +67,48 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
         client = new DefaultHttpClient(cm, params);
     }
 
-    public String post(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException {
+    public String post(String path, String data) throws IOException
+    {
+        HttpPost post = new HttpPost(path);
+        post.setHeader("Content-Type", "application/json");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        parameters.add(new BasicNameValuePair("data", data));
+        post.setEntity(new UrlEncodedFormEntity(parameters));
+        HttpResponse response = client.execute(post, httpContext);
+        processCookies();
+        return getResponseData(response);
+    }
+
+    public String post(String path, Map<String, Object> data) throws IOException {
+        HttpPost post = new HttpPost(path);
+        post.setHeader("Content-Type", "application/x-www-form-urlencoded");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            BasicNameValuePair pair = new BasicNameValuePair(entry.getKey(), (String)entry.getValue());
+            parameters.add(pair);
+        }
+        post.setEntity(new UrlEncodedFormEntity(parameters));
+        HttpResponse response = client.execute(post, httpContext);
+        processCookies();
+        return getResponseData(response);
+    }
+
+    private String getResponseData(HttpResponse response)
+            throws IOException
+    {
+        InputStream contentInputStream = response.getEntity().getContent();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
+        StringWriter sw = new StringWriter();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sw.write(line);
+            sw.write("\n");
+        }
+        return sw.toString();
+    }
+
+    public String post(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException
+    {
         HttpPost httpPost = new HttpPost(path);
 
         List<NameValuePair> parameters = processParameters(method, data, escapeInput);
@@ -70,7 +116,12 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
         httpPost.setHeader(contentTypeHeader);
         httpPost.setEntity(new UrlEncodedFormEntity(parameters));
         HttpResponse response = client.execute(httpPost, httpContext);
-        InputStream contentInputStream = response.getEntity().getContent();
+        processCookies();
+        return getResponseData(response);
+    }
+
+    private void processCookies()
+    {
         cookies = new ArrayList<GenericCookie>();
         List<Cookie> cookieList = cookieStore.getCookies();
         for (Cookie cookie : cookieList) {
@@ -85,35 +136,21 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
             siteCookie.setValue(cookie.getValue());
             cookies.add(siteCookie);
         }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
-        StringWriter sw = new StringWriter();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sw.write(line);
-            sw.write("\n");
-        }
-        return sw.toString();
     }
 
-    public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException {
+    public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException
+    {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
         entity.addPart(new FormBodyPart(fieldName, new InputStreamBody(inputStream, fileName)));
         HttpPost httpPost = new HttpPost(path);
         httpPost.setEntity(entity);
         HttpResponse response = client.execute(httpPost, httpContext);
-        InputStream contentInputStream = response.getEntity().getContent();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
-        StringWriter sw = new StringWriter();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sw.write(line);
-            sw.write("\n");
-        }
-        return sw.toString();
+        return getResponseData(response);
     }
 
 
-    public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException, NoSuchAlgorithmException, InvalidKeyException
+    {
         if (data == null) {
             data = new HashMap<String, Object>();
         }
@@ -123,13 +160,15 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
         return post(path, method, data, escapeInput);
     }
 
-    public InputStream getStream(String path) throws IOException {
+    public InputStream getStream(String path) throws IOException
+    {
         HttpGet get = new HttpGet(path);
         HttpResponse response = client.execute(get, httpContext);
         return new BufferedHttpEntity(response.getEntity()).getContent();
     }
 
-    public String getString(String path) throws IOException {
+    public String getString(String path) throws IOException
+    {
         InputStream contentInputStream = getStream(path);
         BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
         StringWriter sw = new StringWriter();
@@ -141,11 +180,13 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
         return sw.toString();
     }
 
-    public List<GenericCookie> getCookies() {
+    public ArrayList<GenericCookie> getCookies()
+    {
         return cookies;
     }
 
-    public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {
+    public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor)
+    {
         this.requestSigningInterceptor = requestSigningInterceptor;
     }
 
@@ -158,7 +199,8 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
      * @param escapeInput true if the data should be escaped; false otherwise.
      * @return a list of {@link NameValuePair} mappings to pass to the request entity.
      */
-    protected List<NameValuePair> processParameters(String method, Map<String, Object> data, boolean escapeInput) {
+    protected List<NameValuePair> processParameters(String method, Map<String, Object> data, boolean escapeInput)
+    {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         NameValuePair pair = new BasicNameValuePair("method", "\"" + method + "\"");
         parameters.add(pair);
@@ -166,13 +208,31 @@ public class CommonsHttpClientDrupalServicesRequestManager implements DrupalServ
             for (Map.Entry<String, Object> entry : data.entrySet()) {
                 if (escapeInput) {
                     pair = new BasicNameValuePair(entry.getKey(), "\"" + entry.getValue() + "\"");
-                } else {
+                }
+                else {
                     pair = new BasicNameValuePair(entry.getKey(), "" + entry.getValue());
                 }
                 parameters.add(pair);
             }
         }
         return parameters;
+    }
+
+    public void initializeSavedState(DrupalSiteContextInstanceState state)
+    {
+        ArrayList<GenericCookie> cookieList = state.getCookies();
+        cookies = cookieList;
+        for (GenericCookie genericCookie : cookieList) {
+            BasicClientCookie cookie = new BasicClientCookie(genericCookie.getName(), genericCookie.getValue());
+            cookie.setComment(genericCookie.getComment());
+            cookie.setDomain(genericCookie.getDomain());
+            cookie.setExpiryDate(genericCookie.getExpiryDate());
+            cookie.setPath(genericCookie.getPath());
+            cookie.setSecure(genericCookie.isSecure());
+            cookie.setValue(genericCookie.getValue());
+            cookie.setVersion(genericCookie.getVersion());
+            cookieStore.addCookie(cookie);
+        }
     }
 
 }

@@ -14,6 +14,7 @@ import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
+import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactory;
 import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactoryImpl;
@@ -54,7 +55,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private DrupalUser user;
     private final String drupalSiteUrl;
     private final String servicePath;
-    private List<GenericCookie> cookies;
+    private ArrayList<GenericCookie> cookies;
     private HttpUrlConnectionFactory urlConnectionFactory;
 
     /**
@@ -66,6 +67,20 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
         urlConnectionFactory = new HttpUrlConnectionFactoryImpl();
         this.drupalSiteUrl = drupalSiteUrl;
         this.servicePath = new StringBuilder().append(drupalSiteUrl).append(JSON_SERVICE_PATH).toString();
+    }
+
+    public DrupalSiteContextInstanceState getInstanceState() {
+        DrupalSiteContextInstanceStateImpl state = new DrupalSiteContextInstanceStateImpl();
+        state.setCookies(cookies);
+        state.setUser(user);
+        return state;
+    }
+
+    public void initializeSavedState(DrupalSiteContextInstanceState state) {
+        urlConnectionFactory = new HttpUrlConnectionFactoryImpl();
+        this.cookies = state.getCookies();
+        this.user = state.getUser();
+        drupalServicesRequestManager.initializeSavedState(state);
     }
 
 
@@ -121,7 +136,8 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
                 throw new DrupalFetchException(object);
             }
             setSession(null);
-            cookies = null;
+            cookies = new ArrayList<GenericCookie>();
+            user = null;
         } catch (NoSuchAlgorithmException e) {
             throw new DrupalLogoutException(e);
         } catch (IOException e) {

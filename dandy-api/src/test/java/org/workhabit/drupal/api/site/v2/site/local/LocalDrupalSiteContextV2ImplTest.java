@@ -74,7 +74,7 @@ public class LocalDrupalSiteContextV2ImplTest {
         node.setTaxonomy(taxonomy);
         node.setType("page");
         node.setFormat(1);
-        node.setBody("foo");
+        //node.setBody("foo");
         node.setUid(1);
         int nid = drupalSiteContext.saveNode(node);
         assertNotNull(nid);
@@ -87,7 +87,7 @@ public class LocalDrupalSiteContextV2ImplTest {
         node.setTitle("foo");
         node.setType("driver_post");
         node.setFormat(1);
-        node.setBody("whatever");
+        //node.setBody("whatever");
         node.setUid(1);
         Map<String, DrupalField> fields = new HashMap<String, DrupalField>();
         DrupalField field = new DrupalField();

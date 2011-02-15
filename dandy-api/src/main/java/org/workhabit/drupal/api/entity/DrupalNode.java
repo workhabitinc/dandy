@@ -23,7 +23,7 @@ public class DrupalNode implements DrupalEntity {
     private Boolean promote;
     private Boolean moderate;
     private Boolean sticky;
-    private String body;
+    private DrupalBody body;
     private String teaser;
     private String log;
     private Date revisionTimestamp;
@@ -34,6 +34,7 @@ public class DrupalNode implements DrupalEntity {
     private Date lastCommentTimestamp;
     private String lastCommentName;
     private int commentCount;
+    private String language;
 
     // no need to serialize taxonomy
     private HashMap<Integer, DrupalTaxonomyTerm> taxonomy;
@@ -61,15 +62,6 @@ public class DrupalNode implements DrupalEntity {
 
     public void setUid(int uid) {
         this.uid = uid;
-    }
-
-    @SuppressWarnings({"UnusedDeclaration"})
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
     }
 
     public String getTitle() {
@@ -115,11 +107,11 @@ public class DrupalNode implements DrupalEntity {
         this.sticky = sticky;
     }
 
-    public String getBody() {
+    public DrupalBody getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(DrupalBody body) {
         this.body = body;
     }
 
@@ -279,5 +271,25 @@ public class DrupalNode implements DrupalEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(Boolean status)
+    {
+        this.status = status;
+    }
+
+    public String getLanguage()
+    {
+        return language;
+    }
+
+    public void setLanguage(String language)
+    {
+        this.language = language;
     }
 }

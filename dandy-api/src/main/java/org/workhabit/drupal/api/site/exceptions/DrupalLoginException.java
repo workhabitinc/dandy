@@ -8,26 +8,21 @@ import org.json.JSONObject;
  * Date: Sep 24, 2010, 8:27:56 PM
  */
 public class DrupalLoginException extends Exception {
-    private final JSONObject objectResult;
-    private String message;
 
-    public DrupalLoginException(JSONObject objectResult, String siteUrl) {
+    private Throwable t;
 
-        this.objectResult = objectResult;
-        try {
-            this.message = "An error occurred connecting to " + siteUrl + ": " + objectResult.getString("#data");
-        } catch (JSONException e) {
-            this.message = "Unable to unmarshal JSON Object: " + e.getMessage();
-        }
-    }
-
-    @SuppressWarnings({"UnusedDeclaration"})
-    public JSONObject getObjectResult() {
-        return objectResult;
+    public DrupalLoginException(Throwable t) {
+        this.t = t;
     }
 
     @Override
     public String getMessage() {
-        return message;
+        return t.getMessage();
+    }
+
+    @Override
+    public Throwable getCause()
+    {
+        return t.getCause();
     }
 }
