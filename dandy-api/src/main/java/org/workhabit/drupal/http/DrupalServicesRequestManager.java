@@ -1,11 +1,13 @@
 package org.workhabit.drupal.http;
 
+import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +62,9 @@ public interface DrupalServicesRequestManager {
 
     public String getString(String path) throws IOException;
 
-    List<GenericCookie> getCookies();
+    ArrayList<GenericCookie> getCookies();
 
     public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException;
+
+    void initializeSavedState(DrupalSiteContextInstanceState state);
 }

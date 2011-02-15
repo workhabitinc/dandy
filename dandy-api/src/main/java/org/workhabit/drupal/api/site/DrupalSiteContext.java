@@ -5,6 +5,7 @@ import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
+import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 
 import java.io.IOException;
@@ -177,4 +178,9 @@ public interface DrupalSiteContext {
 
     String getFileUploadToken() throws DrupalFetchException;
     DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException;
+
+    DrupalUser getCurrentUser();
+
+    DrupalSiteContextInstanceState getInstanceState();
+    void initializeSavedState(DrupalSiteContextInstanceState state);
 }

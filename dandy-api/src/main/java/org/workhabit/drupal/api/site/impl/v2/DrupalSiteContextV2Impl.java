@@ -14,6 +14,7 @@ import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
+import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactory;
 import org.workhabit.drupal.api.site.support.HttpUrlConnectionFactoryImpl;
@@ -39,7 +40,6 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private static final String SERVICE_NAME_USER_LOGIN = "user.login";
     private static final String SERVICE_NAME_VIEWS_GET = "views.get";
     private static final String SERVICE_NAME_TAXONOMY_DICTIONARY = "taxonomy.dictionary";
-    private static final String SERVICE_NAME_FILE_SAVE = "file.save";
     private static final String SERVICE_NAME_FILE_GETDIRECTORYPATH = "file.getDirectoryPath";
     private static final String SERVICE_NAME_COMMENT_LOADNODECOMMENTS = "comment.loadNodeComments";
     private static final String SERVICE_NAME_NODE_SAVE = "node.save";
@@ -54,8 +54,7 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
     private DrupalUser user;
     private final String drupalSiteUrl;
     private final String servicePath;
-    private List<GenericCookie> cookies;
-    private HttpUrlConnectionFactory urlConnectionFactory;
+    private ArrayList<GenericCookie> cookies;
 
     /**
      * Constructor takes an authentication token to use for the lifecycle of requests for this instance
@@ -63,18 +62,25 @@ public class DrupalSiteContextV2Impl implements DrupalSiteContext {
      * @param drupalSiteUrl site url to connect to
      */
     public DrupalSiteContextV2Impl(String drupalSiteUrl) {
-        urlConnectionFactory = new HttpUrlConnectionFactoryImpl();
         this.drupalSiteUrl = drupalSiteUrl;
         this.servicePath = new StringBuilder().append(drupalSiteUrl).append(JSON_SERVICE_PATH).toString();
     }
 
-
-    public void setUrlConnectionFactory(HttpUrlConnectionFactory urlConnectionFactory) {
-        this.urlConnectionFactory = urlConnectionFactory;
-    }
-
     public DrupalUser getCurrentUser() {
         return user;
+    }
+
+     public DrupalSiteContextInstanceState getInstanceState() {
+        DrupalSiteContextInstanceStateImpl state = new DrupalSiteContextInstanceStateImpl();
+        state.setCookies(cookies);
+        state.setUser(user);
+        return state;
+    }
+
+     public void initializeSavedState(DrupalSiteContextInstanceState state) {
+        this.cookies = state.getCookies();
+        this.user = state.getUser();
+        drupalServicesRequestManager.initializeSavedState(state);
     }
 
     /**
