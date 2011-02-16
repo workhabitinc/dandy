@@ -24,7 +24,6 @@ public class DrupalNode implements DrupalEntity {
     private Boolean moderate;
     private Boolean sticky;
     private DrupalBody body;
-    private String teaser;
     private String log;
     private Date revisionTimestamp;
     private int format;
@@ -113,15 +112,6 @@ public class DrupalNode implements DrupalEntity {
 
     public void setBody(DrupalBody body) {
         this.body = body;
-    }
-
-    public String getTeaser() {
-        return teaser;
-    }
-
-    @SuppressWarnings({"UnusedDeclaration"})
-    public void setTeaser(String teaser) {
-        this.teaser = teaser;
     }
 
     @SuppressWarnings({"UnusedDeclaration"})

@@ -1,20 +1,18 @@
-package org.workhabit.drupal.http;
+package org.workhabit.drupal.api.site.support;
 
-import android.util.Log;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.mime.FormBodyPart;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -22,21 +20,22 @@ import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.workhabit.drupal.api.site.RequestSigningInterceptor;
-import org.workhabit.drupal.api.site.support.GenericCookie;
+import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
+import org.workhabit.drupal.http.ServicesResponse;
 
 import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,19 +44,29 @@ import java.util.Map;
  * Date: Oct 5, 2010, 6:50:54 PM
  */
 @SuppressWarnings({"WeakerAccess", "UnusedDeclaration"})
-public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRequestManager {
+public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRequestManager
+{
+    private static final Logger log = LoggerFactory.getLogger(AndroidDrupalServicesRequestManagerImpl.class);
+    private static final String CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String CONTENT_TYPE_JSON = "application/json";
+    private static final String HEADER_CONTENT_TYPE = "Content-Type";
+    private static final String HTTP_SCHEME = "http";
+    private static final String HTTPS_SCHEME = "https";
+    private static final int HTTP_PORT = 80;
+    private static final int HTTPS_PORT = 443;
     private final HttpClient client;
     private RequestSigningInterceptor requestSigningInterceptor;
     private ArrayList<GenericCookie> cookies;
     private BasicCookieStore cookieStore;
     private HttpContext httpContext;
 
-    public AndroidDrupalServicesRequestManagerImpl() {
+    public AndroidDrupalServicesRequestManagerImpl()
+    {
         HttpParams params = new BasicHttpParams();
         SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        schemeRegistry.register(new Scheme("https", PlainSocketFactory.getSocketFactory(), 443));
-        ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+        schemeRegistry.register(new Scheme(HTTP_SCHEME, HTTP_PORT, PlainSocketFactory.getSocketFactory()));
+        schemeRegistry.register(new Scheme(HTTPS_SCHEME, HTTPS_PORT, PlainSocketFactory.getSocketFactory()));
+        ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(schemeRegistry);
         cookieStore = new BasicCookieStore();
         httpContext = new BasicHttpContext();
         httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -65,67 +74,26 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
     }
 
     /**
-     * Setter set the interceptor to use to sign requests.  Currently only {@link org.workhabit.drupal.api.site.impl.v2.KeyRequestSigningInterceptorImpl}
-     * is supported, though OAuth will be available with Drupal Services 3.x.
-     *
-     * @param requestSigningInterceptor
-     */
-    public void setRequestSigningInterceptor(RequestSigningInterceptor requestSigningInterceptor) {
-        this.requestSigningInterceptor = requestSigningInterceptor;
-    }
-
-    /**
-     * Decorator for {@link #post(String, String, java.util.Map, boolean)} that runs the data and method through
-     * the specified request signing interceptor.
-     *
-     * @param path path, including http:// to the remote request (excludes query string)
-     * @param method the method required by Drupal to execute on services (e.g. node.getStream). See constants on
-     * {@link org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl} for examples of available methods.
-     *
-     * @param data map of key/value pairs corresponding to query string parameters.
-     *
-     * @param escapeInput true if the method's query string parameters should be quoted.  Typically this is the case
-     * for Drupal JSON services, but some require that they're not (e.g. comment.save).
-     *
-     * @return a string response from the web service request.
-     * @throws NoSuchAlgorithmException
-     * @throws IOException
-     * @throws InvalidKeyException
-     */
-    public String postSigned(String path, String method, Map<String, Object> data, boolean escapeInput) throws NoSuchAlgorithmException, IOException, InvalidKeyException {
-        if (data == null) {
-            data = new HashMap<String, Object>();
-        }
-        if (requestSigningInterceptor != null) {
-            requestSigningInterceptor.sign(path, method, data);
-        }
-        return post(path, method, data, escapeInput);
-    }
-
-    /**
      * make a POST request to the remote web service.  Map values are passed in as key/value pairs (parameters) to the
      * POST request.
      *
      * @param path path, including http:// to the remote request (excludes query string)
-     * @param method the method required by Drupal to execute on services (e.g. node.getStream). See constants on
-     * {@link org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextV2Impl} for examples of available methods.
-     *
      * @param data map of key value pairs corresponding to query string parameters
-     * @param escapeInput true if the method's query string parameters should be quoted.
-     * typically this is the case for Drupal JSON services, but some require that they're not.
-     *
      * @return a string response from the web service request.
      * @throws IOException
      */
-    public String post(String path, String method, Map<String, Object> data, boolean escapeInput) throws IOException {
-        HttpPost httpPost = new HttpPost(path);
+    public ServicesResponse post(String path, Map<String, Object> data) throws IOException
+    {
+        HttpPost post = new HttpPost(path);
+        List<NameValuePair> parameters = processParameters(data);
+        Header contentTypeHeader = new BasicHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_FORM_URLENCODED);
+        post.setHeader(contentTypeHeader);
+        post.setEntity(new UrlEncodedFormEntity(parameters));
+        return executeMethod(post);
+    }
 
-        List<NameValuePair> parameters = processParameters(method, data, escapeInput);
-        Header contentTypeHeader = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
-        httpPost.setHeader(contentTypeHeader);
-        httpPost.setEntity(new UrlEncodedFormEntity(parameters));
-        HttpResponse response = client.execute(httpPost, httpContext);
-        InputStream contentInputStream = response.getEntity().getContent();
+    private void processCookies()
+    {
         cookies = new ArrayList<GenericCookie>();
         List<Cookie> cookieList = cookieStore.getCookies();
         for (Cookie cookie : cookieList) {
@@ -140,6 +108,25 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
             siteCookie.setValue(cookie.getValue());
             cookies.add(siteCookie);
         }
+    }
+
+    public ServicesResponse post(String path, String data) throws IOException
+    {
+        HttpPost post = new HttpPost(path);
+        post.setHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
+        post.setEntity(new ByteArrayEntity(data.getBytes()));
+        return executeMethod(post);
+
+    }
+
+    private ServicesResponse executeMethod(HttpUriRequest method) throws IOException
+    {
+        HttpResponse response = client.execute(method);
+        ServicesResponse servicesResponse = new ServicesResponse();
+        servicesResponse.setReasonPhrase(response.getStatusLine().getReasonPhrase());
+        servicesResponse.setStatusCode(response.getStatusLine().getStatusCode());
+        InputStream contentInputStream = response.getEntity().getContent();
+        processCookies();
         BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
         StringWriter sw = new StringWriter();
         String line;
@@ -147,8 +134,31 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
             sw.write(line);
             sw.write("\n");
         }
-        return sw.toString();
+        servicesResponse.setResponseBody(sw.toString());
+        return servicesResponse;
+    }
 
+    public ServicesResponse put(String path, Map<String, Object> data) throws IOException
+    {
+        HttpPut put = new HttpPut(path);
+        put.setHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_FORM_URLENCODED);
+        List<NameValuePair> parameters = processParameters(data);
+        put.setEntity(new UrlEncodedFormEntity(parameters));
+        return executeMethod(put);
+    }
+
+    public ServicesResponse put(String path, String data) throws IOException
+    {
+        HttpPut put = new HttpPut(path);
+        put.setHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
+        put.setEntity(new ByteArrayEntity(data.getBytes()));
+        return executeMethod(put);
+    }
+
+    public ServicesResponse delete(String path) throws IOException
+    {
+        HttpDelete delete = new HttpDelete(path);
+        return executeMethod(delete);
     }
 
     /**
@@ -159,7 +169,8 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
      * @return a buffered input stream representing the response data.
      * @throws IOException if there's an error during the request.
      */
-    public InputStream getStream(String path) throws IOException {
+    public InputStream getStream(String path) throws IOException
+    {
         HttpGet get = new HttpGet(path);
         HttpResponse response = client.execute(get, httpContext);
         return new BufferedHttpEntity(response.getEntity()).getContent();
@@ -173,25 +184,19 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
      * @return a string representing the response data.
      * @throws IOException if there's an error during the request.
      */
-    public String getString(String path) throws IOException {
-        InputStream contentInputStream = getStream(path);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(contentInputStream));
-        StringWriter sw = new StringWriter();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sw.write(line);
-            sw.write("\n");
-        }
-        return sw.toString();
+    public ServicesResponse getString(String path) throws IOException
+    {
+        HttpGet get = new HttpGet(path);
+        return executeMethod(get);
     }
 
-    @Override
-    public List<GenericCookie> getCookies() {
+    public ArrayList<GenericCookie> getCookies()
+    {
         return cookies;
     }
 
-    @Override
-    public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException {
+    public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException
+    {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
         entity.addPart(new FormBodyPart(fieldName, new InputStreamBody(new BufferedInputStream(inputStream), fileName)));
         HttpPost httpPost = new HttpPost(path);
@@ -212,32 +217,42 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
      * Handles processing of parameters.  This implementation handles processing of parameters so that they are
      * properly interpreted by Drupal's json_server implementation.  Particularly, non-object values must be quoted.
      *
-     * @param method The web service method to invoke
      * @param data a name/value pair of parameters to pass to the remote service
-     * @param escapeInput true if the data should be escaped; false otherwise.
      * @return a list of {@link NameValuePair} mappings to pass to the request entity.
      */
-    protected List<NameValuePair> processParameters(String method, Map<String, Object> data, boolean escapeInput) {
+    protected List<NameValuePair> processParameters(Map<String, Object> data)
+    {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-        NameValuePair pair = new BasicNameValuePair("method", "\"" + method + "\"");
-        parameters.add(pair);
-        if (data != null) {
+        if (data != null && data.size() > 0) {
             for (Map.Entry<String, Object> entry : data.entrySet()) {
-                if (escapeInput) {
-                    pair = new BasicNameValuePair(entry.getKey(), "\"" + entry.getValue() + "\"");
-                } else {
-                    pair = new BasicNameValuePair(entry.getKey(), "" + entry.getValue());
-                }
+                NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry.getValue().toString());
                 parameters.add(pair);
             }
         }
-        if (Log.isLoggable("request", Log.DEBUG)) {
+
+        if (log.isDebugEnabled()) {
             StringBuffer paramString = new StringBuffer();
             for (NameValuePair parameter : parameters) {
-                paramString.append(pair.getName()).append("=").append(parameter.getValue()).append("&");
+                paramString.append(parameter.getName()).append("=").append(parameter.getValue()).append("&");
             }
-            Log.d("request", "parameter string: " + paramString.toString());
+            log.debug("request", "parameter string: " + paramString.toString());
         }
         return parameters;
+    }
+
+    public void initializeSavedState(DrupalSiteContextInstanceState drupalSiteContextInstanceState)
+    {
+        cookies = drupalSiteContextInstanceState.getCookies();
+        for (GenericCookie genericCookie : cookies) {
+            cookieStore.clear();
+            BasicClientCookie cookie = new BasicClientCookie(genericCookie.getName(), genericCookie.getValue());
+            cookie.setComment(genericCookie.getComment());
+            cookie.setDomain(genericCookie.getDomain());
+            cookie.setExpiryDate(genericCookie.getExpiryDate());
+            cookie.setPath(genericCookie.getPath());
+            cookie.setSecure(genericCookie.isSecure());
+            cookie.setVersion(genericCookie.getVersion());
+            cookieStore.addCookie(cookie);
+        }
     }
 }

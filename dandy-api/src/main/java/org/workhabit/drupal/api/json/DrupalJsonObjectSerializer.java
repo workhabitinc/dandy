@@ -154,9 +154,7 @@ public class DrupalJsonObjectSerializer<T> {
     }
 
     private JSONArray extractDataArray(String json) throws JSONException, DrupalFetchException {
-        JSONObject objectResult = new JSONObject(json);
-        assertNoErrors(objectResult);
-        return objectResult.getJSONArray("#data");
+        return new JSONArray(json);
     }
 
     private void assertNoErrors(JSONObject objectResult) throws JSONException, DrupalFetchException {

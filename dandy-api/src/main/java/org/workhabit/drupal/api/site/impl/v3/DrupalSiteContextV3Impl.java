@@ -4,19 +4,19 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.json.BooleanAdapter;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 import org.workhabit.drupal.api.json.UnixTimeDateAdapter;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
-import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
-import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
-import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
-import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
+import org.workhabit.drupal.api.site.exceptions.*;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
+import org.workhabit.drupal.http.ServicesResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +29,7 @@ import java.util.*;
  */
 public class DrupalSiteContextV3Impl implements DrupalSiteContext
 {
+    private static Logger log = LoggerFactory.getLogger(DrupalSiteContextV3Impl.class);
     private DrupalServicesRequestManager requestManager;
     private String drupalSiteUrl;
     private String endpoint;
@@ -45,6 +46,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
         this.rootPath = String.format("%s/%s", drupalSiteUrl, endpoint);
         nodeSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
         userObjectSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalUser.class);
+        log.debug("initialized new Drupal Site Context");
     }
 
     public void setRequestManager(DrupalServicesRequestManager requestManager)
@@ -65,6 +67,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
             this.session = null;
             requestManager.post(rootPath + "/user/logout.json", data);
         } catch (IOException e) {
+            log.error("exception", e);
             throw new DrupalLogoutException(e);
         }
     }
@@ -87,8 +90,9 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public DrupalNode getNode(int nid) throws DrupalFetchException
     {
         try {
-            String response = requestManager.getString(rootPath + "/node/" + nid + ".json");
-            return nodeSerializer.unserialize(response);
+            ServicesResponse response = requestManager.getString(rootPath + "/node/" + nid + ".json");
+            log.debug(response.getResponseBody());
+            return nodeSerializer.unserialize(response.getResponseBody());
         } catch (IOException e) {
             throw new DrupalFetchException(e);
         } catch (JSONException e) {
@@ -117,9 +121,10 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
             */
             data.put("username", username);
             data.put("password", password);
-            String result = requestManager.post(rootPath + "/user/login.json?XDEBUG_SESSION_START=13218", data);
+            ServicesResponse response = requestManager.post(rootPath + "/user/login.json", data);
             // object format should contain sessid, session_name, and user keys.
-            JSONObject object = new JSONObject(result);
+            validateResponse(response);
+            JSONObject object = new JSONObject(response.getResponseBody());
             this.session = object.getString("sessid");
             JSONObject userObject = object.getJSONObject("user");
             DrupalUser user = userObjectSerializer.unserialize(userObject.toString());
@@ -129,6 +134,15 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
             throw new DrupalLoginException(e);
         } catch (JSONException e) {
             throw new DrupalLoginException(e);
+        } catch (DrupalServicesResponseException e) {
+            throw new DrupalLoginException(e);
+        }
+    }
+
+    private void validateResponse(ServicesResponse response) throws DrupalServicesResponseException
+    {
+        if (response.getStatusCode() >= 400) {
+            throw new DrupalServicesResponseException(response.getStatusCode(), response.getReasonPhrase());
         }
     }
 
@@ -175,10 +189,16 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public int saveNode(final DrupalNode node) throws DrupalSaveException
     {
         try {
+
             JsonObject jsonNode = serializeNode(node);
             JSONObject object = new JSONObject();
             object.put("node", new JSONObject(jsonNode.toString()));
-            String response = requestManager.post(rootPath + "/node.json", object.toString());
+            ServicesResponse response;
+            if (node.getNid() != 0) {
+                response = requestManager.post(rootPath + "/node.json", object.toString());
+            } else {
+                response = requestManager.put(rootPath + "/node.json", object.toString());
+            }
             JSONObject responseObject = new JSONObject(response);
             return responseObject.getInt("nid");
         } catch (IOException e) {
@@ -249,8 +269,9 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public DrupalUser getUser(int uid) throws DrupalFetchException
     {
         try {
-            String response = requestManager.getString(rootPath + "/user/" + uid + ".json");
-            return userObjectSerializer.unserialize(response);
+            ServicesResponse response = requestManager.getString(rootPath + "/user/" + uid + ".json");
+            // TODO: handle error condition
+            return userObjectSerializer.unserialize(response.getResponseBody());
         } catch (IOException e) {
             throw new DrupalFetchException(e);
         } catch (JSONException e) {

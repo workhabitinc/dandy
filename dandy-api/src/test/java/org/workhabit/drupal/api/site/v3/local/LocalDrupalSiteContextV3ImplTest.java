@@ -2,13 +2,14 @@ package org.workhabit.drupal.api.site.v3.local;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.workhabit.drupal.api.CommonsHttpClientDrupalServicesRequestManager;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.impl.v3.DrupalSiteContextV3Impl;
+import org.workhabit.drupal.api.site.support.AndroidDrupalServicesRequestManagerImpl;
+import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
 import static org.junit.Assert.*;
 
@@ -19,12 +20,14 @@ import static org.junit.Assert.*;
 public class LocalDrupalSiteContextV3ImplTest
 {
     private DrupalSiteContextV3Impl context;
+    private DrupalServicesRequestManager requestManager
+            ;
 
     @Before
     public void setUp()
     {
         context = new DrupalSiteContextV3Impl("http://se.local", "dandy");
-        CommonsHttpClientDrupalServicesRequestManager requestManager = new CommonsHttpClientDrupalServicesRequestManager();
+        requestManager = new AndroidDrupalServicesRequestManagerImpl();
         context.setRequestManager(requestManager);
     }
 

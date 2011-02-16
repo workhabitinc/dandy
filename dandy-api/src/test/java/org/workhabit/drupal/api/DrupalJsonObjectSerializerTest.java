@@ -32,47 +32,7 @@ public class DrupalJsonObjectSerializerTest
         DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
         assertNotNull(serializer);
 
-        String json = "{" +
-                      "\"#error\":false," +
-                      "\"#data\": {" +
-                      "   \"nid\":\"1\"," +
-                      "   \"type\":\"story\"," +
-                      "   \"language\":\"\"," +
-                      "   \"uid\":\"1\"," +
-                      "   \"status\":\"1\"," +
-                      "   \"created\":\"1285374480\"," +
-                      "   \"changed\":\"1287462879\"," +
-                      "   \"comment\":\"2\"," +
-                      "   \"promote\":\"1\"," +
-                      "   \"moderate\":\"0\"," +
-                      "   \"sticky\":\"0\"," +
-                      "   \"tnid\":\"0\"," +
-                      "   \"translate\":\"0\"," +
-                      "   \"vid\":\"1\"," +
-                      "   \"revision_uid\":\"1\"," +
-                      "   \"title\":\"Test Title\"," +
-                      "   \"body\":\"Test body. Adding some more text here.\\r\\n\\r\\nIntrinsicly provide access to process-centric experiences via business benefits. Synergistically network interoperable internal or \\\"organic\\\" sources for standards compliant experiences. Credibly predominate 24\\/365 products for superior initiatives.\\r\\n\\r\\nDynamically optimize 24\\/7 leadership skills rather than distinctive web-readiness. Proactively parallel task intuitive platforms before timely action items. Quickly enhance exceptional schemas before highly efficient sources. \\r\\n\"," +
-                      "   \"teaser\":\"Test body. Adding some more text here.\\r\\n\\r\\nIntrinsicly provide access to process-centric experiences via business benefits. Synergistically network interoperable internal or \\\"organic\\\" sources for standards compliant experiences. Credibly predominate 24\\/365 products for superior initiatives.\\r\\n\\r\\nDynamically optimize 24\\/7 leadership skills rather than distinctive web-readiness. Proactively parallel task intuitive platforms before timely action items. Quickly enhance exceptional schemas before highly efficient sources. \\r\\n\"," +
-                      "   \"log\":\"\"," +
-                      "   \"revision_timestamp\":\"1287462879\"," +
-                      "   \"format\":\"1\"," +
-                      "   \"name\":" +
-                      "   \"admin\"," +
-                      "   \"picture\":\"\"," +
-                      "   \"data\":\"a:0:{}\"," +
-                      "   \"last_comment_timestamp\":\"1285374480\"," +
-                      "   \"last_comment_name\":null," +
-                      "   \"comment_count\":\"0\"," +
-                      "   \"taxonomy\":{" +
-                      "       \"2\":{" +
-                      "           \"tid\":\"2\"," +
-                      "           \"vid\":\"1\"," +
-                      "           \"name\":\"Category 2\"," +
-                      "           \"description\":\"\"," +
-                      "           \"weight\":\"0\"" +
-                      "       }" +
-                      "    }" +
-                      "}}";
+        String json = "{\"vid\":\"1\",\"uid\":\"2\",\"title\":\"Test article\",\"log\":\"\",\"status\":\"1\",\"comment\":\"2\",\"promote\":\"1\",\"sticky\":\"0\",\"nid\":\"1\",\"type\":\"article\",\"language\":\"und\",\"created\":\"1297197059\",\"changed\":\"1297795608\",\"tnid\":\"0\",\"translate\":\"0\",\"revision_timestamp\":\"1297795608\",\"revision_uid\":\"1\",\"body\":{\"und\":[{\"value\":\"test\",\"summary\":\"\",\"format\":\"filtered_html\",\"safe_value\":\"<p>test<\\/p>\\n\",\"safe_summary\":\"\"}]},\"field_tags\":[],\"field_image\":[],\"rdf_mapping\":{\"field_image\":{\"predicates\":[\"og:image\",\"rdfs:seeAlso\"],\"type\":\"rel\"},\"field_tags\":{\"predicates\":[\"dc:subject\"],\"type\":\"rel\"},\"rdftype\":[\"sioc:Item\",\"foaf:Document\"],\"title\":{\"predicates\":[\"dc:title\"]},\"created\":{\"predicates\":[\"dc:date\",\"dc:created\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"changed\":{\"predicates\":[\"dc:modified\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"body\":{\"predicates\":[\"content:encoded\"]},\"uid\":{\"predicates\":[\"sioc:has_creator\"],\"type\":\"rel\"},\"name\":{\"predicates\":[\"foaf:name\"]},\"comment_count\":{\"predicates\":[\"sioc:num_replies\"],\"datatype\":\"xsd:integer\"},\"last_activity\":{\"predicates\":[\"sioc:last_activity_date\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"}},\"cid\":\"0\",\"last_comment_timestamp\":\"1297197059\",\"last_comment_name\":null,\"last_comment_uid\":\"1\",\"comment_count\":\"0\",\"name\":\"testuser\",\"picture\":\"0\",\"data\":null,\"uri\":\"http:\\/\\/se.local\\/dandy\\/node\\/1\"}";
 
         DrupalNode node = serializer.unserialize(json);
         assertNotNull(node);
@@ -82,18 +42,8 @@ public class DrupalJsonObjectSerializerTest
         assertNotNull(node.getCreated());
         assertNotNull(node.getBody());
         assertNotNull(node.getChanged());
-        assertNotNull(node.getTeaser());
-        Map<Integer, DrupalTaxonomyTerm> terms = node.getTaxonomy();
-        assertNotNull(terms);
-        assertEquals(1, terms.size());
-        DrupalTaxonomyTerm term = terms.get(2);
-        assertNotNull(term);
-        assertEquals(2, term.getTid());
-        assertEquals(1, term.getVid());
-        assertEquals("Category 2", term.getName());
         assertNotNull(node.getCommentCount());
         assertEquals(0, node.getCommentCount());
-        assertNotNull(node.getData());
         assertNotNull(node.getComment());
         assertEquals(2, node.getComment());
         assertNull(node.getLastCommentName());
@@ -110,7 +60,9 @@ public class DrupalJsonObjectSerializerTest
     public void testDrupalNodeListSerialization() throws Exception
     {
 
-        String json = "{\"#error\":false,\"#data\":[{\"nid\":\"3\",\"type\":\"page\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285472651\",\"changed\":\"1287462859\",\"comment\":\"0\",\"promote\":\"0\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"3\",\"revision_uid\":\"1\",\"title\":\"More Content\",\"body\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.Assertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\",\"teaser\":\"\\u003ca href=\\\"http:\\/\\/google.com\\/\\\"\\u003eVisit Google\\u003c\\/a\\u003e\\r\\n\\r\\nAssertively empower robust resources with multimedia based ROI. Efficiently initiate mission-critical testing procedures without cross-platform e-tailers. Energistically engineer emerging \\\"outside the box\\\" thinking before fully tested process improvements. \\r\\n\\r\\nUniquely provide access to timely collaboration and idea-sharing without backward-compatible schemas. Dynamically integrate compelling bandwidth vis-a-vis compelling results. Competently generate one-to-one ROI after global products.\\r\",\"log\":\"\",\"revision_timestamp\":\"1287462859\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285472651\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"1\":{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\"}}},{\"nid\":\"2\",\"type\":\"page\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285468757\",\"changed\":\"1287462868\",\"comment\":\"0\",\"promote\":\"0\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"2\",\"revision_uid\":\"1\",\"title\":\"Another display\",\"body\":\"Giving this a try\",\"teaser\":\"Giving this a try\",\"log\":\"\",\"revision_timestamp\":\"1287462868\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285468757\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"1\":{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\"}}},{\"nid\":\"1\",\"type\":\"story\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1285374480\",\"changed\":\"1287462879\",\"comment\":\"2\",\"promote\":\"1\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"1\",\"revision_uid\":\"1\",\"title\":\"Test Title\",\"body\":\"Test body. Adding some more text here.\\r\\n\\r\\nIntrinsicly provide access to process-centric experiences via business benefits. Synergistically network interoperable internal or \\\"organic\\\" sources for standards compliant experiences. Credibly predominate 24\\/365 products for superior initiatives.\\r\\n\\r\\nDynamically optimize 24\\/7 leadership skills rather than distinctive web-readiness. Proactively parallel task intuitive platforms before timely action items. Quickly enhance exceptional schemas before highly efficient sources. \\r\\n\",\"teaser\":\"Test body. Adding some more text here.\\r\\n\\r\\nIntrinsicly provide access to process-centric experiences via business benefits. Synergistically network interoperable internal or \\\"organic\\\" sources for standards compliant experiences. Credibly predominate 24\\/365 products for superior initiatives.\\r\\n\\r\\nDynamically optimize 24\\/7 leadership skills rather than distinctive web-readiness. Proactively parallel task intuitive platforms before timely action items. Quickly enhance exceptional schemas before highly efficient sources. \\r\\n\",\"log\":\"\",\"revision_timestamp\":\"1287462879\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"last_comment_timestamp\":\"1285374480\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":{\"2\":{\"tid\":\"2\",\"vid\":\"1\",\"name\":\"Category 2\",\"description\":\"\",\"weight\":\"0\"}}}]}";
+        String json = "[{\"vid\":\"1\",\"uid\":\"2\",\"title\":\"Test article\",\"log\":\"\",\"status\":\"1\",\"comment\":\"2\",\"promote\":\"1\",\"sticky\":\"0\",\"nid\":\"1\",\"type\":\"article\",\"language\":\"und\",\"created\":\"1297197059\",\"changed\":\"1297795608\",\"tnid\":\"0\",\"translate\":\"0\",\"revision_timestamp\":\"1297795608\",\"revision_uid\":\"1\",\"body\":{\"und\":[{\"value\":\"test\",\"summary\":\"\",\"format\":\"filtered_html\",\"safe_value\":\"<p>test<\\/p>\\n\",\"safe_summary\":\"\"}]},\"field_tags\":[],\"field_image\":[],\"rdf_mapping\":{\"field_image\":{\"predicates\":[\"og:image\",\"rdfs:seeAlso\"],\"type\":\"rel\"},\"field_tags\":{\"predicates\":[\"dc:subject\"],\"type\":\"rel\"},\"rdftype\":[\"sioc:Item\",\"foaf:Document\"],\"title\":{\"predicates\":[\"dc:title\"]},\"created\":{\"predicates\":[\"dc:date\",\"dc:created\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"changed\":{\"predicates\":[\"dc:modified\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"body\":{\"predicates\":[\"content:encoded\"]},\"uid\":{\"predicates\":[\"sioc:has_creator\"],\"type\":\"rel\"},\"name\":{\"predicates\":[\"foaf:name\"]},\"comment_count\":{\"predicates\":[\"sioc:num_replies\"],\"datatype\":\"xsd:integer\"},\"last_activity\":{\"predicates\":[\"sioc:last_activity_date\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"}},\"cid\":\"0\",\"last_comment_timestamp\":\"1297197059\",\"last_comment_name\":null,\"last_comment_uid\":\"1\",\"comment_count\":\"0\",\"name\":\"testuser\",\"picture\":\"0\",\"data\":null,\"uri\":\"http:\\/\\/se.local\\/dandy\\/node\\/1\"}," +
+                      "{\"vid\":\"1\",\"uid\":\"2\",\"title\":\"Test article\",\"log\":\"\",\"status\":\"1\",\"comment\":\"2\",\"promote\":\"1\",\"sticky\":\"0\",\"nid\":\"1\",\"type\":\"article\",\"language\":\"und\",\"created\":\"1297197059\",\"changed\":\"1297795608\",\"tnid\":\"0\",\"translate\":\"0\",\"revision_timestamp\":\"1297795608\",\"revision_uid\":\"1\",\"body\":{\"und\":[{\"value\":\"test\",\"summary\":\"\",\"format\":\"filtered_html\",\"safe_value\":\"<p>test<\\/p>\\n\",\"safe_summary\":\"\"}]},\"field_tags\":[],\"field_image\":[],\"rdf_mapping\":{\"field_image\":{\"predicates\":[\"og:image\",\"rdfs:seeAlso\"],\"type\":\"rel\"},\"field_tags\":{\"predicates\":[\"dc:subject\"],\"type\":\"rel\"},\"rdftype\":[\"sioc:Item\",\"foaf:Document\"],\"title\":{\"predicates\":[\"dc:title\"]},\"created\":{\"predicates\":[\"dc:date\",\"dc:created\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"changed\":{\"predicates\":[\"dc:modified\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"body\":{\"predicates\":[\"content:encoded\"]},\"uid\":{\"predicates\":[\"sioc:has_creator\"],\"type\":\"rel\"},\"name\":{\"predicates\":[\"foaf:name\"]},\"comment_count\":{\"predicates\":[\"sioc:num_replies\"],\"datatype\":\"xsd:integer\"},\"last_activity\":{\"predicates\":[\"sioc:last_activity_date\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"}},\"cid\":\"0\",\"last_comment_timestamp\":\"1297197059\",\"last_comment_name\":null,\"last_comment_uid\":\"1\",\"comment_count\":\"0\",\"name\":\"testuser\",\"picture\":\"0\",\"data\":null,\"uri\":\"http:\\/\\/se.local\\/dandy\\/node\\/1\"}," +
+                      "{\"vid\":\"1\",\"uid\":\"2\",\"title\":\"Test article\",\"log\":\"\",\"status\":\"1\",\"comment\":\"2\",\"promote\":\"1\",\"sticky\":\"0\",\"nid\":\"1\",\"type\":\"article\",\"language\":\"und\",\"created\":\"1297197059\",\"changed\":\"1297795608\",\"tnid\":\"0\",\"translate\":\"0\",\"revision_timestamp\":\"1297795608\",\"revision_uid\":\"1\",\"body\":{\"und\":[{\"value\":\"test\",\"summary\":\"\",\"format\":\"filtered_html\",\"safe_value\":\"<p>test<\\/p>\\n\",\"safe_summary\":\"\"}]},\"field_tags\":[],\"field_image\":[],\"rdf_mapping\":{\"field_image\":{\"predicates\":[\"og:image\",\"rdfs:seeAlso\"],\"type\":\"rel\"},\"field_tags\":{\"predicates\":[\"dc:subject\"],\"type\":\"rel\"},\"rdftype\":[\"sioc:Item\",\"foaf:Document\"],\"title\":{\"predicates\":[\"dc:title\"]},\"created\":{\"predicates\":[\"dc:date\",\"dc:created\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"changed\":{\"predicates\":[\"dc:modified\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"body\":{\"predicates\":[\"content:encoded\"]},\"uid\":{\"predicates\":[\"sioc:has_creator\"],\"type\":\"rel\"},\"name\":{\"predicates\":[\"foaf:name\"]},\"comment_count\":{\"predicates\":[\"sioc:num_replies\"],\"datatype\":\"xsd:integer\"},\"last_activity\":{\"predicates\":[\"sioc:last_activity_date\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"}},\"cid\":\"0\",\"last_comment_timestamp\":\"1297197059\",\"last_comment_name\":null,\"last_comment_uid\":\"1\",\"comment_count\":\"0\",\"name\":\"testuser\",\"picture\":\"0\",\"data\":null,\"uri\":\"http:\\/\\/se.local\\/dandy\\/node\\/1\"}]";
 
         DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
         assertNotNull(serializer);
@@ -125,32 +77,10 @@ public class DrupalJsonObjectSerializerTest
     }
 
     /**
-     * Test unserialize of taxonomy term returned by call to taxonomy.dictionary
-     *
-     * @throws Exception on error
-     */
-    @Test
-    public void testGetTaxonomyTerm() throws Exception
-    {
-        String json = "{\"#error\":false,\"#data\":[{\"tid\":\"1\",\"vid\":\"1\",\"name\":\"Category 1\",\"description\":\"\",\"weight\":\"0\",\"depth\":0,\"parents\":[\"0\"],\"node_count\":\"2\"},{\"tid\":\"2\",\"vid\":\"1\",\"name\":\"Category 2\",\"description\":\"\",\"weight\":\"0\",\"depth\":0,\"parents\":[\"0\"],\"node_count\":\"1\"}]}";
-
-        DrupalJsonObjectSerializer<DrupalTaxonomyTerm> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalTaxonomyTerm.class);
-        List<DrupalTaxonomyTerm> taxonomyTerms = serializer.unserializeList(json);
-        assertNotNull(taxonomyTerms);
-        assertFalse(0 == taxonomyTerms.size());
-        for (DrupalTaxonomyTerm term : taxonomyTerms) {
-            assertNotNull(term);
-            assertEquals(1, term.getVid());
-            assertNotNull(term.getTid());
-            assertNotNull(term.getName());
-            assertTrue(term.getName().startsWith("Category "));
-        }
-    }
-
-    /**
      * Test serialization
      * <p/>
      * TODO: This could use some cleanup and testing of individual string tokens
+     * @throws org.json.JSONException on error
      */
     @Test
     public void testSerializeDrupalNode() throws JSONException
@@ -202,6 +132,7 @@ public class DrupalJsonObjectSerializerTest
 
     /**
      * Test serialization of drupal Taxonomy Term.
+     * @throws org.json.JSONException if there's an error
      */
     @Test
     public void testSerializeDrupalTaxonomyTerm() throws JSONException
@@ -214,21 +145,6 @@ public class DrupalJsonObjectSerializerTest
         DrupalJsonObjectSerializer<DrupalTaxonomyTerm> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalTaxonomyTerm.class);
         String json = serializer.serialize(term);
         assertNotNull(json);
-    }
-
-    @Test
-    public void testDrupalReturnsErrorProperly()
-    {
-        String json = "{\"#error\":true,\"#data\":\"Error data here\"}";
-        DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
-        try {
-            serializer.unserialize(json);
-            fail("No exception thrown.");
-        } catch (DrupalFetchException e) {
-            // correct
-        } catch (JSONException e) {
-            fail("Incorrect exception returned.");
-        }
     }
 }
 
