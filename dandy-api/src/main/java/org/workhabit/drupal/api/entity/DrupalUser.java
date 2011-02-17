@@ -11,8 +11,6 @@ import java.util.Date;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: Sep 24, 2010, 9:37:57 PM
  */
-@SuppressWarnings({"UnusedDeclaration"})
-@IdFieldName("uid")
 public class DrupalUser implements DrupalEntity {
     private int uid;
     private String name;

@@ -29,11 +29,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-android</artifactId>
-            <version>4.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20090211</version>
@@ -143,6 +138,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/Local*</exclude>
+                        <exclude>**/TestData*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
