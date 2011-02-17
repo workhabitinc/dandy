@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import com.workhabit.drupal.publisher.DrupalHeadlineNodeListActivity;
-import com.workhabit.drupal.publisher.DrupalReadLaterActivity;
 import com.workhabit.drupal.publisher.DrupalTaxonomyListActivity;
 import com.workhabit.drupal.publisher.R;
 
@@ -14,8 +13,10 @@ import com.workhabit.drupal.publisher.R;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 11/12/10, 10:49 AM
  */
-public class BottomNavClickHandler {
-    public static void bottomNavOnClick(View v, Activity a) {
+public class BottomNavClickHandler
+{
+    public static void bottomNavOnClick(View v, Activity a)
+    {
         Intent intent = null;
         Context context = a.getApplicationContext();
         switch (v.getId()) {
@@ -24,9 +25,6 @@ public class BottomNavClickHandler {
                 break;
             case R.id.button_categories:
                 intent = new Intent(context, DrupalTaxonomyListActivity.class);
-                break;
-            case R.id.button_readlater:
-                intent = new Intent(context, DrupalReadLaterActivity.class);
                 break;
             case R.id.button_settings:
                 break;

@@ -12,7 +12,7 @@ import javax.naming.ldap.Rdn;
 public class DrupalHeadlineNodeListActivity extends DrupalNodeListViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setViewName("andrupal_recent");
+        setViewName("dandy_recent");
         setViewArguments("");
 
         super.onCreate(savedInstanceState);

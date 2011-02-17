@@ -34,19 +34,6 @@
             android:textColor="#ffffff"
             android:onClick="bottomNavOnClick"/>
     <Button
-            android:id="@+id/button_readlater"
-            android:layout_width="@dimen/buttonWidth"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/buttonMarginTop"
-            android:text="Read Later"
-            android:drawableTop="@android:drawable/ic_menu_add"
-            android:drawablePadding="2dip"
-            android:background="@android:color/transparent"
-            android:textSize="10sp"
-            android:textColor="#ffffff"
-            android:onClick="bottomNavOnClick"/>
-    <Button
             android:id="@+id/button_settings"
             android:layout_width="@dimen/buttonWidth"
             android:layout_height="wrap_content"

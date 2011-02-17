@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.workhabit.dandy</groupId>
+        <artifactId>dandy-parent</artifactId>
+        <version>1.1</version>
+    </parent>
+
+    <groupId>org.workhabit.dandy</groupId>
+    <artifactId>dandy-publisher-test</artifactId>
+    <version>1.1</version>
+    <packaging>apk</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.jayway.android.robotium</groupId>
+            <artifactId>robotium-solo</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android-test</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <!-- the target apk, which we will test. will automatically be deployed to device in pre-integration-test
+            phase. -->
+            <groupId>org.workhabit.dandy</groupId>
+            <artifactId>dandy-publisher</artifactId>
+            <version>1.1</version>
+            <type>apk</type>
+        </dependency>
+         <dependency>
+            <!-- optional: compile time dependency, in this case so that we can read from the R.java for example. -->
+            <groupId>org.workhabit.dandy</groupId>
+            <artifactId>dandy-publisher</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <artifactId>maven-android-plugin</artifactId>
+                <version>2.8.3</version>
+                <configuration>
+                    <assetsDirectory>${project.basedir}/src/main/assets</assetsDirectory>
+                    <resourceDirectory>${project.basedir}/src/main/resources</resourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.android</groupId>
+                <artifactId>android</artifactId>
+                <version>2.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.android</groupId>
+                <artifactId>android-test</artifactId>
+                <version>2.2.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

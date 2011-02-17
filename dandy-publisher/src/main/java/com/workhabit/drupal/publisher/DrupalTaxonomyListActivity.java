@@ -48,7 +48,7 @@ public class DrupalTaxonomyListActivity extends AbstractDandyListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Intent intent = new Intent(this.getApplicationContext(), DrupalNodeListViewActivity.class);
-        intent.putExtra("viewName", "andrupal_category_nodes");
+        intent.putExtra("viewName", "dandy_category_nodes");
         intent.putExtra("viewArguments", Integer.toString(drupalTaxonomyAdapter.getTerms().get(position).getTid()));
         this.startActivity(intent);
     }
