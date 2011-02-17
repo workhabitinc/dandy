@@ -14,6 +14,7 @@ import org.workhabit.drupal.api.json.UnixTimeDateAdapter;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.*;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
+import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextInstanceStateImpl;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 import org.workhabit.drupal.http.ServicesResponse;
@@ -38,6 +39,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     private DrupalJsonObjectSerializer<DrupalUser> userObjectSerializer;
     private String session;
     private DrupalUser currentUser;
+    private DrupalJsonObjectSerializer<DrupalComment> commentSerializer;
 
     public DrupalSiteContextV3Impl(String drupalSiteUrl, String endpoint)
     {
@@ -47,6 +49,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
         nodeSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
         userObjectSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalUser.class);
         log.debug("initialized new Drupal Site Context");
+        commentSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalComment.class);
     }
 
     public void setRequestManager(DrupalServicesRequestManager requestManager)
@@ -61,41 +64,64 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public void logout() throws DrupalLogoutException
     {
-        Map<String,Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<String, Object>();
         try {
             this.currentUser = null;
             this.session = null;
-            requestManager.post(rootPath + "/user/logout.json", data);
+            ServicesResponse response = requestManager.post(rootPath + "/user/logout.json", data);
+            validateResponse(response);
         } catch (IOException e) {
-            log.error("exception", e);
+            throw new DrupalLogoutException(e);
+        } catch (DrupalServicesResponseException e) {
             throw new DrupalLogoutException(e);
         }
     }
 
     public List<DrupalNode> getNodeView(String viewName) throws DrupalFetchException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getNodeView(viewName, null, 0, 0);
     }
 
     public List<DrupalNode> getNodeView(String viewName, String viewArguments) throws DrupalFetchException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getNodeView(viewName, viewArguments, 0, 0);
     }
 
     public List<DrupalNode> getNodeView(String viewName, String viewArguments, int offset, int limit) throws DrupalFetchException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            StringBuffer sb = new StringBuffer();
+            sb.append(rootPath).append("/views/").append(viewName).append(".json");
+            sb.append("?XDEBUG_SESSION_START=12555");
+            if (viewArguments != null && !"".equals(viewArguments)) {
+                sb.append("&args=").append(viewArguments);
+            }
+            sb.append("&offset=").append(offset);
+            sb.append("&limit=").append(limit);
+
+            ServicesResponse response = requestManager.getString(sb.toString());
+            validateResponse(response);
+            return nodeSerializer.unserializeList(response.getResponseBody());
+        } catch (JSONException e) {
+            throw new DrupalFetchException(e);
+        } catch (DrupalServicesResponseException e) {
+            throw new DrupalFetchException(e);
+        } catch (IOException e) {
+            throw new DrupalFetchException(e);
+        }
     }
 
     public DrupalNode getNode(int nid) throws DrupalFetchException
     {
         try {
             ServicesResponse response = requestManager.getString(rootPath + "/node/" + nid + ".json");
-            log.debug(response.getResponseBody());
+            validateResponse(response);
             return nodeSerializer.unserialize(response.getResponseBody());
         } catch (IOException e) {
             throw new DrupalFetchException(e);
         } catch (JSONException e) {
+            throw new DrupalFetchException(e);
+        } catch (DrupalServicesResponseException e) {
             throw new DrupalFetchException(e);
         }
     }
@@ -168,12 +194,32 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public List<DrupalComment> getComments(int nid) throws DrupalFetchException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getComments(nid, 0, 0);
+
     }
 
     public List<DrupalComment> getComments(int nid, int start, int count) throws DrupalFetchException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("nid", nid);
+            if (start != 0) {
+                data.put("start", start);
+            }
+            if (count != 0) {
+                data.put("count", count);
+            }
+            ServicesResponse response = requestManager.post(rootPath + "/comment/loadNodeComments.json", data);
+            validateResponse(response);
+            List<DrupalComment> drupalComments = commentSerializer.unserializeList(response.getResponseBody());
+            return drupalComments;
+        } catch (IOException e) {
+            throw new DrupalFetchException(e);
+        } catch (JSONException e) {
+            throw new DrupalFetchException(e);
+        } catch (DrupalServicesResponseException e) {
+            throw new DrupalFetchException(e);
+        }
     }
 
     public InputStream getFileStream(String filepath) throws IOException
@@ -194,16 +240,21 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
             JSONObject object = new JSONObject();
             object.put("node", new JSONObject(jsonNode.toString()));
             ServicesResponse response;
-            if (node.getNid() != 0) {
+            if (node.getNid() == 0) {
                 response = requestManager.post(rootPath + "/node.json", object.toString());
-            } else {
-                response = requestManager.put(rootPath + "/node.json", object.toString());
             }
-            JSONObject responseObject = new JSONObject(response);
-            return responseObject.getInt("nid");
+            else {
+                response = requestManager.put(rootPath + "/node/" + node.getNid() + ".json", object.toString());
+            }
+            validateResponse(response);
+                JSONObject responseObject = new JSONObject(response.getResponseBody());
+                return responseObject.getInt("nid");
+
         } catch (IOException e) {
             throw new DrupalSaveException(e);
         } catch (JSONException e) {
+            throw new DrupalSaveException(e);
+        } catch (DrupalServicesResponseException e) {
             throw new DrupalSaveException(e);
         }
     }
@@ -270,20 +321,23 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     {
         try {
             ServicesResponse response = requestManager.getString(rootPath + "/user/" + uid + ".json");
-            // TODO: handle error condition
+            validateResponse(response);
             return userObjectSerializer.unserialize(response.getResponseBody());
         } catch (IOException e) {
             throw new DrupalFetchException(e);
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
+        } catch (DrupalServicesResponseException e) {
+            throw new DrupalFetchException(e);
         }
     }
 
-    public DrupalUser getCurrentUser() {
+    public DrupalUser getCurrentUser()
+    {
         return this.currentUser;
     }
 
-    public List<GenericCookie> getCurrentUserCookie()
+    public ArrayList<GenericCookie> getCurrentUserCookie()
     {
         return requestManager.getCookies();
     }
@@ -303,5 +357,13 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
         this.currentUser = state.getUser();
         this.session = state.getSession();
         this.requestManager.initializeSavedState(state);
+    }
+
+    public DrupalSiteContextInstanceState getSavedState() {
+        DrupalSiteContextInstanceStateImpl state = new DrupalSiteContextInstanceStateImpl();
+        state.setUser(getCurrentUser());
+        state.setCookies(getCurrentUserCookie());
+        state.setSession(session);
+        return state;
     }
 }

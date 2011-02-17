@@ -121,7 +121,8 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
 
     private ServicesResponse executeMethod(HttpUriRequest method) throws IOException
     {
-        HttpResponse response = client.execute(method);
+        log.debug(method.getMethod() + " : " + method.getURI().toURL().toString());
+        HttpResponse response = client.execute(method, httpContext);
         ServicesResponse servicesResponse = new ServicesResponse();
         servicesResponse.setReasonPhrase(response.getStatusLine().getReasonPhrase());
         servicesResponse.setStatusCode(response.getStatusLine().getStatusCode());
@@ -135,6 +136,7 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
             sw.write("\n");
         }
         servicesResponse.setResponseBody(sw.toString());
+        log.debug("RESPONSE: " + sw.toString());
         return servicesResponse;
     }
 
@@ -152,6 +154,7 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         HttpPut put = new HttpPut(path);
         put.setHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
         put.setEntity(new ByteArrayEntity(data.getBytes()));
+        log.debug(data);
         return executeMethod(put);
     }
 
@@ -232,10 +235,16 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
 
         if (log.isDebugEnabled()) {
             StringBuffer paramString = new StringBuffer();
+            boolean first = true;
             for (NameValuePair parameter : parameters) {
-                paramString.append(parameter.getName()).append("=").append(parameter.getValue()).append("&");
+                if (first) {
+                    first = false;
+                } else {
+                    paramString.append("&");
+                }
+                paramString.append(parameter.getName()).append("=").append(parameter.getValue());
             }
-            log.debug("request", "parameter string: " + paramString.toString());
+            log.debug("parameter string: " + paramString.toString());
         }
         return parameters;
     }

@@ -10,6 +10,7 @@ import org.workhabit.drupal.api.site.support.GenericCookie;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -185,11 +186,13 @@ public interface DrupalSiteContext
      */
     DrupalUser getUser(int uid) throws DrupalFetchException;
 
-    List<GenericCookie> getCurrentUserCookie();
+    ArrayList<GenericCookie> getCurrentUserCookie();
 
     String getFileUploadToken() throws DrupalFetchException;
 
     DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException;
 
     void initializeSavedState(DrupalSiteContextInstanceState state);
+
+    DrupalSiteContextInstanceState getSavedState();
 }
