@@ -92,10 +92,18 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
             }
             StringBuffer sb = new StringBuffer();
             sb.append(rootPath).append("/views/").append(viewName).append(".json");
+            boolean bFirst = true;
             if (viewArguments != null && !"".equals(viewArguments)) {
-                sb.append("&args=").append(viewArguments);
+                sb.append("?args=").append(viewArguments);
             }
-            sb.append("&offset=").append(offset);
+            if (bFirst) {
+                sb.append("?");
+                bFirst = false;
+            }
+            else {
+                sb.append("&");
+            }
+            sb.append("offset=").append(offset);
             sb.append("&limit=").append(limit);
 
             ServicesResponse response = requestManager.getString(sb.toString());
@@ -166,8 +174,10 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     private String serializeComment(final DrupalComment comment)
     {
         GsonBuilder builder = new GsonBuilder();
-        ExclusionStrategy strategy = new ExclusionStrategy() {
-            public boolean shouldSkipField(FieldAttributes f) {
+        ExclusionStrategy strategy = new ExclusionStrategy()
+        {
+            public boolean shouldSkipField(FieldAttributes f)
+            {
                 if ("cid".equals(f.getName())) {
                     if (comment.getCid() == 0) {
                         return true;
@@ -181,7 +191,8 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
                 return false;
             }
 
-            public boolean shouldSkipClass(Class<?> clazz) {
+            public boolean shouldSkipClass(Class<?> clazz)
+            {
                 return false;
             }
         };
