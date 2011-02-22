@@ -8,9 +8,11 @@ import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
-import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -80,6 +82,7 @@ public class DrupalJsonObjectSerializerTest
      * Test serialization
      * <p/>
      * TODO: This could use some cleanup and testing of individual string tokens
+     *
      * @throws org.json.JSONException on error
      */
     @Test
@@ -132,6 +135,7 @@ public class DrupalJsonObjectSerializerTest
 
     /**
      * Test serialization of drupal Taxonomy Term.
+     *
      * @throws org.json.JSONException if there's an error
      */
     @Test

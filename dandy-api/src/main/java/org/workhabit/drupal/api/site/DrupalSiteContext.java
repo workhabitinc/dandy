@@ -86,8 +86,9 @@ public interface DrupalSiteContext
      *                will create a new comment. If cid is a positive integer, then it will update an existing comment (provided
      *                the currently logged in user has permission to do so).
      * @throws DrupalFetchException if there's an error saving the comment.
+     * @return the cid of the saved comment, or 0 if there was a problem saving.
      */
-    int saveComment(DrupalComment comment) throws DrupalFetchException;
+    int saveComment(final DrupalComment comment) throws DrupalFetchException;
 
 
     /**
@@ -163,7 +164,7 @@ public interface DrupalSiteContext
      * Returns the drupal Files directory path. Essentially a wrapper for the file_directory_path() api call
      *
      * @return a string with the path to the files directory.
-     * @throws DrupalFetchException
+     * @throws DrupalFetchException if there's a problem with the request.
      */
     String getFileDirectoryPath() throws DrupalFetchException;
 
@@ -175,7 +176,7 @@ public interface DrupalSiteContext
      * @throws DrupalSaveException if there's an error processing the save, for example if the user doesn't
      *                             have permission.
      */
-    int saveNode(DrupalNode node) throws DrupalSaveException;
+    int saveNode(final DrupalNode node) throws DrupalSaveException;
 
     /**
      * Fetch a user object by uid

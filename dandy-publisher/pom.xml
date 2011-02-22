@@ -41,14 +41,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3</version>
             </plugin>
-            <plugin>
-                <groupId>com.jayway.android.robotium</groupId>
-                <artifactId>robotium-solo</artifactId>
-                <version>2.1</version>
-                <configuration>
-
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

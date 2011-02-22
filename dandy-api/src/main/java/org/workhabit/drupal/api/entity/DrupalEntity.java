@@ -8,6 +8,6 @@ import java.io.Serializable;
  */
 public interface DrupalEntity extends Serializable {
     //marker interface
-
+    @SuppressWarnings({"UnusedDeclaration"})
     String getId();
 }

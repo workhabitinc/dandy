@@ -29,7 +29,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.workhabit.drupal.api.site.RequestSigningInterceptor;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 import org.workhabit.drupal.http.ServicesResponse;
@@ -55,7 +54,6 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
     private static final int HTTP_PORT = 80;
     private static final int HTTPS_PORT = 443;
     private final HttpClient client;
-    private RequestSigningInterceptor requestSigningInterceptor;
     private ArrayList<GenericCookie> cookies;
     private BasicCookieStore cookieStore;
     private HttpContext httpContext;
@@ -239,7 +237,8 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
             for (NameValuePair parameter : parameters) {
                 if (first) {
                     first = false;
-                } else {
+                }
+                else {
                     paramString.append("&");
                 }
                 paramString.append(parameter.getName()).append("=").append(parameter.getValue());

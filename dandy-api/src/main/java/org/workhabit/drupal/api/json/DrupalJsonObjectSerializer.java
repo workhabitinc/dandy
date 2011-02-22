@@ -153,7 +153,7 @@ public class DrupalJsonObjectSerializer<T> {
         return list;
     }
 
-    private JSONArray extractDataArray(String json) throws JSONException, DrupalFetchException {
+    private JSONArray extractDataArray(String json) throws JSONException {
         return new JSONArray(json);
     }
 

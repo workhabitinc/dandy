@@ -22,6 +22,7 @@ public class DrupalBodyValue
         this.value = value;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public String getSummary()
     {
         return summary;
@@ -32,6 +33,7 @@ public class DrupalBodyValue
         this.summary = summary;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public String getFormat()
     {
         return format;
@@ -42,6 +44,7 @@ public class DrupalBodyValue
         this.format = format;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public String getSafeValue()
     {
         return safeValue;
@@ -52,6 +55,7 @@ public class DrupalBodyValue
         this.safeValue = safeValue;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public String getSafeSummary()
     {
         return safeSummary;

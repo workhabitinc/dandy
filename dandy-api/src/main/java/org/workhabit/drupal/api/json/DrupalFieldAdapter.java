@@ -15,6 +15,7 @@ import java.util.Map;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 12/22/10, 1:14 PM
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public class DrupalFieldAdapter implements JsonSerializer<ArrayList<DrupalField>> {
     public JsonElement serialize(ArrayList<DrupalField> src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject retVal = new JsonObject();

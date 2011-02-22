@@ -17,7 +17,10 @@ public class DrupalComment implements DrupalEntity
     private String name;
     private String mail;
     private Date timestamp;
-    private boolean status;
+    private Boolean status;
+    private Date changed;
+    private Date created;
+    private DrupalBody commentBody;
 
     public int getNid()
     {
@@ -104,13 +107,43 @@ public class DrupalComment implements DrupalEntity
         this.timestamp = timestamp;
     }
 
-    public boolean isStatus()
+    public Boolean isStatus()
     {
         return status;
     }
 
-    public void setStatus(boolean status)
+    public void setStatus(Boolean status)
     {
         this.status = status;
+    }
+
+    public Date getChanged()
+    {
+        return changed;
+    }
+
+    public void setChanged(Date changed)
+    {
+        this.changed = changed;
+    }
+
+    public Date getCreated()
+    {
+        return created;
+    }
+
+    public void setCreated(Date created)
+    {
+        this.created = created;
+    }
+
+    public DrupalBody getCommentBody()
+    {
+        return commentBody;
+    }
+
+    public void setCommentBody(DrupalBody commentBody)
+    {
+        this.commentBody = commentBody;
     }
 }

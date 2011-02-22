@@ -11,6 +11,7 @@ public class DrupalFetchException extends Exception {
     private JSONObject objectResult;
     private String message;
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public DrupalFetchException(String message) {
         this.message = message;
     }

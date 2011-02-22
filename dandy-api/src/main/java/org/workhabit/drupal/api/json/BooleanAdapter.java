@@ -14,6 +14,6 @@ public class BooleanAdapter implements JsonSerializer<Boolean>, JsonDeserializer
     }
 
     public Boolean deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return json.getAsInt() == 1 ? true : false;
+        return json.getAsInt() == 1;
     }
 }

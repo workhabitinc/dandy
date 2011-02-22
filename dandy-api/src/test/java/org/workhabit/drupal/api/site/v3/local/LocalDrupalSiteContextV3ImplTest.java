@@ -25,21 +25,19 @@ import static org.junit.Assert.*;
 public class LocalDrupalSiteContextV3ImplTest
 {
     private DrupalSiteContextV3Impl context;
-    private DrupalServicesRequestManager requestManager;
 
     @Before
     public void setUp()
     {
         context = new DrupalSiteContextV3Impl("http://se.local", "dandy");
-        requestManager = new AndroidDrupalServicesRequestManagerImpl();
+        DrupalServicesRequestManager requestManager = new AndroidDrupalServicesRequestManagerImpl();
         context.setRequestManager(requestManager);
     }
 
     /**
      * Fetches a test node against se.local with anonymous user.
-     *
-     * @throws DrupalFetchException
      */
+    @SuppressWarnings({"JavaDoc"})
     @Test
     public void testGetNode() throws DrupalFetchException
     {
@@ -52,11 +50,11 @@ public class LocalDrupalSiteContextV3ImplTest
     {
         try {
             DrupalUser loggedInUser = authenticateTestUser();
-
+            assertNotNull(loggedInUser);
             DrupalNode node = context.getNode(1);
             assertEquals(2, node.getUid());
             node.setNid(0);
-            // resave the existing node for testing
+            // re-save the existing node for testing
             int nid = context.saveNode(node);
             assertFalse(nid == 0);
         } finally {
@@ -69,12 +67,12 @@ public class LocalDrupalSiteContextV3ImplTest
     {
         try {
             DrupalUser loggedInUser = authenticateTestUser();
-
+            assertNotNull(loggedInUser);
             DrupalNode node = context.getNode(1);
             assertEquals(2, node.getUid());
             String testTitle = TestData.getTestTitle();
             node.setTitle(testTitle);
-            // resave the existing node for testing
+            // re-save the existing node for testing
             int nid = context.saveNode(node);
             assertEquals(1, nid);
             node = context.getNode(1);
@@ -90,6 +88,7 @@ public class LocalDrupalSiteContextV3ImplTest
     {
         try {
             DrupalUser loggedInUser = authenticateTestUser();
+            assertNotNull(loggedInUser);
             DrupalUser user = context.getUser(2);
             assertNotNull(user);
             assertEquals(2, user.getUid());
@@ -113,6 +112,7 @@ public class LocalDrupalSiteContextV3ImplTest
     public void testGetCommentsForNode() throws DrupalFetchException, DrupalLoginException
     {
         DrupalUser drupalUser = authenticateTestUser();
+        assertNotNull(drupalUser);
         List<DrupalComment> comments = context.getComments(2);
         assertNotNull(comments);
 
@@ -123,7 +123,7 @@ public class LocalDrupalSiteContextV3ImplTest
     public void testInvalidParameterThrowsError()
     {
         try {
-            DrupalUser login = context.login("", "");
+            context.login("", "");
             fail("Should have thrown exception");
         } catch (DrupalLoginException e) {
             assertNotNull(e.getMessage());
@@ -140,6 +140,7 @@ public class LocalDrupalSiteContextV3ImplTest
     {
         try {
             DrupalUser user = authenticateTestUser();
+            assertNotNull(user);
             List<DrupalNode> list = context.getNodeView("dandy_recent");
             assertNotNull(list);
             assertFalse(list.size() == 0);

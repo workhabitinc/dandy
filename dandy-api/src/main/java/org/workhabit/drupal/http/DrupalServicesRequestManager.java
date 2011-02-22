@@ -17,26 +17,62 @@ import java.util.Map;
  */
 public interface DrupalServicesRequestManager {
     /**
-     * Make a request to the remote site without signing.
-     * @param path path, including http:// to the remote request (excludes query string)
-     * @param method the method required by Drupal to execute on services (e.g. node.getStream). See constants on
-     * {@link org.workhabit.drupal.api.site.impl.v3.DrupalSiteContextV3Impl} for examples of available methods.
+     * Make a request to the remote site with content type application/json
      *
-     * @param data map of key value pairs corresponding to query string parameters
-     * @param escapeInput true if the method's query string parameters should be quoted.
-     * typically this is the case for Drupal JSON services, but some require that they're not.
+     * @param path path, including http:// to the remote request (excludes query string)
+     * @param data a String representing the data to post.
+     *
+     * <b>Note:</b> In this implementation the content type is set to application/json, so the data
+     * to post should be a json object and not key/value pairs.
+     *
+     * If you need to post key/value pairs, {@see DrupalServicesRequestManager#post}
      *
      * @return a string representing the response
-     *
      * @throws IOException if there's a problem making the request.
      */
     public ServicesResponse post(String path, String data) throws IOException;
+
+    /**
+     * make a POST request to the server with content type application/x-www-form-urlencoded
+     *
+     * @param path path, including http:// to the remote request (may include query string parameters if there is a need)
+     * @param data map of key value pairs corresponding to query string parameters
+     * @return a string representing the response.
+     * @throws IOException if there's a problem making the request.
+     */
     public ServicesResponse post(String path, Map<String, Object> data) throws IOException;
 
-    // used for update
+    /**
+     * Make a PUT request to the server with content type application/x-www-form-urlencoded
+     *
+     * @param path the path to the request (including querystring if any)
+     * @param data the data to post as key/value pairs
+     *
+     * @return a service response representing the result of the request.
+     *
+     * @throws IOException
+     */
+    @SuppressWarnings({"UnusedDeclaration"})
     public ServicesResponse put(String path, Map<String, Object> data) throws IOException;
+
+    /**
+     * Make a PUT request to the server with content type application/x-www-form-urlencoded
+     *
+     * @param path the path to the request (including querystring if any)
+     * @param data the data to PUT as a string.
+     *
+     * * <b>Note:</b> In this implementation the content type is set to application/json, so the data
+     * to PUT should be a json object and not key/value pairs.
+     *
+     * If you need to PUT key/value pairs, {@see DrupalServicesRequestManager#put(String path, Map data)}
+
+     * @return a service response representing the result of the request.
+     *
+     * @throws IOException if there's a problem making the request
+     */
     public ServicesResponse put(String path, String data) throws IOException;
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public ServicesResponse delete(String path) throws IOException;
 
     /** make a GET request to the remote site for the specified path
@@ -46,12 +82,14 @@ public interface DrupalServicesRequestManager {
      *
      * @throws IOException if there was a problem parsing the response.
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public InputStream getStream(String path) throws IOException;
 
     public ServicesResponse getString(String path) throws IOException;
 
     ArrayList<GenericCookie> getCookies();
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException;
 
     void initializeSavedState(DrupalSiteContextInstanceState state);
