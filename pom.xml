@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.workhabit.dandy</groupId>
     <artifactId>dandy-parent</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
     <name>Dandy Parent</name>
     <packaging>pom</packaging>
 
@@ -15,6 +15,13 @@
     </modules>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -34,7 +41,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.url>http://nexus.workhabit.com/dandy</project.url>
     </properties>
-    
+
     <developers>
         <developer>
             <name>Aaron C. Stewart</name>
