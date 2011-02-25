@@ -5,7 +5,6 @@ import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs

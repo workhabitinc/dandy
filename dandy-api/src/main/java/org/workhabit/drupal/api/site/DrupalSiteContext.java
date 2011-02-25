@@ -1,6 +1,5 @@
 package org.workhabit.drupal.api.site;
 
-import org.workhabit.drupal.api.entity.*;
 import org.workhabit.drupal.api.entity.DrupalComment;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;

@@ -5,7 +5,6 @@ import org.workhabit.drupal.api.site.support.GenericCookie;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
