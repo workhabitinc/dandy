@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.workhabit.dandy</groupId>
             <artifactId>dandy-api</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.3-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
