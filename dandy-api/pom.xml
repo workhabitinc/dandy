@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.workhabit.dandy</groupId>
     <artifactId>dandy-api</artifactId>
-    <version>1.1</version>
+    <version>1.1-SNAPSHOT</version>
     <name>Dandy API</name>
     <description>Provides helper classes and model for interacting with Drupal sites via the Services and Json Server modules</description>
 
