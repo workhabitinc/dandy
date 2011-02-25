@@ -47,8 +47,8 @@
 
     <scm>
         <url>http://github.com/workhabitinc/dandy</url>
-        <developerConnection>scm:git:git://github.com/workhabitinc/dandy.git</developerConnection>
-        <connection>scm:git:git://github.com/workhabitinc/dandy.git</connection>
+        <developerConnection>scm:git:git@github.com:workhabitinc/dandy.git</developerConnection>
+        <connection>scm:git:git@github.com:workhabitinc/dandy.git</connection>
     </scm>
 
     <distributionManagement>
