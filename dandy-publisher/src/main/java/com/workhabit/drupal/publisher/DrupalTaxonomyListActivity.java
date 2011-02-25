@@ -23,7 +23,7 @@ public class DrupalTaxonomyListActivity extends AbstractDandyListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DrupalSiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext();
+        DrupalSiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext(savedInstanceState);
         try {
             ArrayList<DrupalTaxonomyTerm> terms = (ArrayList<DrupalTaxonomyTerm>) drupalSiteContext.getCategoryList();
             drupalTaxonomyAdapter = new DrupalTaxonomyAdapter(this, R.layout.row, terms);

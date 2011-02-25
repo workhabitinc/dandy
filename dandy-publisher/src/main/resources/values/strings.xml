@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name"><b>Publisher</b> for Android</string>
-    <string name="drupal_site_url">http://ad.hourglassone.com</string>
+    <string name="drupal_site_url">http://ad3.hourglassone.com</string>
     <string name="refresh">Refresh</string>
     <string name="recent">Recent</string>
     <string name="categories">Categories</string>
-    <string name="drupal_domain">workhabit.com</string>
-    <string name="drupal_private_key">9e47c52fae3c36baff404f7072e46547</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="invalid_login_title">Invalid Login</string>

@@ -32,7 +32,7 @@ public class DrupalLoginActivity extends AbstractDandyActivity implements View.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loginscreen);
         findViewById(R.id.login_button).setOnClickListener(this);
-        drupalSiteContext = DandyApplication.getDrupalSiteContext();
+        drupalSiteContext = DandyApplication.getDrupalSiteContext(savedInstanceState);
     }
 
     public void handleRefresh()

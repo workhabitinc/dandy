@@ -33,7 +33,7 @@ public abstract class AbstractDrupalNodeListActivity extends AbstractDandyListAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        drupalSiteContext = DandyApplication.getDrupalSiteContext();
+        drupalSiteContext = DandyApplication.getDrupalSiteContext(savedInstanceState);
 
         try {
             if (viewName == null || "".equals(viewName)) {

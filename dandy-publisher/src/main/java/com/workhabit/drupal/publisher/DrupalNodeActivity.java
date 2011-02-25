@@ -56,7 +56,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DrupalSiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext();
+        DrupalSiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext(savedInstanceState);
         int nid = getIntent().getExtras().getInt("nid");
 
         setContentView(R.layout.node);

@@ -1,12 +1,14 @@
 package org.workhabit.drupal.api.site.support;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 1/19/11, 1:40 PM
  */
-public class GenericCookie {
+public class GenericCookie implements Serializable
+{
     private String comment;
     private String domain;
     private Date expiryDate;

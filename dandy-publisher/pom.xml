@@ -33,6 +33,7 @@
                     </emulator>
                     <deleteConflictingFiles>true</deleteConflictingFiles>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                    <resourceDirectory>${basedir}/src/main/resources</resourceDirectory>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>
@@ -57,10 +58,6 @@
                 <exclusion>
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>commons-logging</groupId>

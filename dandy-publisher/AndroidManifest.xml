@@ -4,7 +4,7 @@
 
     <application android:icon="@drawable/icon" android:label="Dandy"
                  android:name="com.workhabit.drupal.publisher.DandyApplication">
-        <activity android:name=".DrupalTaxonomyListActivity" android:label="@string/categories">
+        <activity android:name=".DrupalHeadlineNodeListActivity" android:label="@string/recent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -13,7 +13,6 @@
         <activity android:name=".DrupalLoginActivity"
                   android:label="@string/app_name" android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".DrupalHeadlineNodeListActivity" android:label="@string/recent"/>
         <activity android:name=".DrupalNodeActivity"/>
         <activity android:name=".DrupalNodeListViewActivity" android:label="@string/categories"/>
     </application>

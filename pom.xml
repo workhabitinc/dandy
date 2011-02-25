@@ -10,7 +10,7 @@
     <modules>
         <module>dandy-api</module>
         <module>dandy-android</module>
-        <!-- <module>dandy-publisher</module> -->
+        <module>dandy-publisher</module>
         <!-- <module>dandy-publisher-test</module> -->
         <module>dandy-module</module>
     </modules>

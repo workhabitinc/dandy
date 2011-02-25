@@ -1,6 +1,10 @@
 package org.workhabit.drupal.api.site;
 
 import org.workhabit.drupal.api.entity.*;
+import org.workhabit.drupal.api.entity.DrupalComment;
+import org.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.entity.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
@@ -85,8 +89,8 @@ public interface DrupalSiteContext
      * @param comment the comment object to save.  Note that this MUST have a nid associated with it.  If cid is 0, it
      *                will create a new comment. If cid is a positive integer, then it will update an existing comment (provided
      *                the currently logged in user has permission to do so).
-     * @throws DrupalFetchException if there's an error saving the comment.
      * @return the cid of the saved comment, or 0 if there was a problem saving.
+     * @throws DrupalFetchException if there's an error saving the comment.
      */
     int saveComment(final DrupalComment comment) throws DrupalFetchException;
 
@@ -191,7 +195,7 @@ public interface DrupalSiteContext
 
     String getFileUploadToken() throws DrupalFetchException;
 
-    DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException;
+    org.workhabit.drupal.api.entity.DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException;
 
     void initializeSavedState(DrupalSiteContextInstanceState state);
 

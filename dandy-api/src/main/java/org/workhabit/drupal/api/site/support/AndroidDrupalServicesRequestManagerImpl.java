@@ -62,9 +62,11 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
     {
         HttpParams params = new BasicHttpParams();
         SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme(HTTP_SCHEME, HTTP_PORT, PlainSocketFactory.getSocketFactory()));
-        schemeRegistry.register(new Scheme(HTTPS_SCHEME, HTTPS_PORT, PlainSocketFactory.getSocketFactory()));
-        ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(schemeRegistry);
+        //noinspection deprecation
+        schemeRegistry.register(new Scheme(HTTP_SCHEME, PlainSocketFactory.getSocketFactory(), HTTP_PORT));
+        //noinspection deprecation
+        schemeRegistry.register(new Scheme(HTTPS_SCHEME, PlainSocketFactory.getSocketFactory(), HTTPS_PORT));
+        @SuppressWarnings({"deprecation"}) ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
         cookieStore = new BasicCookieStore();
         httpContext = new BasicHttpContext();
         httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -74,6 +76,7 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
     /**
      * make a POST request to the remote web service.  Map values are passed in as key/value pairs (parameters) to the
      * POST request.
+     *
      *
      * @param path path, including http:// to the remote request (excludes query string)
      * @param data map of key value pairs corresponding to query string parameters

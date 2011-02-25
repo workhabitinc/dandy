@@ -35,12 +35,13 @@ public interface DrupalServicesRequestManager {
     /**
      * make a POST request to the server with content type application/x-www-form-urlencoded
      *
+     *
      * @param path path, including http:// to the remote request (may include query string parameters if there is a need)
      * @param data map of key value pairs corresponding to query string parameters
      * @return a string representing the response.
      * @throws IOException if there's a problem making the request.
      */
-    public ServicesResponse post(String path, Map<String, Object> data) throws IOException;
+    public org.workhabit.drupal.http.ServicesResponse post(String path, Map<String, Object> data) throws IOException;
 
     /**
      * Make a PUT request to the server with content type application/x-www-form-urlencoded

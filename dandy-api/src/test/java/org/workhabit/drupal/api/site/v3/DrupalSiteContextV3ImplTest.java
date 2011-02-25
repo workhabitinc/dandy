@@ -1,7 +1,5 @@
 package org.workhabit.drupal.api.site.v3;
 
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.After;
@@ -19,7 +17,6 @@ import org.workhabit.drupal.api.site.v3.local.TestData;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 import org.workhabit.drupal.http.ServicesResponse;
 
-import javax.imageio.spi.ServiceRegistry;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,9 +26,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -380,7 +375,8 @@ public class DrupalSiteContextV3ImplTest
     }
 
     @After
-    public void tearDown() {
+    public void tearDown()
+    {
         mockery.assertIsSatisfied();
     }
 }
