@@ -20,7 +20,7 @@ public class DrupalNode implements DrupalEntity
     private Boolean promote;
     private Boolean moderate;
     private Boolean sticky;
-    private DrupalBody body;
+    private Map<String, DrupalBody> body;
     private String log;
     private Date revisionTimestamp;
     private int format;
@@ -118,12 +118,12 @@ public class DrupalNode implements DrupalEntity
         this.sticky = sticky;
     }
 
-    public DrupalBody getBody()
+    public Map<String, DrupalBody> getBody()
     {
         return body;
     }
 
-    public void setBody(DrupalBody body)
+    public void setBody(Map<String, DrupalBody> body)
     {
         this.body = body;
     }

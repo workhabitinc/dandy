@@ -8,15 +8,59 @@ import java.util.List;
  */
 public class DrupalBody
 {
-    private List<DrupalBodyValue> und;
+    private String value;
+    private String summary;
+    private String format;
+    private String safeValue;
+    private String safeSummary;
 
-    public List<DrupalBodyValue> getUnd()
+    public String getValue()
     {
-        return und;
+        return value;
     }
 
-    public void setUnd(List<DrupalBodyValue> und)
+    public void setValue(String value)
     {
-        this.und = und;
+        this.value = value;
+    }
+
+    public String getSummary()
+    {
+        return summary;
+    }
+
+    public void setSummary(String summary)
+    {
+        this.summary = summary;
+    }
+
+    public String getFormat()
+    {
+        return format;
+    }
+
+    public void setFormat(String format)
+    {
+        this.format = format;
+    }
+
+    public String getSafeValue()
+    {
+        return safeValue;
+    }
+
+    public void setSafeValue(String safeValue)
+    {
+        this.safeValue = safeValue;
+    }
+
+    public String getSafeSummary()
+    {
+        return safeSummary;
+    }
+
+    public void setSafeSummary(String safeSummary)
+    {
+        this.safeSummary = safeSummary;
     }
 }
