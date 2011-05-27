@@ -91,7 +91,7 @@ public interface DrupalServicesRequestManager {
     ArrayList<GenericCookie> getCookies();
 
     @SuppressWarnings({"UnusedDeclaration"})
-    public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException;
+    public ServicesResponse postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException;
 
     void initializeSavedState(DrupalSiteContextInstanceState state);
 }

@@ -38,6 +38,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     private String session;
     private DrupalUser currentUser;
     private DrupalJsonObjectSerializer<DrupalComment> commentSerializer;
+    private DrupalJsonObjectSerializer<DrupalFile> fileSerializer;
 
     public DrupalSiteContextV3Impl(String drupalSiteUrl, String endpoint)
     {
@@ -46,6 +47,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
         userObjectSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalUser.class);
         log.debug("initialized new Drupal Site Context");
         commentSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalComment.class);
+        fileSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
     }
 
     public void setRequestManager(DrupalServicesRequestManager requestManager)
@@ -76,6 +78,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public List<DrupalNode> getNodeView(String viewName) throws DrupalFetchException
     {
+        //noinspection NullableProblems
         return getNodeView(viewName, null, 0, 0);
     }
 
@@ -90,15 +93,15 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Fetching view %s with arguments %s", viewName, viewArguments));
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(rootPath).append("/views/").append(viewName).append(".json");
             boolean bFirst = true;
             if (viewArguments != null && !"".equals(viewArguments)) {
                 sb.append("?args=").append(viewArguments);
+                bFirst = false;
             }
             if (bFirst) {
                 sb.append("?");
-                bFirst = false;
             }
             else {
                 sb.append("&");
@@ -239,12 +242,14 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public List<DrupalTaxonomyTerm> getTermView(String viewName) throws DrupalFetchException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: Implement
+        return null;
     }
 
     public List<DrupalTaxonomyTerm> getCategoryList() throws DrupalFetchException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO: Implement
+        return null;
     }
 
     public int registerNewUser(String username, String password, String email) throws DrupalSaveException
@@ -424,7 +429,23 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            ServicesResponse response = requestManager.postFile(String.format("%s/file.json", rootPath), "files[file]", inputStream, fileName);
+            assertNoErrors(response);
+            JSONObject obj = new JSONObject(response.getResponseBody());
+            String uri = obj.getString("uri");
+            response = requestManager.getString(uri + ".json");
+            assertNoErrors(response);
+            return fileSerializer.unserialize(response.getResponseBody());
+        } catch (IOException e) {
+            throw new DrupalSaveException(e);
+        } catch (DrupalServicesResponseException e) {
+            throw new DrupalSaveException(e);
+        } catch (JSONException e) {
+            throw new DrupalSaveException(e);
+        } catch (DrupalFetchException e) {
+            throw new DrupalSaveException(e);
+        }
     }
 
     public void initializeSavedState(DrupalSiteContextInstanceState state)
