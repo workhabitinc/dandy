@@ -8,10 +8,7 @@ import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -33,7 +30,31 @@ public class DrupalJsonObjectSerializerTest
         DrupalJsonObjectSerializer<DrupalNode> serializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
         assertNotNull(serializer);
 
-        String json = "{\"vid\":\"1\",\"uid\":\"2\",\"title\":\"Test article\",\"log\":\"\",\"status\":\"1\",\"comment\":\"2\",\"promote\":\"1\",\"sticky\":\"0\",\"nid\":\"1\",\"type\":\"article\",\"language\":\"und\",\"created\":\"1297197059\",\"changed\":\"1297795608\",\"tnid\":\"0\",\"translate\":\"0\",\"revision_timestamp\":\"1297795608\",\"revision_uid\":\"1\",\"body\":{\"und\":[{\"value\":\"test\",\"summary\":\"\",\"format\":\"filtered_html\",\"safe_value\":\"<p>test<\\/p>\\n\",\"safe_summary\":\"\"}]},\"field_tags\":[],\"field_image\":[],\"rdf_mapping\":{\"field_image\":{\"predicates\":[\"og:image\",\"rdfs:seeAlso\"],\"type\":\"rel\"},\"field_tags\":{\"predicates\":[\"dc:subject\"],\"type\":\"rel\"},\"rdftype\":[\"sioc:Item\",\"foaf:Document\"],\"title\":{\"predicates\":[\"dc:title\"]},\"created\":{\"predicates\":[\"dc:date\",\"dc:created\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"changed\":{\"predicates\":[\"dc:modified\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"body\":{\"predicates\":[\"content:encoded\"]},\"uid\":{\"predicates\":[\"sioc:has_creator\"],\"type\":\"rel\"},\"name\":{\"predicates\":[\"foaf:name\"]},\"comment_count\":{\"predicates\":[\"sioc:num_replies\"],\"datatype\":\"xsd:integer\"},\"last_activity\":{\"predicates\":[\"sioc:last_activity_date\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"}},\"cid\":\"0\",\"last_comment_timestamp\":\"1297197059\",\"last_comment_name\":null,\"last_comment_uid\":\"1\",\"comment_count\":\"0\",\"name\":\"testuser\",\"picture\":\"0\",\"data\":null,\"uri\":\"http:\\/\\/se.local\\/dandy\\/node\\/1\"}";
+        String json = "{" +
+                      "\"vid\":\"1\"," +
+                      "\"uid\":\"2\"," +
+                      "\"title\":\"Test article\"," +
+                      "\"log\":\"\"," +
+                      "\"status\":\"1\"," +
+                      "\"comment\":\"2\"," +
+                      "\"promote\":\"1\"," +
+                      "\"sticky\":\"0\"," +
+                      "\"nid\":\"1\"," +
+                      "\"type\":\"article\"," +
+                      "\"language\":\"und\"," +
+                      "\"created\":\"1297197059\"," +
+                      "\"changed\":\"1297795608\"," +
+                      "\"tnid\":\"0\"," +
+                      "\"translate\":\"0\"," +
+                      "\"revision_timestamp\":\"1297795608\"," +
+                      "\"revision_uid\":\"1\"," +
+                      "\"body\":" +
+                      "{\"und\":" +
+                      "[{\"value\":\"test\"," +
+                      "\"summary\":\"\"," +
+                      "\"format\":\"filtered_html\"," +
+                      "\"safe_value\":\"<p>test<\\/p>\\n\"," +
+                      "\"safe_summary\":\"\"}]},\"field_tags\":[],\"field_image\":[],\"rdf_mapping\":{\"field_image\":{\"predicates\":[\"og:image\",\"rdfs:seeAlso\"],\"type\":\"rel\"},\"field_tags\":{\"predicates\":[\"dc:subject\"],\"type\":\"rel\"},\"rdftype\":[\"sioc:Item\",\"foaf:Document\"],\"title\":{\"predicates\":[\"dc:title\"]},\"created\":{\"predicates\":[\"dc:date\",\"dc:created\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"changed\":{\"predicates\":[\"dc:modified\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"body\":{\"predicates\":[\"content:encoded\"]},\"uid\":{\"predicates\":[\"sioc:has_creator\"],\"type\":\"rel\"},\"name\":{\"predicates\":[\"foaf:name\"]},\"comment_count\":{\"predicates\":[\"sioc:num_replies\"],\"datatype\":\"xsd:integer\"},\"last_activity\":{\"predicates\":[\"sioc:last_activity_date\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"}},\"cid\":\"0\",\"last_comment_timestamp\":\"1297197059\",\"last_comment_name\":null,\"last_comment_uid\":\"1\",\"comment_count\":\"0\",\"name\":\"testuser\",\"picture\":\"0\",\"data\":null,\"uri\":\"http:\\/\\/se.local\\/dandy\\/node\\/1\"}";
 
         DrupalNode node = serializer.unserialize(json);
         assertNotNull(node);
@@ -94,8 +115,10 @@ public class DrupalJsonObjectSerializerTest
         body.setSafeSummary("");
         body.setValue("test body");
         body.setSafeValue("<p>test</p>\n");
-        Map<String, DrupalBody> bodyMap = new HashMap<String, DrupalBody>();
-        bodyMap.put("und", body);
+        Map<String, List<DrupalBody>> bodyMap = new HashMap<String, List<DrupalBody>>();
+        List<DrupalBody> bodyList = new ArrayList<DrupalBody>();
+        bodyList.add(body);
+        bodyMap.put("und", bodyList);
         node.setBody(bodyMap);
         node.setChanged(new Date());
         node.setComment(2);

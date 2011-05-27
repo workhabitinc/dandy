@@ -1,6 +1,8 @@
 package org.workhabit.drupal.api.entity;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -20,7 +22,7 @@ public class DrupalComment implements DrupalEntity
     private Boolean status;
     private Date changed;
     private Date created;
-    private DrupalBody commentBody;
+    private Map<String, List<DrupalBody>> commentBody;
 
     public int getNid()
     {
@@ -137,12 +139,12 @@ public class DrupalComment implements DrupalEntity
         this.created = created;
     }
 
-    public DrupalBody getCommentBody()
+    public Map<String, List<DrupalBody>> getCommentBody()
     {
         return commentBody;
     }
 
-    public void setCommentBody(DrupalBody commentBody)
+    public void setCommentBody(Map<String,List<DrupalBody>> commentBody)
     {
         this.commentBody = commentBody;
     }

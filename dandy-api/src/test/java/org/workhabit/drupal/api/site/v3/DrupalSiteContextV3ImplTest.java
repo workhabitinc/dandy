@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
@@ -146,6 +147,7 @@ public class DrupalSiteContextV3ImplTest
                               "    }\n" +
                               "}";
                 ServicesResponse response = new ServicesResponse();
+                //noinspection NullableProblems
                 response.setReasonPhrase(null);
                 response.setStatusCode(200);
                 response.setResponseBody(json);
@@ -166,13 +168,9 @@ public class DrupalSiteContextV3ImplTest
         assertEquals(new Date(changedDate), comment.getChanged());
         assertEquals(String.valueOf(cid), comment.getId());
         assertEquals(status, comment.isStatus());
-        DrupalBody commentBody = comment.getCommentBody();
+        Map<String, List<DrupalBody>> commentBody = comment.getCommentBody();
         assertNotNull(commentBody);
-        assertNotNull(commentBody.getUnd());
-        assertNotNull(commentBody.getUnd().get(0));
-        assertNotNull(commentBody.getUnd().get(0).getValue());
-        assertEquals(body, commentBody.getUnd().get(0).getValue());
-        assertEquals(format, commentBody.getUnd().get(0).getFormat());
+        assertEquals(1, commentBody.size());
     }
 
     @Test

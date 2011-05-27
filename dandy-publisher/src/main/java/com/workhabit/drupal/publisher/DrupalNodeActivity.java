@@ -67,7 +67,8 @@ public class DrupalNodeActivity extends AbstractDandyActivity
             TextView bodyView = (TextView)findViewById(R.id.nodeBody);
             fetchAndDisplayImage(drupalSiteContext, node, titleView);
             titleView.setText(node.getTitle());
-            String nodeContent = String.format("<p>%s</p>", node.getBody().getUnd().get(0).getValue().replaceAll("\r\n", "\n").replaceAll("\n\n", "</p><p>"));
+            // TODO: Support i18n incoming from Drupal
+            String nodeContent = String.format("<p>%s</p>", node.getBody().get("und").get(0).getValue().replaceAll("\r\n", "\n").replaceAll("\n\n", "</p><p>"));
             bodyView.setText(Html.fromHtml(nodeContent));
 
             if (node.getComment() != 0) {

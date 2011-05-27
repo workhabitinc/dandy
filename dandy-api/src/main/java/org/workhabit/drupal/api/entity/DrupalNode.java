@@ -1,9 +1,6 @@
 package org.workhabit.drupal.api.entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
@@ -20,7 +17,7 @@ public class DrupalNode implements DrupalEntity
     private Boolean promote;
     private Boolean moderate;
     private Boolean sticky;
-    private Map<String, DrupalBody> body;
+    private Map<String, List<DrupalBody>> body;
     private String log;
     private Date revisionTimestamp;
     private int format;
@@ -118,12 +115,12 @@ public class DrupalNode implements DrupalEntity
         this.sticky = sticky;
     }
 
-    public Map<String, DrupalBody> getBody()
+    public Map<String, List<DrupalBody>> getBody()
     {
         return body;
     }
 
-    public void setBody(Map<String, DrupalBody> body)
+    public void setBody(Map<String, List<DrupalBody>> body)
     {
         this.body = body;
     }

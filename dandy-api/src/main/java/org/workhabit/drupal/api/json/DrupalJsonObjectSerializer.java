@@ -77,8 +77,8 @@ public class DrupalJsonObjectSerializer<T> {
     }
 
     public T unserialize(String json) throws DrupalFetchException, JSONException {
-        JSONObject dataObject = extractDataObject(json);
-        T t = gson.fromJson(dataObject.toString(), clazz);
+        JSONObject dataObject = new JSONObject(json);
+        T t = gson.fromJson(json, clazz);
         if (clazz == DrupalNode.class) {
             // special handling for cck fields. TODO: refactor this into an interceptor pattern.
             Iterator keys = dataObject.keys();
