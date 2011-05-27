@@ -45,7 +45,7 @@ import java.util.Map;
 @SuppressWarnings({"WeakerAccess", "UnusedDeclaration"})
 public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRequestManager
 {
-    private static final Logger log = LoggerFactory.getLogger(AndroidDrupalServicesRequestManagerImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(AndroidDrupalServicesRequestManagerImpl.class.getSimpleName());
     private static final String CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
@@ -93,6 +93,9 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         return executeMethod(post);
     }
 
+    /**
+     * Stores cookies from the request in an internal format that's agnostic to the underlying http implementation.
+     */
     private void processCookies()
     {
         cookies = new ArrayList<GenericCookie>();
@@ -111,6 +114,20 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         }
     }
 
+    /**
+     * Make an HTTP post to the remote service.
+     *
+     * @param path path, including http:// to the remote request (excludes query string)
+     * @param data a String representing the data to post.
+     *
+     * <b>Note:</b> In this implementation the content type is set to application/json, so the data
+     * to post should be a json object and not key/value pairs.
+     *
+     * If you need to post key/value pairs, {@see DrupalServicesRequestManager#post}
+     *
+     * @return
+     * @throws IOException
+     */
     public ServicesResponse post(String path, String data) throws IOException
     {
         HttpPost post = new HttpPost(path);
@@ -120,6 +137,14 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
 
     }
 
+    /**
+     * Execute the method.  This implementation is private since requesting instances should not be invoking it
+     * directly.  Use one of get, post, put, or delete instead.
+     *
+     * @param method the request method to invoke
+     * @return a ServicesResponse object containing the result of the request.
+     * @throws IOException if there's an error requesting data from the backend.
+     */
     private ServicesResponse executeMethod(HttpUriRequest method) throws IOException
     {
         log.debug(method.getMethod() + " : " + method.getURI().toURL().toString());
@@ -141,6 +166,15 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         return servicesResponse;
     }
 
+    /**
+     * Perform an HTTP PUT request with key/value pairs as data.
+     *
+     * @param path the path to the request (including querystring if any)
+     * @param data the data to post as key/value pairs
+     *
+     * @return the servicesResponse with the result of the request.
+     * @throws IOException if there's an error with the request.
+     */
     public ServicesResponse put(String path, Map<String, Object> data) throws IOException
     {
         HttpPut put = new HttpPut(path);
@@ -150,6 +184,20 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         return executeMethod(put);
     }
 
+    /**
+     * Perform an HTTP PUT request with raw string as data (e.g. a JSON string)
+     *
+     * * <b>Note:</b> In this implementation the content type is set to application/json, so the data
+     * to PUT should be a json object and not key/value pairs.
+     *
+     * If you need to PUT key/value pairs, {@see DrupalServicesRequestManager#put(String path, Map data)}
+     *
+     * @param path the path to the request (including querystring if any)
+     * @param data the data to PUT as a string.
+     *
+     * @return a servicesResponse object with the result of the request.
+     * @throws IOException
+     */
     public ServicesResponse put(String path, String data) throws IOException
     {
         HttpPut put = new HttpPut(path);
@@ -159,6 +207,12 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         return executeMethod(put);
     }
 
+    /**
+     * Perform an HTTP DELETE request.
+     * @param path the path to invoke
+     * @return a servicesResponse object with the result of the request.
+     * @throws IOException
+     */
     public ServicesResponse delete(String path) throws IOException
     {
         HttpDelete delete = new HttpDelete(path);
@@ -194,12 +248,31 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         return executeMethod(get);
     }
 
+    /**
+     * Get a list of cookies associated with this request manager.  Cookies should represent the latest state of cookies
+     * as of the most recent request.
+     *
+     * @return a list of cookies.
+     */
     public ArrayList<GenericCookie> getCookies()
     {
         return cookies;
     }
 
-    public String postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException
+    /**
+     * Perform an HTTP POST with a file in multipart form.
+     *
+     *
+     * @param path full URL to the remote server.
+     * @param fieldName the field name to post the file as
+     * @param inputStream inputstream to the file. For efficiency reasons, it's recommended to NOT use a
+     * {@link java.io.ByteArrayInputStream} for large files.
+     *
+     * @param fileName the file name to post
+     * @return a servicesResponse object with the result of the request
+     * @throws IOException
+     */
+    public ServicesResponse postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException
     {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
         entity.addPart(new FormBodyPart(fieldName, new InputStreamBody(new BufferedInputStream(inputStream), fileName)));
@@ -214,7 +287,11 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
             sw.write(line);
             sw.write("\n");
         }
-        return sw.toString();
+        ServicesResponse servicesResponse = new ServicesResponse();
+        servicesResponse.setStatusCode(response.getStatusLine().getStatusCode());
+        servicesResponse.setReasonPhrase(response.getStatusLine().getReasonPhrase());
+        servicesResponse.setResponseBody(sw.toString());
+        return servicesResponse;
     }
 
     /**

@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class DrupalSiteContextV3Impl implements DrupalSiteContext
 {
-    private static Logger log = LoggerFactory.getLogger(DrupalSiteContextV3Impl.class);
+    private static Logger log = LoggerFactory.getLogger(DrupalSiteContextV3Impl.class.getSimpleName());
     private DrupalServicesRequestManager requestManager;
     private String rootPath;
     private DrupalJsonObjectSerializer<DrupalNode> nodeSerializer;
@@ -424,6 +424,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException
     {
+        // TODO: Implement
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
