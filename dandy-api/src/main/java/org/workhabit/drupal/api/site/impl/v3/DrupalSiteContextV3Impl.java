@@ -30,7 +30,6 @@ import java.util.*;
  */
 public class DrupalSiteContextV3Impl implements DrupalSiteContext
 {
-    private static Logger log = LoggerFactory.getLogger(DrupalSiteContextV3Impl.class);
     private static Logger log = LoggerFactory.getLogger(DrupalSiteContextV3Impl.class.getSimpleName());
     private DrupalServicesRequestManager requestManager;
     private String rootPath;

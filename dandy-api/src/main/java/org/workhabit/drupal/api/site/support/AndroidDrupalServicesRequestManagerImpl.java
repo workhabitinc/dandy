@@ -273,7 +273,6 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
      * @throws IOException
      */
     public ServicesResponse postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException
-    public ServicesResponse postFile(String path, String fieldName, InputStream inputStream, String fileName) throws IOException
     {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
         entity.addPart(new FormBodyPart(fieldName, new InputStreamBody(new BufferedInputStream(inputStream), fileName)));
@@ -313,7 +312,7 @@ public class AndroidDrupalServicesRequestManagerImpl implements DrupalServicesRe
         }
 
         if (log.isDebugEnabled()) {
-            StringBuffer paramString = new StringBuffer();
+            StringBuilder paramString = new StringBuilder();
             boolean first = true;
             for (NameValuePair parameter : parameters) {
                 if (first) {
