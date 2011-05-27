@@ -3,16 +3,15 @@ package org.workhabit.drupal.api;
 import org.json.JSONException;
 import org.junit.Test;
 import org.workhabit.drupal.api.entity.DrupalBody;
-import org.workhabit.drupal.api.entity.DrupalBodyValue;
 import org.workhabit.drupal.api.entity.DrupalNode;
 import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -90,16 +89,14 @@ public class DrupalJsonObjectSerializerTest
     {
         DrupalNode node = new DrupalNode();
         DrupalBody body = new DrupalBody();
-        DrupalBodyValue und = new DrupalBodyValue();
-        ArrayList<DrupalBodyValue> und1 = new ArrayList<DrupalBodyValue>();
-        und1.add(und);
-        body.setUnd(und1);
-        und.setFormat("filtered_html");
-        und.setSummary("");
-        und.setSafeSummary("");
-        und.setValue("test body");
-        und.setSafeValue("<p>test</p>\n");
-        node.setBody(body);
+        body.setFormat("filtered_html");
+        body.setSummary("");
+        body.setSafeSummary("");
+        body.setValue("test body");
+        body.setSafeValue("<p>test</p>\n");
+        Map<String, DrupalBody> bodyMap = new HashMap<String, DrupalBody>();
+        bodyMap.put("und", body);
+        node.setBody(bodyMap);
         node.setChanged(new Date());
         node.setComment(2);
         node.setCommentCount(0);
