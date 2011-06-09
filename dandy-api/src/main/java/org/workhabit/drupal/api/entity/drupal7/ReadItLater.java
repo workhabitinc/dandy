@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.entity;
+package org.workhabit.drupal.api.entity.drupal7;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs

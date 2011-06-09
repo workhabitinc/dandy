@@ -1,10 +1,6 @@
 package org.workhabit.drupal.api.site;
 
-import org.workhabit.drupal.api.entity.drupal7.DrupalComment;
-import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
 import org.workhabit.drupal.api.entity.drupal7.*;
-import org.workhabit.drupal.api.entity.drupal7.DrupalTaxonomyTerm;
-import org.workhabit.drupal.api.entity.drupal7.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
@@ -19,17 +15,14 @@ import java.util.List;
 
 /**
  * Copyright 2009 - WorkHabit, Inc. - acs
- * Date: Oct 11, 2010, 5:10:31 PM
+ * Date: 6/8/11, 5:04 PM
  */
-@SuppressWarnings({"UnusedDeclaration"})
-public interface DrupalSiteContext
+public interface Drupal7SiteContext
 {
-    void connect() throws DrupalFetchException;
-
     /**
      * logs out the currently logged in user (via user.logout)
      *
-     * @throws DrupalLogoutException if there was an error logging out, or if there's no currently logged in user.
+     * @throws org.workhabit.drupal.api.site.exceptions.DrupalLogoutException if there was an error logging out, or if there's no currently logged in user.
      */
     void logout() throws DrupalLogoutException;
 
@@ -101,7 +94,7 @@ public interface DrupalSiteContext
      * @param username the user's username
      * @param password the user's plaintext password
      * @return a DrupalUser object if the request was successful.
-     * @throws DrupalLoginException if there's an error logging in the user (e.g. username/password mismatch)
+     * @throws org.workhabit.drupal.api.site.exceptions.DrupalLoginException if there's an error logging in the user (e.g. username/password mismatch)
      * @throws DrupalFetchException if there's an error during the request.
      */
     DrupalUser login(String username, String password) throws DrupalLoginException, DrupalFetchException;
@@ -131,7 +124,7 @@ public interface DrupalSiteContext
      * @param password the new password
      * @param email    the new email address
      * @return the uid of the user.
-     * @throws DrupalSaveException if there's an error saving the user (e.g. username or email already exists)
+     * @throws org.workhabit.drupal.api.site.exceptions.DrupalSaveException if there's an error saving the user (e.g. username or email already exists)
      */
     int registerNewUser(String username, String password, String email) throws DrupalSaveException;
 
@@ -160,17 +153,9 @@ public interface DrupalSiteContext
      *
      * @param filepath the path of the file on the Drupal website
      * @return an inputstream
-     * @throws IOException if there's a problem with the request.
+     * @throws java.io.IOException if there's a problem with the request.
      */
     InputStream getFileStream(String filepath) throws IOException;
-
-    /**
-     * Returns the drupal Files directory path. Essentially a wrapper for the file_directory_path() api call
-     *
-     * @return a string with the path to the files directory.
-     * @throws DrupalFetchException if there's a problem with the request.
-     */
-    String getFileDirectoryPath() throws DrupalFetchException;
 
     /**
      * Save the drupal node. If nid is empty, saves a new node, otherwise updates an existing one.
@@ -193,9 +178,7 @@ public interface DrupalSiteContext
 
     ArrayList<GenericCookie> getCurrentUserCookie();
 
-    String getFileUploadToken() throws DrupalFetchException;
-
-    DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException;
+    DrupalFile saveFileStream(InputStream inputStream, String fileName) throws DrupalSaveException;
 
     void initializeSavedState(DrupalSiteContextInstanceState state);
 

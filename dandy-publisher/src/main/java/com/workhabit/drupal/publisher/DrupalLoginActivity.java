@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
-import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.entity.drupal7.DrupalUser;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.workhabit.drupal.publisher.R;
-import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.entity.drupal7.DrupalTaxonomyTerm;
 
 import java.util.ArrayList;
 
