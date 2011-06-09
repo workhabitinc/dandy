@@ -4,7 +4,7 @@ import android.app.Application;
 import android.os.Bundle;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
-import org.workhabit.drupal.api.site.impl.v3.DrupalSiteContextV3Impl;
+import org.workhabit.drupal.api.site.impl.v3.Drupal7SiteContextImpl;
 import org.workhabit.drupal.api.site.support.AndroidDrupalServicesRequestManagerImpl;
 
 /**
@@ -16,7 +16,7 @@ public class DandyApplication extends Application
 {
     private static String drupalSiteUrl;
 
-    private static DrupalSiteContextV3Impl drupalSiteContext;
+    private static Drupal7SiteContextImpl drupalSiteContext;
     private static final String DRUPAL_SITE_CONTEXT_INSTANCE_STATE = "drupalSiteContextInstanceState";
 
     @Override
@@ -35,7 +35,7 @@ public class DandyApplication extends Application
     public static DrupalSiteContext getDrupalSiteContext(Bundle savedInstanceState)
     {
         if (drupalSiteContext == null) {
-            drupalSiteContext = new DrupalSiteContextV3Impl(drupalSiteUrl, "dandy");
+            drupalSiteContext = new Drupal7SiteContextImpl(drupalSiteUrl, "dandy");
             if (savedInstanceState != null && savedInstanceState.containsKey(DRUPAL_SITE_CONTEXT_INSTANCE_STATE)) {
                 DrupalSiteContextInstanceState instanceState = (DrupalSiteContextInstanceState)savedInstanceState.getSerializable(DRUPAL_SITE_CONTEXT_INSTANCE_STATE);
                 if (instanceState != null) {

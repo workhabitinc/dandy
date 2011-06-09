@@ -1,6 +1,6 @@
 package org.workhabit.drupal.api.site.impl;
 
-import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.entity.drupal7.DrupalUser;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 
 import java.io.Serializable;

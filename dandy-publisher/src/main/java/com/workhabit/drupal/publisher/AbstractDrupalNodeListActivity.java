@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ListView;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import com.workhabit.drupal.publisher.support.DrupalNodeArrayAdapter;
-import org.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 

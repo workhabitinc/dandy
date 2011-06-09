@@ -5,13 +5,13 @@ import org.jmock.Mockery;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.workhabit.drupal.api.entity.DrupalBody;
-import org.workhabit.drupal.api.entity.DrupalComment;
-import org.workhabit.drupal.api.entity.DrupalNode;
-import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
+import org.workhabit.drupal.api.entity.drupal7.DrupalBody;
+import org.workhabit.drupal.api.entity.drupal7.DrupalComment;
+import org.workhabit.drupal.api.entity.drupal7.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
-import org.workhabit.drupal.api.site.impl.v3.DrupalSiteContextV3Impl;
+import org.workhabit.drupal.api.site.impl.v3.Drupal7SiteContextImpl;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.api.site.v3.local.TestData;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
@@ -33,16 +33,16 @@ import static org.junit.Assert.*;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 2/21/11, 10:29 AM
  */
-public class DrupalSiteContextV3ImplTest
+public class Drupal7SiteContextImplTest
 {
-    private DrupalSiteContextV3Impl context;
+    private Drupal7SiteContextImpl context;
     Mockery mockery;
     private DrupalServicesRequestManager mockRequestManager;
 
     @Before
     public void setUp()
     {
-        context = new DrupalSiteContextV3Impl("http://se.local", "dandy");
+        context = new Drupal7SiteContextImpl("http://se.local", "dandy");
         mockery = new Mockery();
         mockRequestManager = mockery.mock(DrupalServicesRequestManager.class);
         context.setRequestManager(this.mockRequestManager);
@@ -283,23 +283,6 @@ public class DrupalSiteContextV3ImplTest
     }
 
     @Test
-    public void testGetFileDirectoryPath() throws DrupalFetchException, IOException
-    {
-        mockery.checking(new Expectations()
-        {
-            {
-                one(mockRequestManager).post("http://se.local/dandy/file/getDirectoryPath.json", "");
-                ServicesResponse response = new ServicesResponse();
-                response.setResponseBody(TestData.getTestTitle());
-                response.setStatusCode(200);
-                will(returnValue(response));
-            }
-        });
-        String fileDirectoryPath = context.getFileDirectoryPath();
-        assertNotNull(fileDirectoryPath);
-    }
-
-    @Test
     public void testGetFileStream() throws IOException
     {
         final InputStream stream = new ByteArrayInputStream("test".getBytes());
@@ -315,25 +298,6 @@ public class DrupalSiteContextV3ImplTest
         InputStream fileStream = context.getFileStream(filepath);
         assertNotNull(fileStream);
         assertSame(stream, fileStream);
-    }
-
-    @Test
-    public void testFileUploadToken() throws DrupalFetchException, IOException
-    {
-        final String testTitle = TestData.getTestTitle();
-        mockery.checking(new Expectations()
-        {
-            {
-                one(mockRequestManager).getString("http://se.local/dandy/file/fileUploadToken.json");
-                ServicesResponse response = new ServicesResponse();
-                response.setResponseBody(testTitle);
-                response.setStatusCode(200);
-                will(returnValue(response));
-            }
-        });
-        String fileUploadToken = context.getFileUploadToken();
-        assertNotNull(fileUploadToken);
-        assertEquals(testTitle, fileUploadToken);
     }
 
     @Test

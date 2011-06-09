@@ -2,9 +2,9 @@ package org.workhabit.drupal.api;
 
 import org.json.JSONException;
 import org.junit.Test;
-import org.workhabit.drupal.api.entity.DrupalBody;
-import org.workhabit.drupal.api.entity.DrupalNode;
-import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.entity.drupal7.DrupalBody;
+import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
+import org.workhabit.drupal.api.entity.drupal7.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 

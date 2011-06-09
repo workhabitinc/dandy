@@ -2,14 +2,14 @@ package org.workhabit.drupal.api.site.v3.local;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.workhabit.drupal.api.entity.DrupalComment;
-import org.workhabit.drupal.api.entity.DrupalNode;
-import org.workhabit.drupal.api.entity.DrupalUser;
+import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
+import org.workhabit.drupal.api.entity.drupal7.DrupalComment;
+import org.workhabit.drupal.api.entity.drupal7.DrupalUser;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
-import org.workhabit.drupal.api.site.impl.v3.DrupalSiteContextV3Impl;
+import org.workhabit.drupal.api.site.impl.v3.Drupal7SiteContextImpl;
 import org.workhabit.drupal.api.site.support.AndroidDrupalServicesRequestManagerImpl;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 
@@ -23,12 +23,12 @@ import static org.junit.Assert.*;
  */
 public class LocalDrupalSiteContextV3ImplTest
 {
-    private DrupalSiteContextV3Impl context;
+    private Drupal7SiteContextImpl context;
 
     @Before
     public void setUp()
     {
-        context = new DrupalSiteContextV3Impl("http://se.local", "dandy");
+        context = new Drupal7SiteContextImpl("http://se.local", "dandy");
         DrupalServicesRequestManager requestManager = new AndroidDrupalServicesRequestManagerImpl();
         context.setRequestManager(requestManager);
     }
@@ -175,7 +175,7 @@ public class LocalDrupalSiteContextV3ImplTest
     @Test
     public void testRestoreInstanceState() throws DrupalFetchException, DrupalLoginException, DrupalLogoutException
     {
-        DrupalSiteContextV3Impl context1 = new DrupalSiteContextV3Impl("http://se.local", "dandy");
+        Drupal7SiteContextImpl context1 = new Drupal7SiteContextImpl("http://se.local", "dandy");
         try {
             AndroidDrupalServicesRequestManagerImpl requestManager1 = new AndroidDrupalServicesRequestManagerImpl();
             context1.setRequestManager(requestManager1);
@@ -183,7 +183,7 @@ public class LocalDrupalSiteContextV3ImplTest
 
             DrupalSiteContextInstanceState savedState = context1.getSavedState();
 
-            context1 = new DrupalSiteContextV3Impl("http://se.local", "dandy");
+            context1 = new Drupal7SiteContextImpl("http://se.local", "dandy");
             requestManager1 = new AndroidDrupalServicesRequestManagerImpl();
             context1.setRequestManager(requestManager1);
             context1.initializeSavedState(savedState);

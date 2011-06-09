@@ -4,9 +4,9 @@ import com.google.gson.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.workhabit.drupal.api.entity.DrupalField;
-import org.workhabit.drupal.api.entity.DrupalNode;
-import org.workhabit.drupal.api.entity.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
+import org.workhabit.drupal.api.entity.drupal7.DrupalField;
+import org.workhabit.drupal.api.entity.drupal7.DrupalTaxonomyTerm;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
 import java.util.*;
@@ -80,7 +80,7 @@ public class DrupalJsonObjectSerializer<T> {
         JSONObject dataObject = new JSONObject(json);
         T t = gson.fromJson(json, clazz);
         if (clazz == DrupalNode.class) {
-            // special handling for cck fields. TODO: refactor this into an interceptor pattern.
+            // special handling for cck fields.
             Iterator keys = dataObject.keys();
             Map<String, DrupalField> fields = new HashMap<String, DrupalField>();
             HashMap<Integer, DrupalTaxonomyTerm> terms = new HashMap<Integer, DrupalTaxonomyTerm>();

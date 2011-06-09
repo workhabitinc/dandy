@@ -11,9 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
-import org.workhabit.drupal.api.entity.DrupalComment;
-import org.workhabit.drupal.api.entity.DrupalField;
-import org.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
+import org.workhabit.drupal.api.entity.drupal7.DrupalComment;
+import org.workhabit.drupal.api.entity.drupal7.DrupalField;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 

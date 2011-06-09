@@ -1,6 +1,6 @@
 package org.workhabit.drupal.api.json;
 
-import org.workhabit.drupal.api.entity.DrupalEntity;
+import org.workhabit.drupal.api.entity.drupal7.DrupalEntity;
 
 import java.util.HashMap;
 import java.util.Map;

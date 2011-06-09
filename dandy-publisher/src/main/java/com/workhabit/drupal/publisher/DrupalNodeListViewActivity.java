@@ -1,6 +1,6 @@
 package com.workhabit.drupal.publisher;
 
-import org.workhabit.drupal.api.entity.DrupalNode;
+import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
 import java.util.List;

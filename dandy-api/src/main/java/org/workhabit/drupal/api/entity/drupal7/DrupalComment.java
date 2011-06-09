@@ -1,4 +1,4 @@
-package org.workhabit.drupal.api.entity;
+package org.workhabit.drupal.api.entity.drupal7;
 
 import java.util.Date;
 import java.util.List;

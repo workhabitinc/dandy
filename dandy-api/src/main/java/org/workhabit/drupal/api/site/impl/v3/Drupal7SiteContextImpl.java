@@ -6,15 +6,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.workhabit.drupal.api.entity.*;
+import org.workhabit.drupal.api.entity.drupal7.*;
 import org.workhabit.drupal.api.json.BooleanAdapter;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 import org.workhabit.drupal.api.json.UnixTimeDateAdapter;
-import org.workhabit.drupal.api.site.DrupalSiteContext;
+import org.workhabit.drupal.api.site.Drupal7SiteContext;
 import org.workhabit.drupal.api.site.exceptions.*;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
-import org.workhabit.drupal.api.site.impl.v2.DrupalSiteContextInstanceStateImpl;
+import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceStateImpl;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.http.DrupalServicesRequestManager;
 import org.workhabit.drupal.http.ServicesResponse;
@@ -28,9 +28,11 @@ import java.util.*;
  * Copyright 2009 - WorkHabit, Inc. - acs
  * Date: 2/8/11, 12:34 PM
  */
-public class DrupalSiteContextV3Impl implements DrupalSiteContext
+public class Drupal7SiteContextImpl implements Drupal7SiteContext
 {
-    private static Logger log = LoggerFactory.getLogger(DrupalSiteContextV3Impl.class.getSimpleName());
+    private static Logger log = LoggerFactory.getLogger(Drupal7SiteContextImpl.class.getSimpleName());
+    private DrupalSiteContextBridge bridge;
+
     private DrupalServicesRequestManager requestManager;
     private String rootPath;
     private DrupalJsonObjectSerializer<DrupalNode> nodeSerializer;
@@ -40,9 +42,11 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     private DrupalJsonObjectSerializer<DrupalComment> commentSerializer;
     private DrupalJsonObjectSerializer<DrupalFile> fileSerializer;
 
-    public DrupalSiteContextV3Impl(String drupalSiteUrl, String endpoint)
+    public Drupal7SiteContextImpl(String drupalSiteUrl, String endpoint)
     {
+        bridge = new DrupalSiteContextBridge();
         this.rootPath = String.format("%s/%s", drupalSiteUrl, endpoint);
+        bridge.setRootPath(this.rootPath);
         nodeSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalNode.class);
         userObjectSerializer = DrupalJsonObjectSerializerFactory.getInstance(DrupalUser.class);
         log.debug("initialized new Drupal Site Context");
@@ -53,28 +57,23 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public void setRequestManager(DrupalServicesRequestManager requestManager)
     {
         this.requestManager = requestManager;
-    }
-
-    public void connect() throws DrupalFetchException
-    {
-        // TODO
+        bridge.setRequestManager(requestManager);
     }
 
     public void logout() throws DrupalLogoutException
     {
         Map<String, Object> data = new HashMap<String, Object>();
+        this.currentUser = null;
+        this.session = null;
         try {
-            log.debug("Logging out current user");
-            this.currentUser = null;
-            this.session = null;
-            ServicesResponse response = requestManager.post(rootPath + "/user/logout.json", data);
-            assertNoErrors(response);
+            bridge.logout(data);
         } catch (IOException e) {
             throw new DrupalLogoutException(e);
         } catch (DrupalServicesResponseException e) {
             throw new DrupalLogoutException(e);
         }
     }
+
 
     public List<DrupalNode> getNodeView(String viewName) throws DrupalFetchException
     {
@@ -90,33 +89,9 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public List<DrupalNode> getNodeView(String viewName, String viewArguments, int offset, int limit) throws DrupalFetchException
     {
         try {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Fetching view %s with arguments %s", viewName, viewArguments));
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append(rootPath).append("/views/").append(viewName).append(".json");
-            boolean bFirst = true;
-            if (viewArguments != null && !"".equals(viewArguments)) {
-                sb.append("?args=").append(viewArguments);
-                bFirst = false;
-            }
-            if (bFirst) {
-                sb.append("?");
-            }
-            else {
-                sb.append("&");
-            }
-            sb.append("offset=").append(offset);
-            sb.append("&limit=").append(limit);
-
-            ServicesResponse response = requestManager.getString(sb.toString());
-            assertNoErrors(response);
+            ServicesResponse response = bridge.getNodeView(viewName, viewArguments, offset, limit);
             return nodeSerializer.unserializeList(response.getResponseBody());
         } catch (JSONException e) {
-            throw new DrupalFetchException(e);
-        } catch (DrupalServicesResponseException e) {
-            throw new DrupalFetchException(e);
-        } catch (IOException e) {
             throw new DrupalFetchException(e);
         }
     }
@@ -124,54 +99,36 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public DrupalNode getNode(int nid) throws DrupalFetchException
     {
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Fetching node with nid " + nid);
-            }
-            ServicesResponse response = requestManager.getString(String.format("%s/node/%d.json", rootPath, nid));
-            assertNoErrors(response);
+            ServicesResponse response = bridge.getNode(nid);
             return nodeSerializer.unserialize(response.getResponseBody());
-        } catch (IOException e) {
-            throw new DrupalFetchException(e);
         } catch (JSONException e) {
-            throw new DrupalFetchException(e);
-        } catch (DrupalServicesResponseException e) {
             throw new DrupalFetchException(e);
         }
     }
+
 
     public DrupalComment getComment(int cid) throws DrupalFetchException
     {
         try {
-            ServicesResponse response = requestManager.getString(String.format("%s/comment/%d.json", rootPath, cid));
-            assertNoErrors(response);
-
+            ServicesResponse response = bridge.getComment(cid);
             return commentSerializer.unserialize(response.getResponseBody());
         } catch (JSONException e) {
-            throw new DrupalFetchException(e);
-        } catch (DrupalServicesResponseException e) {
-            throw new DrupalFetchException(e);
-        } catch (IOException e) {
             throw new DrupalFetchException(e);
         }
     }
 
+
     public int saveComment(final DrupalComment comment) throws DrupalFetchException
     {
+        String commentString = serializeComment(comment);
+        ServicesResponse response = bridge.saveComment(commentString);
         try {
-            String commentString = serializeComment(comment);
-            JSONObject data = new JSONObject();
-            data.put("comment", new JSONObject(commentString));
-            ServicesResponse response = requestManager.post(rootPath + "/comment.json", data.toString());
-            assertNoErrors(response);
             JSONObject responseObject = new JSONObject(response.getResponseBody());
             return responseObject.getInt("nid");
-        } catch (IOException e) {
-            throw new DrupalSaveException(e);
         } catch (JSONException e) {
             throw new DrupalFetchException(e);
-        } catch (DrupalServicesResponseException e) {
-            throw new DrupalFetchException(e);
         }
+
     }
 
     private String serializeComment(final DrupalComment comment)
@@ -207,38 +164,18 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public DrupalUser login(String username, String password) throws DrupalLoginException, DrupalFetchException
     {
         try {
-            Map<String, Object> data = new HashMap<String, Object>();
-            /*JSONObject json = new JSONObject();
-            json.append("username", username);
-            json.append("password", password);
-            data.put("data", json.toString());
-            */
-            data.put("username", username);
-            data.put("password", password);
-            ServicesResponse response = requestManager.post(String.format("%s/user/login.json", rootPath), data);
-            // object format should contain sessid, session_name, and user keys.
-            assertNoErrors(response);
+            ServicesResponse response = bridge.login(username, password);
             JSONObject object = new JSONObject(response.getResponseBody());
             this.session = object.getString("sessid");
             JSONObject userObject = object.getJSONObject("user");
             DrupalUser user = userObjectSerializer.unserialize(userObject.toString());
             this.currentUser = user;
             return user;
-        } catch (IOException e) {
-            throw new DrupalLoginException(e);
         } catch (JSONException e) {
-            throw new DrupalLoginException(e);
-        } catch (DrupalServicesResponseException e) {
             throw new DrupalLoginException(e);
         }
     }
 
-    private void assertNoErrors(ServicesResponse response) throws DrupalServicesResponseException
-    {
-        if (response.getStatusCode() >= 400) {
-            throw new DrupalServicesResponseException(response.getStatusCode(), response.getReasonPhrase());
-        }
-    }
 
     public List<DrupalTaxonomyTerm> getTermView(String viewName) throws DrupalFetchException
     {
@@ -254,6 +191,7 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
 
     public int registerNewUser(String username, String password, String email) throws DrupalSaveException
     {
+        // TODO: Implement
         return 0;
     }
 
@@ -266,22 +204,9 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public List<DrupalComment> getComments(int nid, int start, int count) throws DrupalFetchException
     {
         try {
-            Map<String, Object> data = new HashMap<String, Object>();
-            data.put("nid", nid);
-            if (start != 0) {
-                data.put("start", start);
-            }
-            if (count != 0) {
-                data.put("count", count);
-            }
-            ServicesResponse response = requestManager.post(String.format("%s/comment/loadNodeComments.json", rootPath), data);
-            assertNoErrors(response);
+            ServicesResponse response = bridge.getComments(nid, start, count);
             return commentSerializer.unserializeList(response.getResponseBody());
-        } catch (IOException e) {
-            throw new DrupalFetchException(e);
         } catch (JSONException e) {
-            throw new DrupalFetchException(e);
-        } catch (DrupalServicesResponseException e) {
             throw new DrupalFetchException(e);
         }
     }
@@ -291,45 +216,23 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
         return requestManager.getStream(filepath);
     }
 
-    public String getFileDirectoryPath() throws DrupalFetchException
-    {
-        try {
-            ServicesResponse response = requestManager.post(rootPath + "/file/getDirectoryPath.json", "");
-            assertNoErrors(response);
-            return response.getResponseBody();
-        } catch (IOException e) {
-            throw new DrupalFetchException(e);
-        } catch (DrupalServicesResponseException e) {
-            throw new DrupalFetchException(e);
-        }
-    }
-
     public int saveNode(final DrupalNode node) throws DrupalSaveException
     {
         try {
-
             JsonObject jsonNode = serializeNode(node);
             JSONObject object = new JSONObject();
             object.put("node", new JSONObject(jsonNode.toString()));
             ServicesResponse response;
-            if (node.getNid() == 0) {
-                response = requestManager.post(String.format("%s/node.json", rootPath), object.toString());
-            }
-            else {
-                response = requestManager.put(String.format("%s/node/%d.json", rootPath, node.getNid()), object.toString());
-            }
-            assertNoErrors(response);
+            response = bridge.saveNode(node, object);
             JSONObject responseObject = new JSONObject(response.getResponseBody());
             return responseObject.getInt("nid");
-
-        } catch (IOException e) {
-            throw new DrupalSaveException(e);
         } catch (JSONException e) {
             throw new DrupalSaveException(e);
-        } catch (DrupalServicesResponseException e) {
+        } catch (DrupalFetchException e) {
             throw new DrupalSaveException(e);
         }
     }
+
 
     private JsonObject serializeNode(final DrupalNode node)
     {
@@ -392,17 +295,13 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
     public DrupalUser getUser(int uid) throws DrupalFetchException
     {
         try {
-            ServicesResponse response = requestManager.getString(String.format("%s/user/%d.json", rootPath, uid));
-            assertNoErrors(response);
+            ServicesResponse response = bridge.getUser(uid);
             return userObjectSerializer.unserialize(response.getResponseBody());
-        } catch (IOException e) {
-            throw new DrupalFetchException(e);
         } catch (JSONException e) {
-            throw new DrupalFetchException(e);
-        } catch (DrupalServicesResponseException e) {
             throw new DrupalFetchException(e);
         }
     }
+
 
     public DrupalUser getCurrentUser()
     {
@@ -414,33 +313,11 @@ public class DrupalSiteContextV3Impl implements DrupalSiteContext
         return requestManager.getCookies();
     }
 
-    public String getFileUploadToken() throws DrupalFetchException
+    public DrupalFile saveFileStream(InputStream inputStream, String fileName) throws DrupalSaveException
     {
         try {
-            ServicesResponse response = requestManager.getString(String.format("%s/file/fileUploadToken.json", rootPath));
-            assertNoErrors(response);
-            return response.getResponseBody();
-        } catch (IOException e) {
-            throw new DrupalFetchException(e);
-        } catch (DrupalServicesResponseException e) {
-            throw new DrupalFetchException(e);
-        }
-    }
-
-    public DrupalFile saveFileStream(InputStream inputStream, String fileName, String token) throws DrupalSaveException
-    {
-        try {
-            ServicesResponse response = requestManager.postFile(String.format("%s/file.json", rootPath), "files[file]", inputStream, fileName);
-            assertNoErrors(response);
-            JSONObject obj = new JSONObject(response.getResponseBody());
-            String uri = obj.getString("uri");
-            response = requestManager.getString(uri + ".json");
-            assertNoErrors(response);
+            ServicesResponse response = bridge.saveFileStream(inputStream, fileName);
             return fileSerializer.unserialize(response.getResponseBody());
-        } catch (IOException e) {
-            throw new DrupalSaveException(e);
-        } catch (DrupalServicesResponseException e) {
-            throw new DrupalSaveException(e);
         } catch (JSONException e) {
             throw new DrupalSaveException(e);
         } catch (DrupalFetchException e) {
