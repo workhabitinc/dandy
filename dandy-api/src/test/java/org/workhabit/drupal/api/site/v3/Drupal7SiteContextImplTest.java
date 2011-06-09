@@ -2,15 +2,17 @@ package org.workhabit.drupal.api.site.v3;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
-import org.workhabit.drupal.api.entity.drupal7.DrupalBody;
-import org.workhabit.drupal.api.entity.drupal7.DrupalComment;
-import org.workhabit.drupal.api.entity.drupal7.DrupalUser;
+import org.omg.CORBA.FieldNameHelper;
+import org.workhabit.drupal.api.entity.drupal7.*;
+import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
+import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
+import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.impl.v3.Drupal7SiteContextImpl;
 import org.workhabit.drupal.api.site.support.GenericCookie;
 import org.workhabit.drupal.api.site.v3.local.TestData;
@@ -20,6 +22,7 @@ import org.workhabit.drupal.http.ServicesResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.FileNameMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -208,6 +211,7 @@ public class Drupal7SiteContextImplTest
         {
             {
                 String json = "[{\"cid\":\"1\",\"pid\":\"0\",\"nid\":\"2\",\"uid\":\"1\",\"subject\":\"O hai.\",\"hostname\":\"127.0.0.1\",\"created\":\"1297879941\",\"changed\":\"1297879941\",\"status\":\"1\",\"thread\":\"01\\/\",\"name\":\"admin\",\"mail\":\"\",\"homepage\":\"\",\"language\":\"und\",\"node_type\":\"comment_node_article\",\"registered_name\":\"admin\",\"u_uid\":\"1\",\"signature\":\"\",\"signature_format\":null,\"picture\":\"0\",\"new\":1,\"comment_body\":{\"und\":[{\"value\":\"My comment.  Let me show u it.\",\"format\":\"filtered_html\",\"safe_value\":\"<p>My comment.  Let me show u it.<\\/p>\\n\"}]},\"rdf_mapping\":{\"rdftype\":[\"sioc:Post\",\"sioct:Comment\"],\"title\":{\"predicates\":[\"dc:title\"]},\"created\":{\"predicates\":[\"dc:date\",\"dc:created\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"changed\":{\"predicates\":[\"dc:modified\"],\"datatype\":\"xsd:dateTime\",\"callback\":\"date_iso8601\"},\"comment_body\":{\"predicates\":[\"content:encoded\"]},\"pid\":{\"predicates\":[\"sioc:reply_of\"],\"type\":\"rel\"},\"uid\":{\"predicates\":[\"sioc:has_creator\"],\"type\":\"rel\"},\"name\":{\"predicates\":[\"foaf:name\"]}},\"rdf_data\":{\"date\":{\"property\":[\"dc:date\",\"dc:created\"],\"content\":\"2011-02-16T10:12:21-08:00\",\"datatype\":\"xsd:dateTime\"},\"nid_uri\":\"\\/node\\/2\"}}]";
+                //noinspection unchecked
                 one(mockRequestManager).post(
                         with(
                                 equal("http://se.local/dandy/comment/loadNodeComments.json")
@@ -239,6 +243,7 @@ public class Drupal7SiteContextImplTest
         mockery.checking(new Expectations()
         {
             {
+                //noinspection unchecked
                 one(mockRequestManager).post(with(equal("http://se.local/dandy/user/login.json")), with(allOf(hasEntry("username", (Object)"testuser"), hasEntry("password", (Object)"testpass"))));
                 ServicesResponse response = new ServicesResponse();
                 response.setStatusCode(200);
@@ -334,6 +339,46 @@ public class Drupal7SiteContextImplTest
         List<DrupalNode> nodeList = context.getNodeView("dandy_recent");
         assertNotNull(nodeList);
         assertEquals(13, nodeList.size());
+    }
+
+    @Test
+    public void testSaveFileStream() throws IOException, DrupalSaveException, JSONException
+    {
+        final DrupalFile file = new DrupalFile();
+        file.setFid(1);
+        file.setDestination("http://se.local/sites/default/files/foo");
+        file.setFilename("foo");
+        file.setTimestamp(new Date());
+        file.setFilepath("sites/default/files/foo");
+        file.setSource("");
+        file.setUid(1);
+        final InputStream inputstream = new ByteArrayInputStream(TestData.getTestTitle().getBytes());
+        final String filename = "foo";
+
+        mockery.checking(new Expectations() {
+            {
+                String path = "http://se.local/dandy/file.json";
+                String fieldName = "files[file]";
+
+                one(mockRequestManager).postFile(path, fieldName, inputstream, filename);
+                ServicesResponse response = new ServicesResponse();
+                response.setResponseBody("{ \"fid\": 1, \"uri\": \"http://se.local/dandy/file/1\" }");
+                response.setStatusCode(200);
+                response.setReasonPhrase("");
+                will(returnValue(response));
+
+                one(mockRequestManager).getString("http://se.local/dandy/file/1.json");
+
+                ServicesResponse result = new ServicesResponse();
+                DrupalJsonObjectSerializer<DrupalFile> instance = DrupalJsonObjectSerializerFactory.getInstance(DrupalFile.class);
+                String fileString = instance.serialize(file);
+                result.setResponseBody(fileString);
+                will(returnValue(result));
+            }
+        });
+
+        DrupalFile drupalFile = context.saveFileStream(inputstream, filename);
+        assertNotNull(drupalFile);
     }
 
     @After

@@ -107,7 +107,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity
                                 MessageDigest digest = MessageDigest.getInstance("MD5");
                                 digest.update(filepath.getBytes());
                                 byte messageDigest[] = digest.digest();
-                                StringBuffer hash = new StringBuffer();
+                                StringBuilder hash = new StringBuilder();
                                 for (byte aMessageDigest : messageDigest) {
                                     hash.append(Integer.toHexString(0xFF & aMessageDigest));
                                 }
@@ -159,7 +159,6 @@ public class DrupalNodeActivity extends AbstractDandyActivity
         };
         t.start();
     }
-
 
     private void fetchAndDisplayComments(Drupal7SiteContext drupalSiteContext, DrupalNode node) throws DrupalFetchException
     {
