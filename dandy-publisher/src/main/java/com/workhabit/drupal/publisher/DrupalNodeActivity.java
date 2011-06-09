@@ -14,6 +14,7 @@ import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
 import org.workhabit.drupal.api.entity.drupal7.DrupalComment;
 import org.workhabit.drupal.api.entity.drupal7.DrupalField;
+import org.workhabit.drupal.api.site.Drupal7SiteContext;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 
@@ -56,7 +57,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DrupalSiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext(savedInstanceState);
+        Drupal7SiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext(savedInstanceState);
         int nid = getIntent().getExtras().getInt("nid");
 
         setContentView(R.layout.node);
@@ -85,7 +86,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity
         }
     }
 
-    private void fetchAndDisplayImage(final DrupalSiteContext drupalSiteContext, final DrupalNode node, final TextView titleView) throws IOException
+    private void fetchAndDisplayImage(final Drupal7SiteContext drupalSiteContext, final DrupalNode node, final TextView titleView) throws IOException
     {
         Thread t = new Thread()
         {
@@ -101,8 +102,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity
                                 int displayWidth = wm.getDefaultDisplay().getWidth();
 
                                 HashMap<String, String> imagedata = entry.getValue().getValues().get(0);
-                                String fileDirectoryPath = drupalSiteContext.getFileDirectoryPath();
-                                String filepath = fileDirectoryPath + "/imagecache/w" + displayWidth + "/" + imagedata.get("filepath");
+                                String filepath = "/sites/default/files/imagecache/w" + displayWidth + "/" + imagedata.get("filepath");
 
                                 MessageDigest digest = MessageDigest.getInstance("MD5");
                                 digest.update(filepath.getBytes());
@@ -148,8 +148,6 @@ public class DrupalNodeActivity extends AbstractDandyActivity
                                 }
                             } catch (IOException e) {
                                 // do nothing
-                            } catch (DrupalFetchException e) {
-                                DrupalDialogHandler.showMessageDialog(getParent(), e.getMessage());
                             } catch (NoSuchAlgorithmException e) {
                                 // don't do anything
                             }
@@ -163,7 +161,7 @@ public class DrupalNodeActivity extends AbstractDandyActivity
     }
 
 
-    private void fetchAndDisplayComments(DrupalSiteContext drupalSiteContext, DrupalNode node) throws DrupalFetchException
+    private void fetchAndDisplayComments(Drupal7SiteContext drupalSiteContext, DrupalNode node) throws DrupalFetchException
     {
         ListView lv = (ListView)findViewById(R.id.commentList);
         List<DrupalComment> comments = drupalSiteContext.getComments(node.getNid());

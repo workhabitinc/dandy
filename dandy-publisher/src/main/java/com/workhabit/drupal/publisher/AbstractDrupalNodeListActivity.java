@@ -7,6 +7,7 @@ import android.widget.ListView;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import com.workhabit.drupal.publisher.support.DrupalNodeArrayAdapter;
 import org.workhabit.drupal.api.entity.drupal7.DrupalNode;
+import org.workhabit.drupal.api.site.Drupal7SiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public abstract class AbstractDrupalNodeListActivity extends AbstractDandyListActivity {
     protected DrupalNodeArrayAdapter nodeAdapter;
-    protected DrupalSiteContext drupalSiteContext;
+    protected Drupal7SiteContext drupalSiteContext;
     protected String viewArguments;
     protected String viewName;
 

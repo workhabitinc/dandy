@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import org.workhabit.drupal.api.entity.drupal7.DrupalUser;
+import org.workhabit.drupal.api.site.Drupal7SiteContext;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
@@ -19,7 +20,7 @@ import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
 public class DrupalLoginActivity extends AbstractDandyActivity implements View.OnClickListener
 {
 
-    private DrupalSiteContext drupalSiteContext;
+    private Drupal7SiteContext drupalSiteContext;
     private AlertDialog.Builder progressDialogBuilder;
 
     /**

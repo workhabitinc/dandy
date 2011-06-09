@@ -8,6 +8,7 @@ import android.widget.ListView;
 import com.workhabit.drupal.publisher.support.DrupalDialogHandler;
 import com.workhabit.drupal.publisher.support.DrupalTaxonomyAdapter;
 import org.workhabit.drupal.api.entity.drupal7.DrupalTaxonomyTerm;
+import org.workhabit.drupal.api.site.Drupal7SiteContext;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.DrupalSiteContext;
 
@@ -23,7 +24,7 @@ public class DrupalTaxonomyListActivity extends AbstractDandyListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DrupalSiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext(savedInstanceState);
+        Drupal7SiteContext drupalSiteContext = DandyApplication.getDrupalSiteContext(savedInstanceState);
         try {
             ArrayList<DrupalTaxonomyTerm> terms = (ArrayList<DrupalTaxonomyTerm>) drupalSiteContext.getCategoryList();
             drupalTaxonomyAdapter = new DrupalTaxonomyAdapter(this, R.layout.row, terms);

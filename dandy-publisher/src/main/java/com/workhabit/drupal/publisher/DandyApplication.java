@@ -2,7 +2,7 @@ package com.workhabit.drupal.publisher;
 
 import android.app.Application;
 import android.os.Bundle;
-import org.workhabit.drupal.api.site.DrupalSiteContext;
+import org.workhabit.drupal.api.site.Drupal7SiteContext;
 import org.workhabit.drupal.api.site.impl.DrupalSiteContextInstanceState;
 import org.workhabit.drupal.api.site.impl.v3.Drupal7SiteContextImpl;
 import org.workhabit.drupal.api.site.support.AndroidDrupalServicesRequestManagerImpl;
@@ -32,7 +32,7 @@ public class DandyApplication extends Application
      * @param savedInstanceState
      * @return wired instance of DrupalSiteContext
      */
-    public static DrupalSiteContext getDrupalSiteContext(Bundle savedInstanceState)
+    public static Drupal7SiteContext getDrupalSiteContext(Bundle savedInstanceState)
     {
         if (drupalSiteContext == null) {
             drupalSiteContext = new Drupal7SiteContextImpl(drupalSiteUrl, "dandy");
