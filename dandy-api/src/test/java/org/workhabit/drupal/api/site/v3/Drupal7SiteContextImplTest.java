@@ -6,12 +6,12 @@ import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.CORBA.FieldNameHelper;
 import org.workhabit.drupal.api.entity.drupal7.*;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializer;
 import org.workhabit.drupal.api.json.DrupalJsonObjectSerializerFactory;
 import org.workhabit.drupal.api.site.exceptions.DrupalFetchException;
 import org.workhabit.drupal.api.site.exceptions.DrupalLoginException;
+import org.workhabit.drupal.api.site.exceptions.DrupalLogoutException;
 import org.workhabit.drupal.api.site.exceptions.DrupalSaveException;
 import org.workhabit.drupal.api.site.impl.v3.Drupal7SiteContextImpl;
 import org.workhabit.drupal.api.site.support.GenericCookie;
@@ -22,11 +22,7 @@ import org.workhabit.drupal.http.ServicesResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.FileNameMap;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
@@ -238,6 +234,29 @@ public class Drupal7SiteContextImplTest
     }
 
     @Test
+    public void testLogoutExceptionHandling()
+    {
+        try {
+        mockery.checking(new Expectations()
+        {
+            {
+                one(mockRequestManager).post(
+                        with(equal("http://se.local/dandy/user/logout.json")),
+                        with(equal(new HashMap<String, Object>())));
+
+                will(throwException(new IOException()));
+            }
+        });
+            context.logout();
+            fail("Should have thrown logout exception");
+        } catch (DrupalLogoutException e) {
+            // ok
+        } catch (IOException e) {
+            fail("Should have thrown logout exception, threw ioexception instead.");
+        }
+    }
+
+    @Test
     public void testGetCurrentUser() throws DrupalFetchException, DrupalLoginException, IOException
     {
         mockery.checking(new Expectations()
@@ -355,7 +374,8 @@ public class Drupal7SiteContextImplTest
         final InputStream inputstream = new ByteArrayInputStream(TestData.getTestTitle().getBytes());
         final String filename = "foo";
 
-        mockery.checking(new Expectations() {
+        mockery.checking(new Expectations()
+        {
             {
                 String path = "http://se.local/dandy/file.json";
                 String fieldName = "files[file]";
