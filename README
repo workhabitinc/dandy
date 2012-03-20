@@ -1,6 +1,6 @@
 For those of you wanting to get started with Dandy, Maven is NOT REQUIRED.  You can download the JAR files directly here:
 
-http://nexus.workhabit.com/nexus/content/repositories/releases/org/workhabit/dandy/dandy-api/1.3/dandy-api-1.3.jar
+http://nexus.workhabit.com/nexus/content/repositories/releases/org/workhabit/dandy/dandy-api/1.7/dandy-api-1.7.jar
 
 Javadocs for the API are available at:
 
@@ -8,28 +8,12 @@ http://nexus.workhabit.com/dandy/dandy-api/apidocs/index.html
 
 You need Maven only if you're doing contrib to this module or if you are intending to customize Dandy Publisher to suit your needs.
 
-Version 0.3 of the Dandy toolkit
+Version 1.7 of the Dandy toolkit
 
 Current Status:
-Working implementation of dandy-api for almost all fetch functionality (e.g. saves don't yet work).
+Working implementation of dandy-api.
 
-UPDATE 2010-Dec-07:
-
-Drupal Dandy module now included in github.  This includes a couple of views (via features) that
-are used by the default Dandy-Publisher reference implementation.
-
-Issue discovered when serializing nodes that aren't assigned to a taxonomy.  This is an issue where Drupal serializes
-the taxonomy field as an empty array when no taxonomy exists, but as an object when they do. Fixed.
-
-UPDATE 2010-Dec-06:
-
-The new name for AnDrupal is Dandy.  Git repo data updated as well.  We also now
-have support for fetching individual comments, all comments for a node, as well as preliminary CCK support.  We've also
-added support on drupalServicesRequestManager for passthru of file data (such as images) so that the publisher app can display
-images provided by cck imagefield.
-
-
-Build Instructions
+Build Instructions (only required if you want to hack on the platform. Otherwise, download the JAR above.
 ------------------
 
 Step 1: Download the Android SDK
