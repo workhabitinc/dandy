@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.workhabit.dandy</groupId>
     <artifactId>dandy-api</artifactId>
-    <version>1.7</version>
+    <version>1.8-SNAPSHOT</version>
     <name>Dandy API</name>
     <description>Provides helper classes and model for interacting with Drupal sites via the Services and Json Server modules</description>
 
     <parent>
         <groupId>org.workhabit.dandy</groupId>
         <artifactId>dandy-parent</artifactId>
-        <version>1.7</version>
+        <version>1.8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
