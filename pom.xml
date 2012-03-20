@@ -63,7 +63,7 @@
         <site>
             <id>nexus-site.workhabit.com</id>
             <name>nexus.workhabit.com</name>
-            <url>scp://nexus.workhabit.com/var/www/nexus/htdocs/dandy</url>
+            <url>scp://nexus.workhabit.com/var/www/html/dandy</url>
         </site>
         <repository>
             <id>nexus.workhabit.com</id>
